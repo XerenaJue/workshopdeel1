@@ -49,4 +49,9 @@ public class Adres {
     public void setWoonplaats(String woonplaats) {
         this.woonplaats = woonplaats;
     }
+    
+    public String toString() {
+    	return "Straatnaam: " + straatnaam + ", huisnummer: " + huisnummer + ", toevoeging: " 
+    			+ toevoeging + ", postcode: " + postcode + ", woonplaats: " + woonplaats;
+    }
 }
