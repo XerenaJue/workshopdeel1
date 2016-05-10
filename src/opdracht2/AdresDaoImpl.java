@@ -10,10 +10,6 @@ public class AdresDaoImpl implements AdresDao {
 	PreparedStatement preparedStatement;
 	ResultSet resultSet;
 	
-	String user = "hallo";
-	String password = "doei";
-	String url = "jdbc:mysql://localhost/workshopdeel1";
-	
 	public Adres findAdres(String straatnaam, String postcode, int huisnummer, String toevoeging, String woonplaats)
 			throws SQLException {
 		Klant klant;
@@ -22,7 +18,7 @@ public class AdresDaoImpl implements AdresDao {
 				" AND toevoeging = " + toevoeging + " AND woonplaats = " + woonplaats;
 		
 		try { 
-			connection = DriverManager.getConnection(url, user, password);
+			connection = ConnectionFactory.getMySQLConnection();
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
 			
@@ -67,7 +63,7 @@ public class AdresDaoImpl implements AdresDao {
 		Adres adres;
 		String query = "SELECT * FROM adres WHERE straatnaam = " + straatnaam;
 		try { 
-			connection = DriverManager.getConnection(url, user, password);
+			connection = ConnectionFactory.getMySQLConnection();
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
 			
@@ -107,7 +103,7 @@ public class AdresDaoImpl implements AdresDao {
 				+ "?,?,?,?,?";
 		
 		try{
-			connection = DriverManager.getConnection(url, user, password);
+			connection = ConnectionFactory.getMySQLConnection();
 			preparedStatement = connection.prepareStatement(query);
 			
 			
@@ -150,7 +146,7 @@ public class AdresDaoImpl implements AdresDao {
 				+ "huisnummer = ?, toevoeging = ?, woonplaats = ?"; 
 		
 		try{
-			connection = DriverManager.getConnection(url, user, password);
+			connection = ConnectionFactory.getMySQLConnection();
 			preparedStatement = connection.prepareStatement(query);
 			
 			
@@ -193,7 +189,7 @@ public class AdresDaoImpl implements AdresDao {
 		String query = "SELECT * FROM adres WHERE postcode = " + postcode
 				+ " AND huisnummer = " + huisnummer;
 		try { 
-			connection = DriverManager.getConnection(url, user, password);
+			connection = ConnectionFactory.getMySQLConnection();
 			preparedStatement = connection.prepareStatement(query);
 						
 			adres = new Adres();
