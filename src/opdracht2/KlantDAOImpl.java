@@ -7,9 +7,6 @@ public class KlantDAOImpl implements KlantDAO {
     Connection connection;
     ResultSet resultSet;
     PreparedStatement statement;
-    String dburl = "jdbc:mysql://localhost/workshopdeel1";
-    String user = "hallo";
-    String password = "doei";
 
     @Override
     public List<Klant> findAll() throws SQLException {
@@ -17,7 +14,7 @@ public class KlantDAOImpl implements KlantDAO {
         Klant klant;
         String SQL_QUERY = "Select * from Klant";
         try {
-            connection = DriverManager.getConnection(dburl, user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(SQL_QUERY);
             resultSet = statement.executeQuery();
 
@@ -57,7 +54,7 @@ public class KlantDAOImpl implements KlantDAO {
         String query = "Select * from Klant where klant_ID = " + klantID;
         Klant klant;
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
@@ -93,7 +90,7 @@ public class KlantDAOImpl implements KlantDAO {
         String query = "Select * from Klant where voornaam = " + voornaam + " and achternaam = " + achternaam;
         Klant klant;
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
@@ -129,7 +126,7 @@ public class KlantDAOImpl implements KlantDAO {
         String query = "Select * from Klant where voornaam = " + voornaam;
         Klant klant;
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
@@ -161,11 +158,10 @@ public class KlantDAOImpl implements KlantDAO {
     } 
     
     @Override
-    public boolean create(Klant klant) throws SQLException {
+    public void create(Klant klant) throws SQLException {
         String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email) values (?, ? ,?, ?)";
-        boolean isCreated = false;
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, klant.getVoornaam());
             statement.setString(2, klant.getAchternaam());
@@ -178,8 +174,8 @@ public class KlantDAOImpl implements KlantDAO {
                 resultSet.next();
                 klant.setKlantID(resultSet.getInt(1));
             }            
-            statement.executeUpdate();            
-            isCreated = true;                      
+            statement.executeUpdate(); 
+            System.out.println("Klant is succesvol aangemaakt");
         } finally {
             if (resultSet != null) {
                 try {
@@ -196,24 +192,22 @@ public class KlantDAOImpl implements KlantDAO {
                     connection.close();
                 } catch (SQLException e) {}
             }            
-        }
-        return isCreated;
+        }        
     }
 
     @Override
-    public boolean update(Klant klant) throws SQLException {
+    public void update(Klant klant) throws SQLException {
         String query = "update klant set voornaam = ?, set achternaam = ?, set tussenvoegsel = ?, email = ? where klant_ID = ?";
-        boolean isUpdated = false;
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
             statement.setString(1, klant.getVoornaam());
             statement.setString(2, klant.getAchternaam());
             statement.setString(3, klant.getTussenvoegsel());
             statement.setString(4, klant.getEmail());
             statement.setInt(5, klant.getKlantID());            
-            statement.executeUpdate();            
-            isUpdated = true;            
+            statement.executeUpdate();
+            System.out.println("Gegevens zijn succesvol gewijzigd");
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
@@ -231,19 +225,17 @@ public class KlantDAOImpl implements KlantDAO {
                     connection.close();
                 } catch (SQLException e) {}
             }   
-        }
-        return isUpdated;
+        }        
     }
 
     @Override
-    public boolean delete(Klant klant) throws SQLException {
-        String query = "Delete from klant where klant_ID = " + klant.getKlantID();
-        boolean isDeleted = false;
+    public void delete(Klant klant) throws SQLException {
+        String query = "Delete from klant where klant_ID = " + klant.getKlantID();        
         try {
-            connection = DriverManager.getConnection(dburl , user, password);
+        	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
-            isDeleted = true;
+            System.out.println("Klant gegevens zijn succesvol verwijderd");
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
@@ -261,7 +253,6 @@ public class KlantDAOImpl implements KlantDAO {
                     connection.close();
                 } catch (SQLException e) {}
             }   
-        }
-        return isDeleted;
+        }        
     }
 }

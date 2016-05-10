@@ -8,7 +8,7 @@ public interface KlantDAO {
     public Klant findByID(int klantId) throws SQLException;
     public Klant findByName(String voornaam, String achternaam) throws SQLException;
     public Klant FindByName(String voornaam) throws SQLException;
-    public boolean create(Klant klant) throws SQLException;
-    public boolean update(Klant klant) throws SQLException;
-    public boolean delete(Klant klant) throws SQLException;   
+    public void create(Klant klant) throws SQLException;
+    public void update(Klant klant) throws SQLException;
+    public void delete(Klant klant) throws SQLException;   
 }
