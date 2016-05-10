@@ -1,6 +1,6 @@
-package nl.rsvier;
+package opdracht2;
 
-import nl.rsvier.ArtikelPOJO;
+import opdracht2.ArtikelPOJO;
 import java.sql.*;
 /*
  * To change this license header, choose License Headers in Project Properties.

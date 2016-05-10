@@ -1,4 +1,4 @@
-package nl.rsvier;
+package opdracht2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
