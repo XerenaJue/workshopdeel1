@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.rsvier;
+package opdracht2;
 
 /**
  *
@@ -16,7 +16,7 @@ public class Bestelling {
         return bestelling_id;
     }
     
-    public void setBestelling(int bestelling_id){
+    public void setBestellingID(int bestelling_id){
         this.bestelling_id = bestelling_id;
     }
     
