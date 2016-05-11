@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.GridPane;
@@ -27,7 +28,7 @@ public class MenuApp extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = new Pane();
+        Pane root = new StackPane();
         root.setPrefSize(800, 600);
         
         Image img;
