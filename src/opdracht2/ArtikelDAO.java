@@ -124,7 +124,7 @@ public class ArtikelDAO {
     }
   
     
-        public void updateArtikel(Bestelling bestelling, ArtikelPOJO artikel) {
+    public void updateArtikel(Bestelling bestelling, ArtikelPOJO artikel) {
         String query = "update bestelling "
                      + "set artikel_id = ?, artikel_naam = ?, artikel_prijs = ?"
                      + " where bestelling_id =" + bestelling.getBestelling(); 
