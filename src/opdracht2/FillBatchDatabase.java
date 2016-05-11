@@ -55,6 +55,9 @@ public class FillBatchDatabase {
             int[] count = statement.executeBatch();
             connection.commit();
             connection.setAutoCommit(true);
+            
+            addSomeBestellingen();
+            
         }
         catch (SQLException ex) {
             System.out.println("er gaat hier wat fout in batchschrijven");
@@ -71,7 +74,34 @@ public class FillBatchDatabase {
             }
         }
     
-    }   
+    } 
+    
+    public static void addSomeBestellingen() throws SQLException{
+        Connection connection = ConnectionFactory.getMySQLConnection();  
+        connection.setAutoCommit(false);
+    
+        Random rand = new Random();
+                     
+        String query = "Insert into bestelling(klant_id, artikel_id, artikel_naam, artikel_aantal, artikel_prijs )"
+                + " values (?, ?, ?, ?, ? )";
+                    
+        PreparedStatement statement = connection.prepareStatement(query);        
+            
+        for (int i = 1; i < 20; i++){
+            statement.setInt(1, i);
+            statement.setInt(2, 1 + rand.nextInt(8));
+            statement.setString(3, generateString(rand, ALFABET, 5 + rand.nextInt(5)));
+            statement.setInt(4, 1 + rand.nextInt(5));
+            statement.setInt(5, 1 + rand.nextInt(100));
+            statement.addBatch();
+        }
+    
+        int[] count = statement.executeBatch();
+        connection.commit();
+        connection.setAutoCommit(true);
+        connection.close();
+                    
+    }
     
     public static String generateEmail() {
         Random rand = new Random();

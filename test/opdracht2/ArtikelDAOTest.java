@@ -31,10 +31,13 @@ public class ArtikelDAOTest {
     
     @Before
     public void setUp() {
+        FillBatchDatabase.fillBatchDatabase();
     }
     
     @After
     public void tearDown() {
+        FillBatchDatabase.clearDatabase();
+                
     }
 
     /**
