@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.layout.GridPane;
@@ -28,7 +27,7 @@ public class MenuApp extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = new StackPane();
+        Pane root = new Pane();
         root.setPrefSize(800, 600);
         
         Image img;
@@ -66,7 +65,9 @@ public class MenuApp extends Application {
         grid.add(hbBtn, 1, 4);
 
         final Text actiontarget = new Text();
-        grid.add(actiontarget, 1, 6);     
+        grid.add(actiontarget, 1, 6); 
+        grid.setTranslateX(250);
+        grid.setTranslateY(200);
 
         hoofdmenu = new Menu();
         hoofdmenu.setVisible(false); //om te beginnen is menu niet zichtbaar
