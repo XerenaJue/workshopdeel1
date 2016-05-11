@@ -13,15 +13,15 @@ import java.sql.*;
  * @author jeroen
  */
 public class ArtikelDAO {
-    private ArtikelPOJO artikel;
+    
     private Connection connection;
     
-    public ArtikelDAO(ArtikelPOJO artikel){
-        this.artikel = artikel;
+    public ArtikelDAO(){
+        
      }
     
     public ArtikelPOJO readArtikel(int bestellingID) {
-              
+        ArtikelPOJO artikel = new ArtikelPOJO();      
         String query = "select artikel_id, artikel_naam, artikel_prijs "
                      + "from bestelling "
                      + "where bestelling_id = " + bestellingID; 
@@ -32,10 +32,10 @@ public class ArtikelDAO {
             ResultSet resultSet = stmt.executeQuery(); 
             
             if (resultSet.next()) {
-                
-                artikel.setArtikelID(Integer.parseInt(resultSet.getString(1)));
+               
+                artikel.setArtikelID(resultSet.getInt(1));
                 artikel.setArtikelNaam(resultSet.getString(2));
-                artikel.setArtikelPrijs(Integer.parseInt(resultSet.getString(3)));
+                artikel.setArtikelPrijs(resultSet.getInt(3));
             }
             
         }
@@ -53,22 +53,62 @@ public class ArtikelDAO {
                 }
             }
         }        
-        return this.artikel;
+        return artikel;
     }
     
-    public void updateArtikel(String artikelNaam, int bestellingID) {
-        String query = "update bestelling "
-                     + "set artikel_naam = ?"
-                     + "where bestelling_id = ? "; 
+    public ArtikelPOJO readArtikel(Bestelling bestelling) {
+            
+        ArtikelPOJO artikel = new ArtikelPOJO();      
+        String query = "select artikel_id, artikel_naam, artikel_prijs "
+                     + "from bestelling "
+                     + "where bestelling_id = " + bestelling.getBestelling(); 
+        
         try {
             connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, artikelNaam);
-            stmt.setInt(2 , bestellingID);
+            ResultSet resultSet = stmt.executeQuery(); 
+            
+            if (resultSet.next()) {
+                
+                artikel.setArtikelID(resultSet.getInt(1));
+                artikel.setArtikelNaam(resultSet.getString(2));
+                artikel.setArtikelPrijs(resultSet.getInt(3));
+            }
+            
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout" );
+            ex.printStackTrace();
+        }
+        finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } 
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }        
+        return artikel;
+    }
+    
+    
+    public void updateArtikel(Integer bestellingID, ArtikelPOJO artikel) {
+        String query = "update bestelling "
+                     + "set artikel_id = ?, artikel_naam = ?, artikel_prijs = ?"
+                     + " where bestelling_id =" + bestellingID; 
+       
+        try {
+            connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1 , artikel.getArtikelID());
+            stmt.setString(2, artikel.getArtikelNaam());
+            stmt.setInt(3 , artikel.getArtikelPrijs());
             stmt.executeUpdate();
         }
         catch (SQLException ex) {
-            System.out.println("er gaat hier wat fout int updateArtikel");
+            System.out.println("er gaat hier wat fout int updateArtikel enkel id");
             ex.printStackTrace();
         }
         finally {
@@ -82,11 +122,12 @@ public class ArtikelDAO {
             }
         }
     }
+  
     
-    public void updateArtikel(int bestellingID) {
+        public void updateArtikel(Bestelling bestelling, ArtikelPOJO artikel) {
         String query = "update bestelling "
                      + "set artikel_id = ?, artikel_naam = ?, artikel_prijs = ?"
-                     + " where bestelling_id =" + bestellingID; 
+                     + " where bestelling_id =" + bestelling.getBestelling(); 
        
         try {
             connection = ConnectionFactory.getMySQLConnection();
