@@ -1,5 +1,7 @@
 package opdracht2;
 
+import org.apache.commons.lang3.builder.*;
+
 public class Adres {
     
     private String straatnaam;
@@ -53,5 +55,23 @@ public class Adres {
     public String toString() {
     	return "Straatnaam: " + straatnaam + ", huisnummer: " + huisnummer + ", toevoeging: " 
     			+ toevoeging + ", postcode: " + postcode + ", woonplaats: " + woonplaats;
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(13, 45).append(straatnaam).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof Adres))
+            return false;
+        if (obj == this)
+            return true;
+
+        Adres nieuwAdres = (Adres) obj;
+        return new EqualsBuilder().
+            append(straatnaam, nieuwAdres.getStraatnaam()).
+            isEquals();
     }
 }
