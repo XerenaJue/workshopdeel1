@@ -12,7 +12,7 @@ public class KlantDAOImpl implements KlantDAO {
     public List<Klant> findAll() throws SQLException {
         List<Klant> klanten = new ArrayList<>();
         Klant klant;
-        String SQL_QUERY = "Select * from Klant";
+        String SQL_QUERY = "Select * from klant";
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(SQL_QUERY);
@@ -24,7 +24,7 @@ public class KlantDAOImpl implements KlantDAO {
                 klant.setKlantID(resultSet.getInt("klant_ID"));
                 klant.setVoornaam(resultSet.getString("voornaam"));
                 klant.setAchternaam(resultSet.getString("achternaam"));
-                klant.setTussenvoegsel("tussenvoegsel");
+                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
                 klant.setEmail(resultSet.getString("email"));
                 klanten.add(klant);
             } 
@@ -51,7 +51,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant findByID(int klantID) throws SQLException {
-        String query = "Select * from Klant where klant_ID = " + klantID;
+        String query = "Select * from klant where klant_id = " + klantID;
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -59,11 +59,13 @@ public class KlantDAOImpl implements KlantDAO {
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
             klant = new Klant();
-            klant.setKlantID(resultSet.getInt("klant_ID"));
-            klant.setVoornaam(resultSet.getString("voornaam"));
-            klant.setAchternaam(resultSet.getString("achternaam"));
-            klant.setTussenvoegsel("tussenvoegsel");
-            klant.setEmail(resultSet.getString("email"));
+            if (resultSet.next()) {                
+                klant.setKlantID(resultSet.getInt("klant_ID"));
+                klant.setVoornaam(resultSet.getString("voornaam"));
+                klant.setAchternaam(resultSet.getString("achternaam"));
+                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
+                klant.setEmail(resultSet.getString("email"));
+            }
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
@@ -87,7 +89,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant findByName(String voornaam, String achternaam) throws SQLException {
-        String query = "Select * from Klant where voornaam = " + voornaam + " and achternaam = " + achternaam;
+        String query = "Select * from klant where voornaam = '" + voornaam + "' and achternaam = '" + achternaam + "'";
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -95,11 +97,13 @@ public class KlantDAOImpl implements KlantDAO {
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
             klant = new Klant();
-            klant.setKlantID(resultSet.getInt("klant_ID"));
-            klant.setVoornaam(resultSet.getString("voornaam"));
-            klant.setAchternaam(resultSet.getString("achternaam"));
-            klant.setTussenvoegsel("tussenvoegsel");
-            klant.setEmail(resultSet.getString("email"));
+            if (resultSet.next()) {
+                klant.setKlantID(resultSet.getInt("klant_ID"));
+                klant.setVoornaam(resultSet.getString("voornaam"));
+                klant.setAchternaam(resultSet.getString("achternaam"));
+                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
+                klant.setEmail(resultSet.getString("email"));
+            }
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
@@ -123,7 +127,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant FindByName(String voornaam) throws SQLException {
-        String query = "Select * from Klant where voornaam = " + voornaam;
+        String query = "Select * from klant where voornaam = '" + voornaam + "'";
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -131,11 +135,13 @@ public class KlantDAOImpl implements KlantDAO {
             resultSet = statement.executeQuery();
             ///crieer klant en set de gegevens er in
             klant = new Klant();
-            klant.setKlantID(resultSet.getInt("klant_ID"));
-            klant.setVoornaam(resultSet.getString("voornaam"));
-            klant.setAchternaam(resultSet.getString("achternaam"));
-            klant.setTussenvoegsel("tussenvoegsel");
-            klant.setEmail(resultSet.getString("email"));
+            if (resultSet.next()) {
+                klant.setKlantID(resultSet.getInt("klant_ID"));
+                klant.setVoornaam(resultSet.getString("voornaam"));
+                klant.setAchternaam(resultSet.getString("achternaam"));
+                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
+                klant.setEmail(resultSet.getString("email"));
+            }
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
@@ -230,11 +236,11 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public void delete(Klant klant) throws SQLException {
-        String query = "Delete from klant where klant_ID = " + klant.getKlantID();        
+        String query = "Delete from klant where klant_id = " + klant.getKlantID();        
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();
+            statement.executeUpdate();
             System.out.println("Klant gegevens zijn succesvol verwijderd");
         } finally {
             // kijk of er verbinding is en zo ja sluit deze
