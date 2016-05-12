@@ -14,7 +14,7 @@ import java.sql.*;
  */
 public class ArtikelDAO {
     
-    private Connection connection;
+    
     
     public ArtikelDAO(){
         
@@ -26,33 +26,21 @@ public class ArtikelDAO {
                      + "from bestelling "
                      + "where bestelling_id = " + bestellingID; 
         
-        try {
-            connection = ConnectionFactory.getMySQLConnection();
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery(); 
-            
+            ResultSet resultSet = stmt.executeQuery();  ){
+                        
             if (resultSet.next()) {
                
                 artikel.setArtikelID(resultSet.getInt(1));
                 artikel.setArtikelNaam(resultSet.getString(2));
                 artikel.setArtikelPrijs(resultSet.getInt(3));
             }
-            
         }
         catch (SQLException ex) {
             System.out.println("gaat iets fout" );
             ex.printStackTrace();
         }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }        
         return artikel;
     }
     
@@ -63,10 +51,9 @@ public class ArtikelDAO {
                      + "from bestelling "
                      + "where bestelling_id = " + bestelling.getBestelling(); 
         
-        try {
-            connection = ConnectionFactory.getMySQLConnection();
+        try ( Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery(); 
+            ResultSet resultSet = stmt.executeQuery(); ) {
             
             if (resultSet.next()) {
                 
@@ -74,22 +61,11 @@ public class ArtikelDAO {
                 artikel.setArtikelNaam(resultSet.getString(2));
                 artikel.setArtikelPrijs(resultSet.getInt(3));
             }
-            
         }
         catch (SQLException ex) {
             System.out.println("gaat iets fout" );
             ex.printStackTrace();
         }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }        
         return artikel;
     }
     
@@ -99,9 +75,9 @@ public class ArtikelDAO {
                      + "set artikel_id = ?, artikel_naam = ?, artikel_prijs = ?"
                      + " where bestelling_id =" + bestellingID; 
        
-        try {
-            connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);){
+            
             stmt.setInt(1 , artikel.getArtikelID());
             stmt.setString(2, artikel.getArtikelNaam());
             stmt.setInt(3 , artikel.getArtikelPrijs());
@@ -111,27 +87,16 @@ public class ArtikelDAO {
             System.out.println("er gaat hier wat fout int updateArtikel enkel id");
             ex.printStackTrace();
         }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
-  
-    
+      
     public void updateArtikel(Bestelling bestelling, ArtikelPOJO artikel) {
         String query = "update bestelling "
                      + "set artikel_id = ?, artikel_naam = ?, artikel_prijs = ?"
                      + " where bestelling_id =" + bestelling.getBestelling(); 
        
-        try {
-            connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query); ) {
+            
             stmt.setInt(1 , artikel.getArtikelID());
             stmt.setString(2, artikel.getArtikelNaam());
             stmt.setInt(3 , artikel.getArtikelPrijs());
@@ -141,16 +106,5 @@ public class ArtikelDAO {
             System.out.println("er gaat hier wat fout int updateArtikel enkel id");
             ex.printStackTrace();
         }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
-  
 }

@@ -16,17 +16,28 @@ public class FillBatchDatabase {
     private final static String ALFABET = "abcdefghijklmnopqrstuvwxyz";
   
     public static void fillBatchDatabase()  {
-        Connection connection = ConnectionFactory.getMySQLConnection();  
+        
         try { 
-            connection.setAutoCommit(false);
+            addSomeRandomKlanten();
+            addSomeBestellingen();
+        }
+        catch (SQLException ex) {
+            System.out.println("er gaat hier wat fout in batchschrijven");
+            ex.printStackTrace();
+        }
+    } 
     
-            Random rand = new Random();
-                     
-            String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email, "
+    public static void addSomeRandomKlanten() throws SQLException{
+        String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email, "
                     + "straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
                     + " values (?, ? ,?, ?, ?, ?, ?, ?, ? )";
-            PreparedStatement statement = connection.prepareStatement(query);        
-            
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(query);) { 
+       
+            connection.setAutoCommit(false);
+            Random rand = new Random();
+                     
             for (int i = 0; i < 20; i++){
         
                 String voornaam = generateString(rand, ALFABET, 2 + rand.nextInt(10));
@@ -38,7 +49,7 @@ public class FillBatchDatabase {
                 String toevoeging = generateString(rand, "123456789abcdefgh", rand.nextInt(2)); 
                 int huisnummer = rand.nextInt(1000);
                 String woonplaats = generateString(rand, ALFABET, 2 + rand.nextInt(12)); 
-                        
+                       
                 statement.setString(1, voornaam);
                 statement.setString(2, achternaam);
                 statement.setString(3, tussenvoegsel);
@@ -51,56 +62,34 @@ public class FillBatchDatabase {
         
                 statement.addBatch();
             }
-    
             int[] count = statement.executeBatch();
             connection.commit();
             connection.setAutoCommit(true);
-            
-            addSomeBestellingen();
-            
         }
-        catch (SQLException ex) {
-            System.out.println("er gaat hier wat fout in batchschrijven");
-            ex.printStackTrace();
-        }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    
-    } 
+    }
     
     public static void addSomeBestellingen() throws SQLException{
-        Connection connection = ConnectionFactory.getMySQLConnection();  
-        connection.setAutoCommit(false);
-    
-        Random rand = new Random();
-                     
         String query = "Insert into bestelling(klant_id, artikel_id, artikel_naam, artikel_aantal, artikel_prijs )"
                 + " values (?, ?, ?, ?, ? )";
-                    
-        PreparedStatement statement = connection.prepareStatement(query);        
-            
-        for (int i = 1; i < 20; i++){
-            statement.setInt(1, i);
-            statement.setInt(2, 1 + rand.nextInt(8));
-            statement.setString(3, generateString(rand, ALFABET, 5 + rand.nextInt(5)));
-            statement.setInt(4, 1 + rand.nextInt(5));
-            statement.setInt(5, 1 + rand.nextInt(100));
-            statement.addBatch();
-        }
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection(); 
+                PreparedStatement statement = connection.prepareStatement(query); ) {  
+        
+            connection.setAutoCommit(false);
+            Random rand = new Random();
     
-        int[] count = statement.executeBatch();
-        connection.commit();
-        connection.setAutoCommit(true);
-        connection.close();
-                    
+            for (int i = 1; i < 20; i++){
+                statement.setInt(1, i);
+                statement.setInt(2, 1 + rand.nextInt(8));
+                statement.setString(3, generateString(rand, ALFABET, 5 + rand.nextInt(5)));
+                statement.setInt(4, 1 + rand.nextInt(5));
+                statement.setInt(5, 1 + rand.nextInt(100));
+                statement.addBatch();
+            }
+            int[] count = statement.executeBatch();
+            connection.commit();
+            connection.setAutoCommit(true);
+        }            
     }
     
     public static String generateEmail() {
@@ -121,7 +110,6 @@ public class FillBatchDatabase {
         return postcode; 
     }
     
-    
     public static String generateString(Random rng, String characters, int length) {
         char[] text = new char[length];
         for (int i = 0; i < length; i++)  {
@@ -131,8 +119,7 @@ public class FillBatchDatabase {
     }
    
     public static void clearDatabase() {
-       Connection connection = ConnectionFactory.getMySQLConnection();   
-       try { 
+        try (Connection connection = ConnectionFactory.getMySQLConnection();){ 
             
             String query = "delete from bestelling";
             PreparedStatement statement = connection.prepareStatement(query);        
@@ -155,18 +142,7 @@ public class FillBatchDatabase {
             System.out.println("er gaat hier wat fout in batchschrijven");
             ex.printStackTrace();
         }
-        finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } 
-                catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
-    
 }
     
 
