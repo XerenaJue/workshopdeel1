@@ -46,15 +46,16 @@ public class ArtikelDAOTest {
     @Test
     public void testReadArtikel_int() {
         System.out.println("readArtikel");
-        int bestellingID = 2;
+        int bestellingID = 1;
         ArtikelDAO instance = new ArtikelDAO();
-                       
+        ArtikelPOJO expResult = instance.readArtikel(bestellingID);
+        System.out.println("eerste lezing: " + expResult);
+                               
         ArtikelPOJO result = instance.readArtikel(bestellingID);
-        assert  result instanceof Object;
-        assert result != null;
-        
-        // TODO review the generated test code and remove the default call to fail.
-       
+        System.out.println("tweede lezing: " + result);
+                
+        assertEquals(expResult, result);
+              
     }
 
     /**
@@ -63,13 +64,18 @@ public class ArtikelDAOTest {
     @Test
     public void testReadArtikel_Bestelling() {
         System.out.println("readArtikel");
-        Bestelling bestelling = new Bestelling();
-        ArtikelDAO instance = new ArtikelDAO();
-        ArtikelPOJO expResult =  new ArtikelPOJO();
-        ArtikelPOJO result = instance.readArtikel(bestelling);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
         
+        ArtikelDAO instance = new ArtikelDAO();
+        Bestelling bestelling1 = new Bestelling();
+        Bestelling bestelling2 = new Bestelling();
+        
+        ArtikelPOJO expResult = instance.readArtikel(bestelling1);
+        System.out.println("eerste lezing: " + expResult);
+                               
+        ArtikelPOJO result = instance.readArtikel(bestelling2);
+        System.out.println("tweede lezing: " + result);
+                
+        assertEquals(expResult, result);
     }
 
     /**
@@ -78,12 +84,20 @@ public class ArtikelDAOTest {
     @Test
     public void testUpdateArtikel_Integer_ArtikelPOJO() {
         System.out.println("updateArtikel");
-        Integer bestellingID = null;
-        ArtikelPOJO artikel = null;
-        ArtikelDAO instance = new ArtikelDAO();
-        instance.updateArtikel(bestellingID, artikel);
-        // TODO review the generated test code and remove the default call to fail.
+        Integer bestellingID = 1;
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        expResult.setArtikelID(1);
+        expResult.setArtikelNaam("naampje");
+        expResult.setArtikelPrijs(77);
         
+        ArtikelDAO instance = new ArtikelDAO();
+        instance.updateArtikel(bestellingID, expResult);
+        
+        ArtikelPOJO result = instance.readArtikel(bestellingID);
+        
+        assertEquals(expResult, result);
+        assertEquals(1, (long)result.getArtikelID());
+                
     }
 
     /**
@@ -92,12 +106,22 @@ public class ArtikelDAOTest {
     @Test
     public void testUpdateArtikel_Bestelling_ArtikelPOJO() {
         System.out.println("updateArtikel");
-        Bestelling bestelling = null;
-        ArtikelPOJO artikel = null;
+        Bestelling bestelling = new Bestelling();
+        bestelling.setBestellingID(2);
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        expResult.setArtikelID(1);
+        expResult.setArtikelNaam("NAAM");
+        expResult.setArtikelPrijs(88);
+        
         ArtikelDAO instance = new ArtikelDAO();
-        instance.updateArtikel(bestelling, artikel);
-        // TODO review the generated test code and remove the default call to fail.
-       
+        instance.updateArtikel(2, expResult);
+        
+        ArtikelPOJO result = instance.readArtikel(2);
+        
+        assertEquals(expResult, result);
+        assertEquals(1, (long)result.getArtikelID());
+                
     }
-    
+       
+       
 }

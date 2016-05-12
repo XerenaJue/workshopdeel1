@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package opdracht2;
+import org.apache.commons.lang3.builder.*;
 
 /**
  *
@@ -51,5 +52,26 @@ public class ArtikelPOJO {
                 + ", prijs: " + artikelPrijs; 
     }
 
+            
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(11, 29).append(artikelID).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof ArtikelPOJO))
+            return false;
+        if (obj == this)
+            return true;
+
+        ArtikelPOJO anderArtikel = (ArtikelPOJO) obj;
+        return new EqualsBuilder().
+            append(artikelID, anderArtikel.getArtikelID()).
+            isEquals();
+    }
+        
+    
+    
 }
 
