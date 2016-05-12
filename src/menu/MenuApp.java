@@ -70,7 +70,9 @@ public class MenuApp extends Application {
         Scene scene = new Scene(root);
         
         btn.setOnAction(event -> {
-        	Menu.display();        
+        	primaryStage.close();
+        	Menu.display();
+        	primaryStage.show();
         });
         primaryStage.setScene(scene);
         primaryStage.setTitle("Menu");

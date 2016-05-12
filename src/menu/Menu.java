@@ -94,50 +94,57 @@ public class Menu extends Parent {
             System.exit(0);
         });
         
-        MenuButton btnTerug = new MenuButton("Terug");
-        btnTerug.setOnMouseClicked(event -> {
-            layout.getChildren().add(menu0);
-            if (menu1.getTranslateX() == OFFSET) {//als submenu 2 actief is
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu2);
-                tt.setToX(menu2.getTranslateX() + OFFSET);
-
-                TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu0);
-                tt2.setToX(menu2.getTranslateX());
-                
-                tt.play();
-                tt2.play();
-
-                tt.setOnFinished(event2 -> {
-                    layout.getChildren().remove(menu2);
-                });
-            } else {//als submenu 1 actief is
-                TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu1);
-                tt.setToX(menu1.getTranslateX() + OFFSET);
-
-                TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu0);
-                tt2.setToX(menu1.getTranslateX());
-                
-                tt.play();
-                tt2.play();
-
-                tt.setOnFinished(event2 -> {
-                    layout.getChildren().remove(menu1);
-                });
-            }            
-        });
+ //------------------------------------CRUD handelingen sub-menu-----------------------------------------//
+        
         MenuButton btnCrieer = new MenuButton("Crieer");
         MenuButton btnUpdate = new MenuButton("Update");
         MenuButton btnZoek = new MenuButton("Zoek");
         MenuButton btnVerwijder = new MenuButton("Verwijder");
         
+        MenuButton btnTerug = new MenuButton("Terug");
+        btnTerug.setOnMouseClicked(event -> { //zet hoofdmenu weer op plek van submenu
+            layout.getChildren().add(menu0);
+            TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu1);
+            tt.setToX(menu1.getTranslateX() + OFFSET);
+
+            TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu0);
+            tt2.setToX(menu1.getTranslateX());
+
+            tt.play();
+            tt2.play();
+
+            tt.setOnFinished(event2 -> {
+                layout.getChildren().remove(menu1);
+            });
+        });
+        
+//----------------------------------Klasse selectie sub-menu--------------------------------------------//        
+        
         MenuButton btnKlant = new MenuButton("Klant");
         MenuButton btnAdres = new MenuButton("Adres");
         MenuButton btnBestelling = new MenuButton("Bestelling");
         MenuButton btnArtikel = new MenuButton("Artikel");
+        
+        MenuButton btnTerug2 = new MenuButton("Terug");
+        btnTerug2.setOnMouseClicked(event -> { //zet hoofdmenu weer op plek van submenu
+            layout.getChildren().add(menu0);
+            TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu2);
+            tt.setToX(menu2.getTranslateX() + OFFSET);
+
+            TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu0);
+            tt2.setToX(menu2.getTranslateX());
+
+            tt.play();
+            tt2.play();
+
+            tt.setOnFinished(event2 -> {
+                layout.getChildren().remove(menu2);
+            });
+        });
 
         menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnUitloggen, btnStop);
         menu1.getChildren().addAll(btnCrieer, btnUpdate, btnZoek, btnVerwijder, btnTerug);
-        menu2.getChildren().addAll(btnKlant, btnAdres, btnBestelling, btnArtikel, btnTerug);
+        menu2.getChildren().addAll(btnKlant, btnAdres, btnBestelling, btnArtikel, btnTerug2);
 
         //achtergrond van het menu
         Rectangle bg = new Rectangle(300, 250);
