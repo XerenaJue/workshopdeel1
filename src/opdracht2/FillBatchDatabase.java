@@ -14,12 +14,16 @@ import java.util.*;
 public class FillBatchDatabase {
   
     private final static String ALFABET = "abcdefghijklmnopqrstuvwxyz";
-  
+    private final static int RANDOMBASE = 10;
+    
     public static void fillBatchDatabase()  {
+         fillBatchDatabase(20);   
+    } 
+    public static void fillBatchDatabase(int aantal)  {
         
         try { 
-            addSomeRandomKlanten();
-            addSomeBestellingen();
+            addSomeRandomKlanten(aantal);
+            addSomeBestellingen((int)(aantal * 0.9));
         }
         catch (SQLException ex) {
             System.out.println("er gaat hier wat fout in batchschrijven");
@@ -27,7 +31,7 @@ public class FillBatchDatabase {
         }
     } 
     
-    public static void addSomeRandomKlanten() throws SQLException{
+    public static void addSomeRandomKlanten(int aantal) throws SQLException{
         String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email, "
                     + "straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
                     + " values (?, ? ,?, ?, ?, ?, ?, ?, ? )";
@@ -36,9 +40,9 @@ public class FillBatchDatabase {
                 PreparedStatement statement = connection.prepareStatement(query);) { 
        
             connection.setAutoCommit(false);
-            Random rand = new Random();
+            Random rand = new Random(RANDOMBASE);
                      
-            for (int i = 0; i < 20; i++){
+            for (int i = 0; i < aantal; i++){
         
                 String voornaam = generateString(rand, ALFABET, 2 + rand.nextInt(10));
                 String achternaam = generateString(rand, ALFABET, 2 +  rand.nextInt(10));
@@ -68,7 +72,7 @@ public class FillBatchDatabase {
         }
     }
     
-    public static void addSomeBestellingen() throws SQLException{
+    public static void addSomeBestellingen(int aantal) throws SQLException{
         String query = "Insert into bestelling(klant_id, artikel_id, artikel_naam, artikel_aantal, artikel_prijs )"
                 + " values (?, ?, ?, ?, ? )";
         
@@ -76,9 +80,9 @@ public class FillBatchDatabase {
                 PreparedStatement statement = connection.prepareStatement(query); ) {  
         
             connection.setAutoCommit(false);
-            Random rand = new Random();
+            Random rand = new Random(RANDOMBASE);
     
-            for (int i = 1; i < 20; i++){
+            for (int i = 1; i < aantal; i++){
                 statement.setInt(1, i);
                 statement.setInt(2, 1 + rand.nextInt(8));
                 statement.setString(3, generateString(rand, ALFABET, 5 + rand.nextInt(5)));
@@ -93,7 +97,7 @@ public class FillBatchDatabase {
     }
     
     public static String generateEmail() {
-        Random rand = new Random();
+        Random rand = new Random(RANDOMBASE);
         String emailHuis = generateString(rand, ALFABET, 3 + rand.nextInt(8));
         String emailPlaats = generateString(rand, ALFABET, 3 + rand.nextInt(8));
         String emailLand = generateString(rand, "nlcomorg", 2 + rand.nextInt(2));
@@ -102,7 +106,7 @@ public class FillBatchDatabase {
     }
     
     public static String generatePostcode() {
-        Random rand = new Random();
+        Random rand = new Random(RANDOMBASE);
         String postcode = "";
         postcode +=  1000 + rand.nextInt(9000);
         postcode += generateString(rand, ALFABET.toUpperCase(), 2);
