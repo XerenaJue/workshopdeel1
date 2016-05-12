@@ -1,15 +1,40 @@
 package menu;
 
-import javafx.animation.FadeTransition;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Menu extends Parent {
-    public Menu() {
+	static boolean terugNaarInlog;
+	
+    public static boolean display() {
+        Stage window = new Stage();
+        Pane layout = new Pane();
+        layout.setPrefSize(800, 600);
+        
+        Image img;        
+        try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
+            img = new Image(input);
+            ImageView imgView = new ImageView(img);
+            imgView.setFitHeight(600);
+            imgView.setFitWidth(800);
+            layout.getChildren().add(imgView);
+        } catch (IOException ex) {
+            System.out.println("Kan achtergrond plaatje niet vinden");
+        }
+    	
         VBox menu0 = new VBox(10);
         VBox menu1 = new VBox(10);
         VBox menu2 = new VBox(10);
@@ -27,7 +52,7 @@ public class Menu extends Parent {
 
         MenuButton btnCRUD = new MenuButton("CRUD-Handelingen");
         btnCRUD.setOnMouseClicked(event -> { //slide hoofdmenu naar links 
-            getChildren().add(menu1);
+            layout.getChildren().add(menu1);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
             tt.setToX(menu0.getTranslateX() - OFFSET);
             //zet submenu op plek van hoofdmenu
@@ -38,13 +63,13 @@ public class Menu extends Parent {
             tt2.play();
             //als hooofdmenu naar links is verschoven laat het niet meer zien
             tt.setOnFinished(event2 -> {
-                getChildren().remove(menu0);
+                layout.getChildren().remove(menu0);
             });
         });
 
         MenuButton btnKlasseSelect = new MenuButton("klasse selectie");
         btnKlasseSelect.setOnMouseClicked(event -> {
-            getChildren().add(menu2);
+            layout.getChildren().add(menu2);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
             tt.setToX(menu0.getTranslateX() - OFFSET);
             TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu2);
@@ -54,17 +79,14 @@ public class Menu extends Parent {
             tt2.play();
             
             tt.setOnFinished(event2 -> {
-                getChildren().remove(menu0);
+                layout.getChildren().remove(menu0);
             });
         });
 
         MenuButton btnUitloggen = new MenuButton("Uitloggen");
         btnUitloggen.setOnMouseClicked(event -> {
-            FadeTransition ft = new FadeTransition(Duration.seconds(0.5), this);
-            ft.setFromValue(1); //vanuit hier
-            ft.setToValue(0); // naar hier verschuiven
-            ft.setOnFinished(event2 -> this.setVisible(false));//niet meer weergeven            
-            ft.play();
+            terugNaarInlog = true;
+            window.close();
         });
 
         MenuButton btnStop = new MenuButton("Afsluiten");
@@ -74,7 +96,7 @@ public class Menu extends Parent {
         
         MenuButton btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
-            getChildren().add(menu0);
+            layout.getChildren().add(menu0);
             if (menu1.getTranslateX() == OFFSET) {//als submenu 2 actief is
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu2);
                 tt.setToX(menu2.getTranslateX() + OFFSET);
@@ -86,7 +108,7 @@ public class Menu extends Parent {
                 tt2.play();
 
                 tt.setOnFinished(event2 -> {
-                    getChildren().remove(menu2);
+                    layout.getChildren().remove(menu2);
                 });
             } else {//als submenu 1 actief is
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(0.25), menu1);
@@ -99,7 +121,7 @@ public class Menu extends Parent {
                 tt2.play();
 
                 tt.setOnFinished(event2 -> {
-                    getChildren().remove(menu1);
+                    layout.getChildren().remove(menu1);
                 });
             }            
         });
@@ -124,6 +146,10 @@ public class Menu extends Parent {
         bg.setFill(Color.GREENYELLOW);
         bg.setOpacity(0.1);
 
-        getChildren().addAll(bg, menu0);
+        layout.getChildren().addAll(bg, menu0);
+        Scene scene = new Scene(layout);
+        window.setScene(scene);
+        window.showAndWait();
+        return terugNaarInlog;
     }   
 }

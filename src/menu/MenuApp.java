@@ -3,7 +3,6 @@ package menu;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,20 +13,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class MenuApp extends Application {
-    private Menu hoofdmenu;
+public class MenuApp extends Application {    
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = new Pane();
+        Pane root = new StackPane();
         root.setPrefSize(800, 600);
         
         Image img;
@@ -66,24 +64,13 @@ public class MenuApp extends Application {
 
         final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6); 
-        grid.setTranslateX(250);
-        grid.setTranslateY(200);
-
-        hoofdmenu = new Menu();
-        hoofdmenu.setVisible(false); //om te beginnen is menu niet zichtbaar
         
-        root.getChildren().addAll(imgView, grid, hoofdmenu);
+        root.getChildren().addAll(imgView, grid);
         
         Scene scene = new Scene(root);
         
-        btn.setOnAction(event -> {                
-                    FadeTransition ft = new FadeTransition(Duration.seconds(0.5), hoofdmenu);
-                    ft.setFromValue(0);
-                    ft.setToValue(1);
-                    hoofdmenu.setVisible(true);
-                    ft.play();
-                    root.getChildren().remove(grid);
-        
+        btn.setOnAction(event -> {
+        	Menu.display();        
         });
         primaryStage.setScene(scene);
         primaryStage.setTitle("Menu");
