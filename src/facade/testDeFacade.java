@@ -12,6 +12,7 @@ import opdracht2.*;
 public class testDeFacade {
     public static void main(String[] args)  throws Exception {
         FacadeDatabaseMenu facade = new FacadeDatabaseMenu();
+        FillBatchDatabase.clearDatabase();
         FillBatchDatabase.fillBatchDatabase();
         Object[] nepAppArray = facade.getToDisplay();
         Klant klant = new Klant(); 
