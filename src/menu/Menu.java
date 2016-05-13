@@ -121,6 +121,9 @@ public class Menu extends Parent {
 //----------------------------------Klasse selectie sub-menu--------------------------------------------//        
         
         MenuButton btnKlant = new MenuButton("Klant");
+        btnKlant.setOnMouseClicked(event -> {
+        	KlantTabel.display();        	
+        });
         MenuButton btnAdres = new MenuButton("Adres");
         MenuButton btnBestelling = new MenuButton("Bestelling");
         MenuButton btnArtikel = new MenuButton("Artikel");
