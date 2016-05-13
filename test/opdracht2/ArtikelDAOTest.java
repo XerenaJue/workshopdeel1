@@ -82,7 +82,7 @@ public class ArtikelDAOTest {
         assertEquals(expResult, result);
     
     }
-
+    
     /**
      * Test of readArtikel method, of class ArtikelDAO.
      */
@@ -109,7 +109,7 @@ public class ArtikelDAOTest {
             }
         }
         catch (SQLException ex) {
-            System.out.println("gaat iets fout in testReadArtikel" );
+            System.out.println("gaat iets fout in testReadArtikel 2" );
             ex.printStackTrace();
         }
                 
@@ -123,6 +123,168 @@ public class ArtikelDAOTest {
                 
         assertEquals(expResult, result);
     }
+    
+        /**
+     * Test of readArtikel2 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testReadArtikel2_int() {
+        System.out.println("readArtikel mbv bestellingid");
+                   
+        int bestellingID = 1;
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        
+        String query = "select artikel2_id, artikel2_naam, artikel2_prijs "
+                     + "from bestelling "
+                     + "where bestelling_id = " + bestellingID; 
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                        
+            if (resultSet.next()) {
+               
+                expResult.setArtikelID(resultSet.getInt(1));
+                expResult.setArtikelNaam(resultSet.getString(2));
+                expResult.setArtikelPrijs(resultSet.getInt(3));
+                System.out.println("eerste lezing: " + expResult);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in testReadArtikel2" );
+            ex.printStackTrace();
+        }
+        
+        ArtikelDAO instance = new ArtikelDAO();
+        ArtikelPOJO result = instance.readArtikel2(bestellingID);
+        System.out.println("tweede lezing: " + result);
+                
+        assertEquals(expResult, result);
+    
+    }
+    
+    
+    /**
+     * Test of readArtikel2 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testReadArtikel2_Bestelling() {
+        System.out.println("readArtikel2 mbv bestelling-object");
+        int bestellingID = 7;
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        
+        String query = "select artikel2_id, artikel2_naam, artikel2_prijs "
+                     + "from bestelling "
+                     + "where bestelling_id = " + bestellingID; 
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                        
+            if (resultSet.next()) {
+               
+                expResult.setArtikelID(resultSet.getInt(1));
+                expResult.setArtikelNaam(resultSet.getString(2));
+                expResult.setArtikelPrijs(resultSet.getInt(3));
+                System.out.println("eerste lezing: " + expResult);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in testReadArtikel 2" );
+            ex.printStackTrace();
+        }
+                
+        ArtikelDAO instance = new ArtikelDAO();
+        System.out.println("gaat nu Bestelling-object aanmaken " );
+        Bestelling bestelling = new Bestelling();
+        bestelling.setBestellingID(bestellingID);
+              
+        ArtikelPOJO result = instance.readArtikel2(bestelling);
+        System.out.println("tweede lezing  mbv bestelling: " + result);
+                
+        assertEquals(expResult, result);
+    }
+        /**
+     * Test of readArtikel3 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testReadArtikel3_int() {
+        System.out.println("readArtikel3 mbv bestellingid");
+                   
+        int bestellingID = 1;
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        
+        String query = "select artikel3_id, artikel3_naam, artikel3_prijs "
+                     + "from bestelling "
+                     + "where bestelling_id = " + bestellingID; 
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                        
+            if (resultSet.next()) {
+               
+                expResult.setArtikelID(resultSet.getInt(1));
+                expResult.setArtikelNaam(resultSet.getString(2));
+                expResult.setArtikelPrijs(resultSet.getInt(3));
+                System.out.println("eerste lezing: " + expResult);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in testReadArtikel3" );
+            ex.printStackTrace();
+        }
+        
+        ArtikelDAO instance = new ArtikelDAO();
+        ArtikelPOJO result = instance.readArtikel3(bestellingID);
+        System.out.println("tweede lezing: " + result);
+                
+        assertEquals(expResult, result);
+    
+    }
+        /**
+     * Test of readArtikel3 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testReadArtikel3_Bestelling() {
+        System.out.println("readArtikel3 mbv bestelling-object");
+        int bestellingID = 7;
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        
+        String query = "select artikel3_id, artikel3_naam, artikel3_prijs "
+                     + "from bestelling "
+                     + "where bestelling_id = " + bestellingID; 
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                        
+            if (resultSet.next()) {
+               
+                expResult.setArtikelID(resultSet.getInt(1));
+                expResult.setArtikelNaam(resultSet.getString(2));
+                expResult.setArtikelPrijs(resultSet.getInt(3));
+                System.out.println("eerste lezing: " + expResult);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in testReadArtikel 3" );
+            ex.printStackTrace();
+        }
+                
+        ArtikelDAO instance = new ArtikelDAO();
+        System.out.println("gaat nu Bestelling-object aanmaken " );
+        Bestelling bestelling = new Bestelling();
+        bestelling.setBestellingID(bestellingID);
+              
+        ArtikelPOJO result = instance.readArtikel3(bestelling);
+        System.out.println("tweede lezing  mbv bestelling: " + result);
+                
+        assertEquals(expResult, result);
+    }
+    
+    
+    
 
     /**
      * Test of updateArtikel method, of class ArtikelDAO.
@@ -167,7 +329,7 @@ public class ArtikelDAOTest {
         expResult.setArtikelPrijs(88);
         
         ArtikelDAO instance = new ArtikelDAO();
-        instance.updateArtikel(bestellingID, expResult);
+        instance.updateArtikel(bestelling, expResult);
         System.out.println(" geupdate en gaat nu result uitlezen mbv readArtikel(integer bestellingID) ");
         ArtikelPOJO result = instance.readArtikel(bestellingID);
         System.out.println("resultaat " + result +  " uitgelezen gaat nu vergelijken met expected" );
@@ -176,6 +338,58 @@ public class ArtikelDAOTest {
         assertEquals(artikelID, (long)result.getArtikelID());
                 
     }
-       
-       
+     /**
+     * Test of updateArtikel2 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testUpdateArtikel2_Bestelling_ArtikelPOJO() {
+        System.out.println("updateArtikel2 mbv bestelling-object");
+        Integer bestellingID = 2;
+        int artikelID = 9;
+        
+        Bestelling bestelling = new Bestelling();
+        bestelling.setBestellingID(bestellingID);
+        
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        expResult.setArtikelID(artikelID);
+        expResult.setArtikelNaam("NAAM");
+        expResult.setArtikelPrijs(88);
+        
+        ArtikelDAO instance = new ArtikelDAO();
+        instance.updateArtikel2(bestelling, expResult);
+        System.out.println(" geupdate en gaat nu result uitlezen mbv readArtikel(integer bestellingID) ");
+        ArtikelPOJO result = instance.readArtikel2(bestellingID);
+        System.out.println("resultaat " + result +  " uitgelezen gaat nu vergelijken met expected" );
+        
+        assertEquals(expResult, result);
+        assertEquals(artikelID, (long)result.getArtikelID());
+                
+    }   
+    /**
+     * Test of updateArtikel3 method, of class ArtikelDAO.
+     */
+    @Test
+    public void testUpdateArtikel3_Bestelling_ArtikelPOJO() {
+        System.out.println("updateArtikel3 mbv bestelling-object");
+        Integer bestellingID = 2;
+        int artikelID = 9;
+        
+        Bestelling bestelling = new Bestelling();
+        bestelling.setBestellingID(bestellingID);
+        
+        ArtikelPOJO expResult = new ArtikelPOJO();
+        expResult.setArtikelID(artikelID);
+        expResult.setArtikelNaam("NAAM");
+        expResult.setArtikelPrijs(88);
+        
+        ArtikelDAO instance = new ArtikelDAO();
+        instance.updateArtikel3(bestelling, expResult);
+        System.out.println(" geupdate en gaat nu result uitlezen mbv readArtikel(integer bestellingID) ");
+        ArtikelPOJO result = instance.readArtikel3(bestellingID);
+        System.out.println("resultaat " + result +  " uitgelezen gaat nu vergelijken met expected" );
+        
+        assertEquals(expResult, result);
+        assertEquals(artikelID, (long)result.getArtikelID());
+                
+    }      
 }
