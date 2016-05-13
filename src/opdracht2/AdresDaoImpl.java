@@ -12,56 +12,31 @@ public class AdresDaoImpl implements AdresDao {
 			throws SQLException {
 		Klant klant;
 		Adres adres;
-		
+
 		String query = "SELECT * FROM klant WHERE straatnaam = '" + straatnaam + "' AND postcode = '" + postcode
 				+ "' AND huisnummer = " + huisnummer + " AND toevoeging = '" + toevoeging + "' AND woonplaats = '"
 				+ woonplaats + "'";
 
-		try {
-			Connection connection = ConnectionFactory.getMySQLConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			ResultSet resultSet = preparedStatement.executeQuery();
+		try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
 
 			adres = new Adres();
 			klant = new Klant();
-			
-			if (resultSet.next()) {
-			klant.setKlantID(resultSet.getInt("klant_ID"));
-			klant.setVoornaam(resultSet.getString("voornaam"));
-			klant.setAchternaam(resultSet.getString("achternaam"));
-			klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
-			klant.setEmail(resultSet.getString("email"));
-			adres.setStraatnaam(resultSet.getString("straatnaam"));
-			adres.setPostcode(resultSet.getString("postcode"));
-			adres.setHuisnummer(resultSet.getInt("huisnummer"));
-			adres.setToevoeging(resultSet.getString("toevoeging"));
-			adres.setWoonplaats(resultSet.getString("woonplaats"));
-			}
-			System.out.println(klant);
-			System.out.println(adres);
 
-		}finally {
-			// kijk of er verbinding is en zo ja sluit deze
-			if (resultSet != null) {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (preparedStatement != null) {
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-				}
+			if (resultSet.next()) {
+				klant.setKlantID(resultSet.getInt("klant_ID"));
+				klant.setVoornaam(resultSet.getString("voornaam"));
+				klant.setAchternaam(resultSet.getString("achternaam"));
+				klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
+				klant.setEmail(resultSet.getString("email"));
+				adres.setStraatnaam(resultSet.getString("straatnaam"));
+				adres.setPostcode(resultSet.getString("postcode"));
+				adres.setHuisnummer(resultSet.getInt("huisnummer"));
+				adres.setToevoeging(resultSet.getString("toevoeging"));
+				adres.setWoonplaats(resultSet.getString("woonplaats"));
 			}
 		}
-
 		return adres;
 	}
 
@@ -71,10 +46,9 @@ public class AdresDaoImpl implements AdresDao {
 		Adres adres;
 
 		String query = "SELECT * FROM klant WHERE straatnaam = '" + straatnaam + "'";
-		try {
-			connection = ConnectionFactory.getMySQLConnection();
-			preparedStatement = connection.prepareStatement(query);
-			resultSet = preparedStatement.executeQuery();
+		try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
 
 			klant = new Klant();
 			adres = new Adres();
@@ -90,29 +64,6 @@ public class AdresDaoImpl implements AdresDao {
 				adres.setToevoeging(resultSet.getString("toevoeging"));
 				adres.setWoonplaats(resultSet.getString("woonplaats"));
 
-			}
-			System.out.println(klant);
-			System.out.println(adres);
-
-		} finally {
-			// kijk of er verbinding is en zo ja sluit deze
-			if (resultSet != null) {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (preparedStatement != null) {
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-				}
 			}
 		}
 		return adres;
@@ -149,10 +100,9 @@ public class AdresDaoImpl implements AdresDao {
 
 		String query = "SELECT * FROM klant WHERE postcode = '" + postcode + "' AND huisnummer = '" + huisnummer + "'";
 
-		try {
-			Connection connection = ConnectionFactory.getMySQLConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			ResultSet resultSet = preparedStatement.executeQuery();
+		try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
 
 			adres = new Adres();
 			klant = new Klant();
@@ -169,29 +119,6 @@ public class AdresDaoImpl implements AdresDao {
 				adres.setToevoeging(resultSet.getString("toevoeging"));
 				adres.setWoonplaats(resultSet.getString("woonplaats"));
 			}
-			System.out.println(klant);
-			System.out.println(adres);
-
-		} finally {
-			// kijk of er verbinding is en zo ja sluit deze
-			if (resultSet != null) {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (preparedStatement != null) {
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-				}
-			}
 		}
 		return adres;
 	}
@@ -203,10 +130,9 @@ public class AdresDaoImpl implements AdresDao {
 		String query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats "
 				+ "FROM klant WHERE klant_id = " + klant.getKlantID();
 
-		try {
-			connection = ConnectionFactory.getMySQLConnection();
-			preparedStatement = connection.prepareStatement(query);
-			resultSet = preparedStatement.executeQuery();
+		try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
 
 			adres = new Adres();
 
@@ -216,28 +142,6 @@ public class AdresDaoImpl implements AdresDao {
 				adres.setHuisnummer(resultSet.getInt("huisnummer"));
 				adres.setToevoeging(resultSet.getString("toevoeging"));
 				adres.setWoonplaats(resultSet.getString("woonplaats"));
-			}
-
-			System.out.println(adres);
-		} finally {
-			// kijk of er verbinding is en zo ja sluit deze
-			if (resultSet != null) {
-				try {
-					resultSet.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (preparedStatement != null) {
-				try {
-					preparedStatement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-				}
 			}
 		}
 		return adres;

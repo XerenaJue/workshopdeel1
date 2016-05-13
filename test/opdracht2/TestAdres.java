@@ -49,17 +49,17 @@ public class TestAdres {
 	@Test
 	public void testFindAdres() throws SQLException {
 		Klant klant = new Klant();
-		klant.setVoornaam("Han");
+		klant.setVoornaam("Luke");
 		klant.setTussenvoegsel("");
-		klant.setAchternaam("Solo");
-		klant.setEmail("hansolo@hotmail.com");
-		klant.setKlantID(1);
+		klant.setAchternaam("Skywalker");
+		klant.setEmail("lskywalker@hotmail.com");
+		klant.setKlantID(2);
 		KlantDAOImpl instance = new KlantDAOImpl();
 		instance.create(klant);
 		Adres adres = new Adres();
-		adres.setStraatnaam("Corellia");
-		adres.setPostcode("2566GJ");
-		adres.setHuisnummer(22);
+		adres.setStraatnaam("Tatooine");
+		adres.setPostcode("5866LS");
+		adres.setHuisnummer(33);
 		adres.setToevoeging("");
 		adres.setWoonplaats("Galaxy Far Far Away");
 		AdresDaoImpl instanceAdres = new AdresDaoImpl();
