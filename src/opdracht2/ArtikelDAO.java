@@ -58,7 +58,7 @@ public class ArtikelDAO {
     
     private ArtikelPOJO readArtikel(int bestellingID, String artikelNrAlsString) {
         
-        if (artikelNrAlsString == "1") artikelNrAlsString = "";
+        if (artikelNrAlsString.equals("1")) artikelNrAlsString = "";
         
         ArtikelPOJO artikel = new ArtikelPOJO();      
         String query = String.format("select artikel%s_id, artikel%s_naam, artikel%s_prijs "
@@ -120,7 +120,7 @@ public class ArtikelDAO {
     
     private void updateArtikel(Integer bestellingID, ArtikelPOJO artikel, String artikelNrAlsString ) {
         
-        if (artikelNrAlsString == "1") artikelNrAlsString = "";
+        if (artikelNrAlsString.equals("1")) artikelNrAlsString = "";
         
         String query = String.format("update bestelling "
                      + "set artikel%s_id = ?, artikel_naam = ?, artikel_prijs = ?"
