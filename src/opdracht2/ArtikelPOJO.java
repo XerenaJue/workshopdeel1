@@ -12,8 +12,8 @@ import org.apache.commons.lang3.builder.*;
  */
 public class ArtikelPOJO {
     private String artikelNaam;
-    private Integer artikelID;
-    private Integer artikelPrijs;
+    private Integer artikelID = 0;
+    private Integer artikelPrijs = 0;
     
     public ArtikelPOJO() {}
     

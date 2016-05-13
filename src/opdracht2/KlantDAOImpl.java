@@ -7,7 +7,15 @@ public class KlantDAOImpl implements KlantDAO {
     Connection connection;
     ResultSet resultSet;
     PreparedStatement statement;
-
+    
+    @Override
+    public Klant findKlant(Klant bestaandeKlant) throws SQLException {
+        
+        int klantID = bestaandeKlant.getKlantID();
+        
+        return findByID(klantID);
+    }    
+    
     @Override
     public List<Klant> findAll() throws SQLException {
         List<Klant> klanten = new ArrayList<>();

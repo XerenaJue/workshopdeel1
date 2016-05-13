@@ -4,7 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface KlantDAO {
-	public List<Klant> findAll() throws SQLException;
+    public List<Klant> findAll() throws SQLException;
+    public Klant findKlant(Klant bestaandeKlant)throws SQLException;    
     public Klant findByID(int klantId) throws SQLException;
     public Klant findByName(String voornaam, String achternaam) throws SQLException;
     public Klant FindByName(String voornaam) throws SQLException;
