@@ -12,7 +12,7 @@ public class KlantDAOImpl implements KlantDAO {
     public List<Klant> findAll() throws SQLException {
         List<Klant> klanten = new ArrayList<>();
         Klant klant;
-        String SQL_QUERY = "Select * from klant";
+        String SQL_QUERY = "SELECT * FROM klant";
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(SQL_QUERY);
@@ -51,7 +51,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant findByID(int klantID) throws SQLException {
-        String query = "Select * from klant where klant_id = " + klantID;
+        String query = "SELECT * FROM klant WHERE klant_id = " + klantID;
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -89,7 +89,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant findByName(String voornaam, String achternaam) throws SQLException {
-        String query = "Select * from klant where voornaam = '" + voornaam + "' and achternaam = '" + achternaam + "'";
+        String query = "SELECT * FROM klant WHERE voornaam = '" + voornaam + "' AND achternaam = '" + achternaam + "'";
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -127,7 +127,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public Klant FindByName(String voornaam) throws SQLException {
-        String query = "Select * from klant where voornaam = '" + voornaam + "'";
+        String query = "SELECT * FROM klant WHERE voornaam = '" + voornaam + "'";
         Klant klant;
         try {
         	connection = ConnectionFactory.getMySQLConnection();
@@ -165,7 +165,7 @@ public class KlantDAOImpl implements KlantDAO {
     
     @Override
     public void create(Klant klant) throws SQLException {
-        String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email) values (?, ? ,?, ?)";
+        String query = "INSERT INTO klant(voornaam, achternaam, tussenvoegsel, email) VALUES (?, ? ,?, ?)";
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -203,7 +203,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public void update(Klant klant) throws SQLException {
-        String query = "update klant set voornaam = ?, set achternaam = ?, set tussenvoegsel = ?, email = ? where klant_ID = ?";
+        String query = "UPDATE klant SET voornaam = ?, achternaam = ?, tussenvoegsel = ?, email = ? WHERE klant_id = ?";
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
@@ -236,7 +236,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public void delete(Klant klant) throws SQLException {
-        String query = "Delete from klant where klant_id = " + klant.getKlantID();        
+        String query = "DELETE FROM klant WHERE klant_id = " + klant.getKlantID();        
         try {
         	connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);
