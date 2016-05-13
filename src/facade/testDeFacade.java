@@ -24,9 +24,9 @@ public class testDeFacade {
             System.out.println(o);
         }
         
-        zoekAdres.setPostcode("5113GL");
-        zoekAdres.setHuisnummer(267);
-        zoekAdres.setToevoeging("d");
+        zoekAdres.setPostcode("8890UN");
+        zoekAdres.setHuisnummer(945);
+        zoekAdres.setToevoeging("c");
         
         
         System.out.println("sherm bevat ingetypte waarden: ");

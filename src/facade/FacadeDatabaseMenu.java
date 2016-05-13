@@ -22,12 +22,15 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> bestellingen;
     private List<Klant> klanten;
     private Object[] toDisplay;
+    private List<ArtikelPOJO> artikelen;   
     
     public FacadeDatabaseMenu() {
         
-        toDisplay = new Object[2];
+        toDisplay = new Object[4];
         toDisplay[0] = new Klant();
         toDisplay[1] = new Adres();
+        toDisplay[2] = new Bestelling();
+        toDisplay[3] = artikelen;
            
     }
     
@@ -36,36 +39,42 @@ public class FacadeDatabaseMenu {
         return this.toDisplay;
     }
     
-    public void zoek(Object[] watNuOpScherm) throws SQLException {
-        
+    public void zoek(Object[] watNuOpScherm) throws SQLException , ClassNotFoundException{  //Cnotfoundeception is onnodig@bestelling
+                                                                                            
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
-        
+        Bestelling bestelling = (Bestelling)watNuOpScherm[2];
         if (bestaandeKlant.getKlantID() != 0) {
             adres = findAdres(bestaandeKlant);
+            bestaandeKlant = findKlant(bestaandeKlant);
         }
         else {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
         }
-           
+        bestelling = findBestelling(bestaandeKlant);
+        artikelen = findArtikelen(bestelling);
+        
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
+        toDisplay[2] = bestelling;
+        toDisplay[3] = artikelen;
+               
     }
     
     
-    public Adres findAdres(Klant bestaandeKlant) throws SQLException {
+    private Adres findAdres(Klant bestaandeKlant) throws SQLException {
         
         adresDAO = new AdresDaoImpl();
         Adres adres = adresDAO.findAdres(bestaandeKlant);
         toDisplay[1] = adres;
-                
+        
         return adres;
     }
     
     
     
-    public Klant findKlant(Klant bestaandeKlant) throws SQLException{   
+    private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
         
         klantDAO = new KlantDAOImpl();
         Klant ingelezenKlant = klantDAO.findKlant(bestaandeKlant);
@@ -74,12 +83,32 @@ public class FacadeDatabaseMenu {
         return ingelezenKlant;
     }
     
-     public Klant findKlant(Adres klantAdres) throws SQLException{   
-        
+     private Klant findKlant(Adres klantAdres) throws SQLException{   
+      
         klantDAO = new KlantDAOImpl();
         Klant ingelezenKlant = klantDAO.findKlant(klantAdres);
         toDisplay[0] = ingelezenKlant;
         
         return ingelezenKlant;
     }
+    private Bestelling findBestelling(Klant bestaandeKlant) throws SQLException, ClassNotFoundException {  
+        int klantID = bestaandeKlant.getKlantID();
+        bestellingDAO = new BestellingDAO();
+        Bestelling bestelling = bestellingDAO.readBestelling(klantID);          /* Deze methode werk nog niet in bestellingDAO!!
+        toDisplay[2] = bestelling;                                                dit asap fixen      
+                                                                                */    
+        return bestelling;
+    } 
+     
+   private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
+       artikelen = new ArrayList<>();
+       artikelDAO = new ArtikelDAO();
+       ArtikelPOJO artiekeltje = artikelDAO.readArtikel(bestelling); 
+       artikelen.add(artiekeltje);
+       toDisplay[3] = artikelen;
+       System.out.println("klantgID van bestelling : "+ bestelling.getKlant());
+       return artikelen;
+   }
+   
+
 }
