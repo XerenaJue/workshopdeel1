@@ -14,7 +14,29 @@ public class KlantDAOImpl implements KlantDAO {
         int klantID = bestaandeKlant.getKlantID();
         
         return findByID(klantID);
-    }    
+    } 
+    
+    @Override
+    public Klant findKlant(Adres klantAdres) throws SQLException {
+        Klant klant = new Klant();
+        String postcode = klantAdres.getPostcode();
+        int huisnr = klantAdres.getHuisnummer();
+        String toevoeging = klantAdres.getToevoeging();
+        String query = String.format("SELECT * FROM klant WHERE postcode =  %s"
+                    +  "AND huisnummer = %d AND toevoeging = %s", postcode, huisnr, toevoeging);
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
+
+            klant.setKlantID(resultSet.getInt("klant_ID"));
+            klant.setVoornaam(resultSet.getString("voornaam"));
+            klant.setAchternaam(resultSet.getString("achternaam"));
+            klant.setTussenvoegsel("tussenvoegsel");
+            klant.setEmail(resultSet.getString("email"));
+        }
+        return klant;
+    }
     
     @Override
     public List<Klant> findAll() throws SQLException {
