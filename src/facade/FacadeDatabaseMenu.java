@@ -43,14 +43,12 @@ public class FacadeDatabaseMenu {
         
         if (bestaandeKlant.getKlantID() != 0) {
             adres = findAdres(bestaandeKlant);
-             System.out.println("wat doe ik hier");
         }
         else {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
         }
-        
-    
+           
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
     }
