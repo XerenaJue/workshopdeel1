@@ -22,6 +22,7 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> bestellingen;
     private List<Klant> klanten;
     private Object[] toDisplay;
+    private Object[] fromDisplay;
     private List<ArtikelPOJO> artikelen;   
     
     public FacadeDatabaseMenu() {
@@ -40,7 +41,7 @@ public class FacadeDatabaseMenu {
     }
     
     public void zoek(Object[] watNuOpScherm) throws SQLException , ClassNotFoundException{  //Cnotfoundeception is onnodig@bestelling
-                                                                                            
+        fromDisplay = watNuOpScherm;                                                                                    
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
         Bestelling bestelling = (Bestelling)watNuOpScherm[2];
@@ -60,6 +61,22 @@ public class FacadeDatabaseMenu {
         toDisplay[2] = bestelling;
         toDisplay[3] = artikelen;
                
+    }
+    
+    public void createKlant(Klant klantNuOpScherm) throws SQLException {
+        Klant inTeVoerenKlant = klantNuOpScherm;
+        klantDAO = new KlantDAOImpl();
+        
+        Klant eventueelBestaandeKlant = findKlant(inTeVoerenKlant);
+        if (eventueelBestaandeKlant.getKlantID() == 0 ) {
+            klantDAO.create(inTeVoerenKlant);
+            System.out.println("klant gemaakt met ID " + inTeVoerenKlant);
+        }        
+        else {
+            System.out.println("Deze klant bestaat reeds: " + eventueelBestaandeKlant);
+        }
+        
+        
     }
     
     
@@ -94,9 +111,9 @@ public class FacadeDatabaseMenu {
     private Bestelling findBestelling(Klant bestaandeKlant) throws SQLException, ClassNotFoundException {  
         int klantID = bestaandeKlant.getKlantID();
         bestellingDAO = new BestellingDAO();
-        Bestelling bestelling = bestellingDAO.readBestelling(klantID);          /* Deze methode werk nog niet in bestellingDAO!!
-        toDisplay[2] = bestelling;                                                dit asap fixen      
-                                                                                */    
+        Bestelling bestelling = bestellingDAO.readBestelling(klantID);          // Deze methode werk nog niet in bestellingDAO!!
+        toDisplay[2] = bestelling;                                              //  dit asap fixen      
+                                                                                    
         return bestelling;
     } 
      
@@ -106,7 +123,7 @@ public class FacadeDatabaseMenu {
        ArtikelPOJO artiekeltje = artikelDAO.readArtikel(bestelling); 
        artikelen.add(artiekeltje);
        toDisplay[3] = artikelen;
-       System.out.println("klantgID van bestelling : "+ bestelling.getKlant());
+       System.out.println("klantID van bestelling in FacadeDatabaseMenu.findArtikele... : "+ bestelling.getKlant());
        return artikelen;
    }
    

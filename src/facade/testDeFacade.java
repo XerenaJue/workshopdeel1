@@ -43,6 +43,13 @@ public class testDeFacade {
         for (Object o : nepAppArray) {
             System.out.println(o);
         }
+        // probeer een nieuwe klant te maken:
+        Klant bestaandeKlant = (Klant)nepAppArray[0];
+        facade.createKlant(bestaandeKlant);
+        Klant nieuweKlant = new Klant();
+        nieuweKlant.setAchternaam("Vader");
+        nieuweKlant.setVoornaam("Darth");
+        facade.createKlant(nieuweKlant);
         
     }
 }
