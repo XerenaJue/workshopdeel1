@@ -205,14 +205,14 @@ public class KlantDAOImpl implements KlantDAO {
             statement.setString(2, klant.getAchternaam());
             statement.setString(3, klant.getTussenvoegsel());
             statement.setString(4, klant.getEmail());
-            
+            statement.executeUpdate(); 
             //wijs door database gegenereerde id toe aan klant
             resultSet = statement.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 klant.setKlantID(resultSet.getInt(1));
             }            
-            statement.executeUpdate(); 
+          //  statement.executeUpdate();   7 regels naar boven verplaatst mvg Jeroen
             System.out.println("Klant is succesvol aangemaakt");
         } finally {
             if (resultSet != null) {
