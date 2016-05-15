@@ -17,7 +17,7 @@ public class FacadeDatabaseMenu {
     
     private KlantDAO klantDAO;
     private AdresDao adresDAO;
-    private BestellingDAO bestellingDAO;
+    private DummyBestelDAO bestellingDAO;    // tijdelijke bestellingDAO
     private ArtikelDAO artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Klant> klanten;
@@ -109,10 +109,10 @@ public class FacadeDatabaseMenu {
         return ingelezenKlant;
     }
     private Bestelling findBestelling(Klant bestaandeKlant) throws SQLException, ClassNotFoundException {  
-        int klantID = bestaandeKlant.getKlantID();
-        bestellingDAO = new BestellingDAO();
-        Bestelling bestelling = bestellingDAO.readBestelling(klantID);          // Deze methode werk nog niet in bestellingDAO!!
-        toDisplay[2] = bestelling;                                              //  dit asap fixen      
+        
+        bestellingDAO = new DummyBestelDAO();
+        Bestelling bestelling = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
+        toDisplay[2] = bestelling;                                              //  dit asap fixen    nu Dummy gemaakt  
                                                                                     
         return bestelling;
     } 
@@ -120,8 +120,14 @@ public class FacadeDatabaseMenu {
    private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
        artikelen = new ArrayList<>();
        artikelDAO = new ArtikelDAO();
-       ArtikelPOJO artiekeltje = artikelDAO.readArtikel(bestelling); 
-       artikelen.add(artiekeltje);
+       
+       ArtikelPOJO artikel = artikelDAO.readArtikel(bestelling); 
+       artikelen.add(artikel);
+       ArtikelPOJO artikel2 = artikelDAO.readArtikel2(bestelling); 
+       artikelen.add(artikel2);
+       ArtikelPOJO artikel3 = artikelDAO.readArtikel3(bestelling); 
+       artikelen.add(artikel3);
+             
        toDisplay[3] = artikelen;
        System.out.println("klantID van bestelling in FacadeDatabaseMenu.findArtikele... : "+ bestelling.getKlant());
        return artikelen;
