@@ -15,10 +15,10 @@ import java.sql.*;
  */
 public class FacadeDatabaseMenu {
     
-    private KlantDAO klantDAO;
-    private AdresDao adresDAO;
-    private DummyBestelDAO bestellingDAO;    // tijdelijke bestellingDAO
-    private ArtikelDAO artikelDAO;
+    private final KlantDAO klantDAO;
+    private final AdresDao adresDAO;
+    private final DummyBestelDAO bestellingDAO;    // tijdelijke bestellingDAO
+    private final ArtikelDAO artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Klant> klanten;
     private Object[] toDisplay;
@@ -26,12 +26,17 @@ public class FacadeDatabaseMenu {
     private List<ArtikelPOJO> artikelen;   
     
     public FacadeDatabaseMenu() {
+        klantDAO = new KlantDAOImpl();
+        adresDAO = new AdresDaoImpl();
+        bestellingDAO = new DummyBestelDAO();
+        artikelDAO = new ArtikelDAO();
         
-        toDisplay = new Object[4];
+        toDisplay = new Object[5];
         toDisplay[0] = new Klant();
         toDisplay[1] = new Adres();
-        toDisplay[2] = new Bestelling();
+        toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
+        toDisplay[4] = klanten;
            
     }
     
@@ -40,11 +45,11 @@ public class FacadeDatabaseMenu {
         return this.toDisplay;
     }
     
-    public void zoek(Object[] watNuOpScherm) throws SQLException , ClassNotFoundException{  //Cnotfoundeception is onnodig@bestelling
+    public void zoek(Object[] watNuOpScherm) throws SQLException {  //Cnotfoundeception is onnodig@bestelling
         fromDisplay = watNuOpScherm;                                                                                    
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
-        Bestelling bestelling = (Bestelling)watNuOpScherm[2];
+        bestellingen = (List)watNuOpScherm[2];
         if (bestaandeKlant.getKlantID() != 0) {
             adres = findAdres(bestaandeKlant);
             bestaandeKlant = findKlant(bestaandeKlant);
@@ -53,21 +58,19 @@ public class FacadeDatabaseMenu {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
         }
-        bestelling = findBestelling(bestaandeKlant);
-        artikelen = findArtikelen(bestelling);
+        bestellingen = findBestellingen(bestaandeKlant);
+        artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
-        toDisplay[2] = bestelling;
+        toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
                
     }
     
-    public void createKlant(Klant klantNuOpScherm) throws SQLException {
+    public Klant createKlant(Klant klantNuOpScherm) throws SQLException {
         Klant inTeVoerenKlant = klantNuOpScherm;
-        klantDAO = new KlantDAOImpl();
-        
-        Klant eventueelBestaandeKlant = findKlant(inTeVoerenKlant);
+        Klant eventueelBestaandeKlant = findKlant(inTeVoerenKlant); 
         if (eventueelBestaandeKlant.getKlantID() == 0 ) {
             klantDAO.create(inTeVoerenKlant);
             System.out.println("klant gemaakt met ID " + inTeVoerenKlant);
@@ -75,52 +78,65 @@ public class FacadeDatabaseMenu {
         else {
             System.out.println("Deze klant bestaat reeds: " + eventueelBestaandeKlant);
         }
-        
+        Klant verseKlant = findKlant(inTeVoerenKlant); // zet m ook op toDisplay
+        zoek(toDisplay);  //update rest van toDisplay
+        return verseKlant;
+    }
+    
+    public void deleteKlant() throws SQLException {
+        deleteKlant((Klant)toDisplay[0]);
         
     }
     
+    private void deleteKlant(Klant overbodigeKlant) throws SQLException {
+        bestellingDAO.deleteBestellingen(overbodigeKlant);
+        klantDAO.delete(overbodigeKlant);
+        this.zoek(toDisplay); // update scherm
+    }
     
     private Adres findAdres(Klant bestaandeKlant) throws SQLException {
         
-        adresDAO = new AdresDaoImpl();
         Adres adres = adresDAO.findAdres(bestaandeKlant);
         toDisplay[1] = adres;
         
         return adres;
     }
-    
-    
-    
+        
     private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
         
-        klantDAO = new KlantDAOImpl();
         Klant ingelezenKlant = klantDAO.findKlant(bestaandeKlant);
         toDisplay[0] = ingelezenKlant;
         
         return ingelezenKlant;
     }
     
-     private Klant findKlant(Adres klantAdres) throws SQLException{   
+    public List<Klant> findKlanten() throws SQLException{
+        
+        klanten = klantDAO.findAll();
+        toDisplay[4] = klanten;
+        
+        return klanten;
+    }
+    
+    private Klant findKlant(Adres klantAdres) throws SQLException{   
       
-        klantDAO = new KlantDAOImpl();
         Klant ingelezenKlant = klantDAO.findKlant(klantAdres);
         toDisplay[0] = ingelezenKlant;
         
         return ingelezenKlant;
     }
-    private Bestelling findBestelling(Klant bestaandeKlant) throws SQLException, ClassNotFoundException {  
+     
+    private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
-        bestellingDAO = new DummyBestelDAO();
-        Bestelling bestelling = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
-        toDisplay[2] = bestelling;                                              //  dit asap fixen    nu Dummy gemaakt  
+        bestellingen = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
+        toDisplay[2] = bestellingen;                                              //  dit asap fixen    nu Dummy gemaakt  
                                                                                     
-        return bestelling;
+        return bestellingen;
     } 
      
-   private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
+    private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
        artikelen = new ArrayList<>();
-       artikelDAO = new ArtikelDAO();
-       
+              
        ArtikelPOJO artikel = artikelDAO.readArtikel(bestelling); 
        artikelen.add(artikel);
        ArtikelPOJO artikel2 = artikelDAO.readArtikel2(bestelling); 
@@ -129,7 +145,7 @@ public class FacadeDatabaseMenu {
        artikelen.add(artikel3);
              
        toDisplay[3] = artikelen;
-       System.out.println("klantID van bestelling in FacadeDatabaseMenu.findArtikele... : "+ bestelling.getKlant());
+     //  System.out.println("klantID van bestelling in FacadeDatabaseMenu.findArtikele... : "+ bestelling.getKlant());
        return artikelen;
    }
    

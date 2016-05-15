@@ -29,8 +29,8 @@ public class testDeFacade {
         zoekAdres.setHuisnummer(945);
         zoekAdres.setToevoeging("c");
         
-        
-        System.out.println("sherm bevat ingetypte waarden: ");
+       
+        System.out.println("\nsherm bevat ingetypte waarden: ");
         for (Object o : nepAppArray) {
             System.out.println(o);
         }
@@ -44,12 +44,39 @@ public class testDeFacade {
             System.out.println(o);
         }
         // probeer een nieuwe klant te maken:
+        System.out.println("\nprobeer een nieuwe klant te maken:");
+        
         Klant bestaandeKlant = (Klant)nepAppArray[0];
         facade.createKlant(bestaandeKlant);
         Klant nieuweKlant = new Klant();
         nieuweKlant.setAchternaam("Vader");
         nieuweKlant.setVoornaam("Darth");
         facade.createKlant(nieuweKlant);
+        
+        System.out.println();
+        facade.findKlanten();
+        nepAppArray = facade.getToDisplay();
+        System.out.println("sherm geeft nu ook alle klanten weer ");
+        
+        for (Object o : nepAppArray) {
+            System.out.println(o);
+        }
+        
+        System.out.println("-------------------------------------- \n");
+        Klant teVerwijderenKlant = new Klant();
+        teVerwijderenKlant.setKlantID(1);
+        nepAppArray[0] = teVerwijderenKlant;
+        facade.zoek(nepAppArray);
+        facade.deleteKlant();
+        facade.findKlanten();
+        nepAppArray = facade.getToDisplay();
+        System.out.println("de eerste klant is verwijderd ");
+        
+        for (Object o : nepAppArray) {
+            System.out.println(o);
+        }
+        
+        
         
     }
 }
