@@ -76,6 +76,9 @@ public class testDeFacade {
             System.out.println(o);
         }
         
+        Inputter workbench = new Inputter();
+        workbench.inputter();
+        
         
         
     }

@@ -45,7 +45,7 @@ public class FacadeDatabaseMenu {
         return this.toDisplay;
     }
     
-    public void zoek(Object[] watNuOpScherm) throws SQLException {  //Cnotfoundeception is onnodig@bestelling
+    public void zoek(Object[] watNuOpScherm) throws SQLException {  
         fromDisplay = watNuOpScherm;                                                                                    
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
@@ -85,7 +85,7 @@ public class FacadeDatabaseMenu {
     
     public void deleteKlant() throws SQLException {
         deleteKlant((Klant)toDisplay[0]);
-        
+    
     }
     
     private void deleteKlant(Klant overbodigeKlant) throws SQLException {
@@ -126,10 +126,19 @@ public class FacadeDatabaseMenu {
         return ingelezenKlant;
     }
      
+    public void updateKlant() throws SQLException {
+        updateKlant((Klant)toDisplay[0]);
+    }
+    
+    public void updateKlant(Klant bestaandeKlant) throws SQLException {
+        
+        klantDAO.update(bestaandeKlant);
+    }
+    
     private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
         bestellingen = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
-        toDisplay[2] = bestellingen;                                              //  dit asap fixen    nu Dummy gemaakt  
+    //    toDisplay[2] = bestellingen;                                              //  dit asap fixen    nu Dummy gemaakt  
                                                                                     
         return bestellingen;
     } 
@@ -144,8 +153,8 @@ public class FacadeDatabaseMenu {
        ArtikelPOJO artikel3 = artikelDAO.readArtikel3(bestelling); 
        artikelen.add(artikel3);
              
-       toDisplay[3] = artikelen;
-     //  System.out.println("klantID van bestelling in FacadeDatabaseMenu.findArtikele... : "+ bestelling.getKlant());
+     //  toDisplay[3] = artikelen;
+     
        return artikelen;
    }
    

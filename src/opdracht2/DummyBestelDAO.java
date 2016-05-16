@@ -14,34 +14,7 @@ import java.util.*;
  * @author jeroen
  */
 public class DummyBestelDAO {
-    
-/*   
-    public Bestelling readBestelling(Klant klant) {
-             
-        Bestelling bestelling = new Bestelling();      
-        String query = "select * from bestelling where klant_id = " + klant.getKlantID();
-        
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery();  ){
-                       
-            if (resultSet.next()) {
-               
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_id"));
-               bestelling.setAantalArtikel1(resultSet.getInt("artikel_aantal"));
-               bestelling.setAantalArtikel2(resultSet.getInt("artikel2_aantal"));
-               bestelling.setAantalArtikel3(resultSet.getInt("artikel3_aantal"));  
-            }
-        }
-        catch (SQLException ex) {
-            System.out.println("gaat iets fout in readBestelling" );
-            ex.printStackTrace();
-        }
-        return bestelling;
-                   
-    }
-*/
+
     public List<Bestelling> readBestelling(Klant klant) {
              
         List<Bestelling> bestellingen = new ArrayList<>();
@@ -106,5 +79,6 @@ public class DummyBestelDAO {
             stmt.executeUpdate();
         }
     }
+    
 }
 

@@ -95,7 +95,7 @@ public class ArtikelDAO {
         
     }
     
-    public void updateArtikel(Integer bestellingID, ArtikelPOJO artikel) {
+    public void updateArtikel(int bestellingID, ArtikelPOJO artikel) {
                     
         updateArtikel(bestellingID, artikel, "1");
     
@@ -118,13 +118,13 @@ public class ArtikelDAO {
     }
     
     
-    private void updateArtikel(Integer bestellingID, ArtikelPOJO artikel, String artikelNrAlsString ) {
+    private void updateArtikel(int bestellingID, ArtikelPOJO artikel, String artikelNrAlsString ) {
         
         if (artikelNrAlsString.equals("1")) artikelNrAlsString = "";
         
         String query = String.format("update bestelling "
                      + "set artikel%s_id = ?, artikel_naam = ?, artikel_prijs = ?"
-                     + " where bestelling_id = %d", artikelNrAlsString, (int)bestellingID); 
+                     + " where bestelling_id = %d", artikelNrAlsString, bestellingID); 
        
         try (Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);){
