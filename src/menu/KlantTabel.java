@@ -30,7 +30,9 @@ import javafx.stage.Stage;
 import opdracht2.Klant;
 
 public class KlantTabel {
-	static void display() {        
+	static void display() {  
+		Stage window = new Stage();
+		
         //Titel text
         Text txtTitel = new Text("Alle Klanten in de database.");
         txtTitel.setFont(Font.font(20));
@@ -81,12 +83,10 @@ public class KlantTabel {
         
         //knoppen
         Button btnTerug = new Button("Terug");
-        /*
+        
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
-        });
-        deze werkt nog niet goed
-        */
+        });       
         
         Button btnStop = new Button("Afsluiten");
         btnStop.setOnMouseClicked(event -> {
@@ -123,7 +123,7 @@ public class KlantTabel {
 		}
         
         Scene scene = new Scene(root, 800, 500);
-        Stage window = new Stage();
+        
         window.setScene(scene);
         window.showAndWait();
 	}
