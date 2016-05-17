@@ -14,7 +14,7 @@ import java.util.*;
 public class FillBatchDatabase {
   
     private final static String ALFABET = "abcdefghijklmnopqrstuvwxyz";
-    private final static int RANDOMBASE = 10;
+    private static Random rand = new Random(1000);
     
     public static void fillBatchDatabase()  {
          fillBatchDatabase(20);   
@@ -40,8 +40,7 @@ public class FillBatchDatabase {
                 PreparedStatement statement = connection.prepareStatement(query);) { 
        
             connection.setAutoCommit(false);
-            Random rand = new Random(RANDOMBASE);
-                     
+                               
             for (int i = 0; i < aantal; i++){
         
                 String voornaam = generateString(rand, ALFABET, 2 + rand.nextInt(10));
@@ -80,8 +79,7 @@ public class FillBatchDatabase {
                 PreparedStatement statement = connection.prepareStatement(query); ) {  
         
             connection.setAutoCommit(false);
-            Random rand = new Random(RANDOMBASE);
-    
+                
             for (int i = 1; i < aantal; i++){
                 statement.setInt(1, i);
                 statement.setInt(2, 1 + rand.nextInt(8));
@@ -97,7 +95,7 @@ public class FillBatchDatabase {
     }
     
     public static String generateEmail() {
-        Random rand = new Random(RANDOMBASE);
+        
         String emailHuis = generateString(rand, ALFABET, 3 + rand.nextInt(8));
         String emailPlaats = generateString(rand, ALFABET, 3 + rand.nextInt(8));
         String emailLand = generateString(rand, "nlcomorg", 2 + rand.nextInt(2));
@@ -106,11 +104,11 @@ public class FillBatchDatabase {
     }
     
     public static String generatePostcode() {
-        Random rand = new Random(RANDOMBASE);
+        
         String postcode = "";
         postcode +=  1000 + rand.nextInt(9000);
         postcode += generateString(rand, ALFABET.toUpperCase(), 2);
-         
+        
         return postcode; 
     }
     

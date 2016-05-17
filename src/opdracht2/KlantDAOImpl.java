@@ -14,7 +14,31 @@ public class KlantDAOImpl implements KlantDAO {
         int klantID = bestaandeKlant.getKlantID();
         
         return findByID(klantID);
-    }    
+    } 
+    
+    @Override
+    public Klant findKlant(Adres klantAdres) throws SQLException {
+        Klant klant = new Klant();
+        String postcode = klantAdres.getPostcode();
+        int huisnr = klantAdres.getHuisnummer();
+        String toevoeging = klantAdres.getToevoeging();
+        String query = String.format("SELECT * FROM klant WHERE postcode = '%s'"
+                    +  "AND huisnummer = %d AND toevoeging = '%s'", postcode, huisnr, toevoeging);
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
+            if (resultSet.next()) {
+                    
+                klant.setKlantID(resultSet.getInt("klant_ID"));
+                klant.setVoornaam(resultSet.getString("voornaam"));
+                klant.setAchternaam(resultSet.getString("achternaam"));
+                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
+                klant.setEmail(resultSet.getString("email"));
+            }
+        }
+        return klant;
+    }
     
     @Override
     public List<Klant> findAll() throws SQLException {
@@ -181,14 +205,14 @@ public class KlantDAOImpl implements KlantDAO {
             statement.setString(2, klant.getAchternaam());
             statement.setString(3, klant.getTussenvoegsel());
             statement.setString(4, klant.getEmail());
-            
+            statement.executeUpdate(); 
             //wijs door database gegenereerde id toe aan klant
             resultSet = statement.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 klant.setKlantID(resultSet.getInt(1));
             }            
-            statement.executeUpdate(); 
+          //  statement.executeUpdate();   7 regels naar boven verplaatst mvg Jeroen
             System.out.println("Klant is succesvol aangemaakt");
         } finally {
             if (resultSet != null) {
