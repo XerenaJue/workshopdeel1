@@ -5,6 +5,7 @@
  */
 package facade;
 import opdracht2.*;
+import java.util.*;
 /**
  *
  * @author jeroen
@@ -79,7 +80,8 @@ public class testDeFacade {
         Inputter workbench = new Inputter();
         workbench.inputter();
         
-        
-        
+        List adressen = new ArrayList();
+        adressen.addAll(facade.findAlleAdressen() );
+        System.out.println(adressen);
     }
 }

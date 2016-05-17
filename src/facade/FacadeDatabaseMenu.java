@@ -118,6 +118,16 @@ public class FacadeDatabaseMenu {
         return klanten;
     }
     
+    public List<Adres> findAlleAdressen() throws SQLException {
+        Adres adres1 = new Adres();
+        adres1.setStraatnaam("Eresvierweg");
+        Adres adres2 = new Adres();
+        adres2.setStraatnaam("Boekweg");
+        
+        List<Adres> adresLijst =  Arrays.asList(adres1,adres2);
+        return adresLijst;
+    }
+    
     private Klant findKlant(Adres klantAdres) throws SQLException{   
       
         Klant ingelezenKlant = klantDAO.findKlant(klantAdres);
