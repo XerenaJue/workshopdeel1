@@ -43,7 +43,7 @@ public class KlantTabel {
         ObservableList<Klant> klanten = FXCollections.observableArrayList();
         
         Klant klant1 = new Klant();
-        klant1.setAchternaam("Witte");
+        klant1.setAchternaam("Fitte");
         klant1.setVoornaam("Kim");
         
         Klant klant2 = new Klant();

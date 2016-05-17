@@ -1,5 +1,5 @@
 package menu;
-
+//jjj
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -32,7 +32,7 @@ public class Menu extends Parent {
             imgView.setFitWidth(800);
             layout.getChildren().add(imgView);
         } catch (IOException ex) {
-            System.out.println("Kan achtergrond plaatje niet vinden");
+            System.out.println("Kan achtergrond plaatje niet vindenn");
         }
     	
         VBox menu0 = new VBox(10);
