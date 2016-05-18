@@ -12,7 +12,11 @@ package opdracht2;
 public class Bestelling {
     private int bestelling_id, klant_id, artikel_aantal, artikel2_aantal, artikel3_aantal;
     
-    public int getBestelling(){
+   
+            
+    
+    
+    public int getBestelling_id(){
         return bestelling_id;
     }
     
@@ -20,7 +24,7 @@ public class Bestelling {
         this.bestelling_id = bestelling_id;
     }
     
-        public int getKlant(){
+        public int getKlant_id(){
         return klant_id;
     }
     
@@ -28,7 +32,7 @@ public class Bestelling {
         this.klant_id = klant_id;
     }
     
-        public int getAantalArtikel1(){
+        public int getArtikel_aantal(){
         return artikel_aantal;
     }
     
