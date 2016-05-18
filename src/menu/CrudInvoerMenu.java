@@ -181,6 +181,7 @@ public class CrudInvoerMenu {
     MenuButton btnAdressen;
     MenuButton btnArtikelen;
     MenuButton btnBestellingen;
+    MenuButton btnMaakKlant;
     
     TextField klantIDTF = new TextField();
     Label klantIdLabel = new Label("Klant ID:");
@@ -266,6 +267,10 @@ public class CrudInvoerMenu {
         btnZoekKlant.setOnMouseClicked(event -> { zoekKlant(); zoekAdresVanKlant();
                 refreshPanes("Klantgegevens");        
         }); 
+        btnMaakKlant = new MenuButton("Maak Klant");
+        btnMaakKlant.setOnMouseClicked(event -> { maakKlant(); zoekKlant();
+                refreshPanes("Klantgegevens");        
+        }); 
           
     }
     
@@ -308,7 +313,7 @@ public class CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnZoekKlant, btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll(btnZoekKlant, btnMaakKlant, btnClear, btnTerug, btnStop);
        
     }
       
@@ -346,6 +351,25 @@ public class CrudInvoerMenu {
             klantAchternaamTF.setText(klant.getAchternaam());
             tussenvoegselTF.setText(klant.getTussenvoegsel()) ;
             emailTF.setText(klant.getEmail());
+        }
+        catch (SQLException e) {
+            System.out.println("oplossen nog ");
+        }
+    }
+    
+    public void maakKlant()  {
+        try {
+            if (klantIDTF.getText().isEmpty()) { 
+                klant.setKlantID(0); // zodat er geen bestaande klant opnieuw aangemaakt wordt
+            }
+            klant.setAchternaam(klantAchternaamTF.getText());
+            klant.setEmail(emailTF.getText());
+            klant.setVoornaam(klantVoornaamTF.getText());
+            klant.setTussenvoegsel(tussenvoegselTF.getText());
+            
+            klant = facade.createKlant(klant);
+            nepAppArray = facade.getToDisplay();
+                       
         }
         catch (SQLException e) {
             System.out.println("oplossen nog ");
