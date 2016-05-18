@@ -51,6 +51,9 @@ public class Menu extends Parent {
         menu2.setTranslateX(OFFSET);
 
         MenuButton btnCRUD = new MenuButton("CRUD-Handelingen");
+        btnCRUD.setOnMouseClicked(event -> {CrudInvoerMenu.display(); });   
+        
+        /*
         btnCRUD.setOnMouseClicked(event -> { //slide hoofdmenu naar links 
             layout.getChildren().add(menu1);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
@@ -66,7 +69,7 @@ public class Menu extends Parent {
                 layout.getChildren().remove(menu0);
             });
         });
-
+*/
         MenuButton btnKlasseSelect = new MenuButton("klasse selectie");
         btnKlasseSelect.setOnMouseClicked(event -> {KlantTabel.display(); });
         
