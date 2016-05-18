@@ -23,7 +23,8 @@ public class FacadeDatabaseMenu {
     private List<Klant> klanten;
     private Object[] toDisplay;
     private Object[] fromDisplay;
-    private List<ArtikelPOJO> artikelen;   
+    private List<ArtikelPOJO> artikelen;  
+    private List<Adres> adressen;
     
     public FacadeDatabaseMenu() {
         klantDAO = new KlantDAOImpl();
@@ -118,7 +119,7 @@ public class FacadeDatabaseMenu {
         return klanten;
     }
     
-    public List<Adres> findAlleAdressen() throws SQLException {
+/*    public List<Adres> findAlleAdressen() throws SQLException {
         Adres adres1 = new Adres();
         adres1.setStraatnaam("Eresvierweg");
         Adres adres2 = new Adres();
@@ -127,7 +128,12 @@ public class FacadeDatabaseMenu {
         List<Adres> adresLijst =  Arrays.asList(adres1,adres2);
         return adresLijst;
     }
-    
+*/
+    public List<Adres> findAlleAdressen() throws SQLException {
+    	adressen = adresDAO.findAll();
+    	
+    	return adressen;
+    }
     private Klant findKlant(Adres klantAdres) throws SQLException{   
       
         Klant ingelezenKlant = klantDAO.findKlant(klantAdres);

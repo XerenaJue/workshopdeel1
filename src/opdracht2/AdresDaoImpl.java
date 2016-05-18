@@ -159,9 +159,10 @@ public class AdresDaoImpl implements AdresDao {
 				PreparedStatement preparedStatement = connection.prepareStatement(query);
 				ResultSet resultSet = preparedStatement.executeQuery();) {
 
-			adres = new Adres();
+			
 
 			while (resultSet.next()) {
+				adres = new Adres();
 				adres.setStraatnaam(resultSet.getString("straatnaam"));
 				adres.setPostcode(resultSet.getString("postcode"));
 				adres.setHuisnummer(resultSet.getInt("huisnummer"));
