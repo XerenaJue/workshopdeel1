@@ -50,4 +50,11 @@ public class Bestelling {
     public void setAantalArtikel3(int artikel3_aantal){
         this.artikel3_aantal = artikel3_aantal;
     }
+    
+           @Override
+    public String toString() {
+        return "Bestelling_ID: " + bestelling_id + ", klant ID: " + klant_id +",artikel aantal: " +artikel_aantal +
+                ", artikel 2 aantal: " + artikel2_aantal + "artikel 3 aantal: " + artikel3_aantal;
+
+    } 
 }
