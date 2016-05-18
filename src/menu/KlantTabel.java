@@ -36,7 +36,6 @@ import java.util.*;
 public class KlantTabel {
     
     static FacadeDatabaseMenu facade = new FacadeDatabaseMenu();
-    
     static Stage window = new Stage();
     static BorderPane root = new BorderPane();
     static GridPane pane = new GridPane();
@@ -159,10 +158,29 @@ public class KlantTabel {
     
     static void display() {  
         
+        clearTables();
         getKlanten();
         setUpForKlanten();
-            
-        //knoppen
+  
+        initializeButtons();
+        showDisplay();
+ 
+    }
+    
+    static void showDisplay() {
+                       
+        setBackground();
+        refreshPanes("Alle Klanten in de database.");
+        
+        root.setCenter(pane);
+        root.setRight(vBox);
+    
+        window.setScene(scene);
+        window.showAndWait();
+    }
+    
+    static void initializeButtons() {
+        
         btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
@@ -189,22 +207,8 @@ public class KlantTabel {
         btnArtikelen.setOnMouseClicked(event -> {  clearTables();  refreshPanes("Alle artikelen in de database.");        
         });
         
-        showDisplay();
- 
     }
     
-    static void showDisplay() {
-        
-                
-        setBackGround();
-        refreshPanes("Alle Klanten in de database.");
-        
-        root.setCenter(pane);
-        root.setRight(vBox);
-    
-        window.setScene(scene);
-        window.showAndWait();
-    }
     static void refreshPanes(String header) {
         
         Text txtTitel = new Text(header);
@@ -224,9 +228,8 @@ public class KlantTabel {
         vBox.getChildren().addAll(btnKlanten, btnAdressen, btnBestellingen, btnArtikelen, btnClear, btnTerug, btnStop);
         
     }
-    
-    
-    static void setBackGround() {
+      
+    static void setBackground() {
          Image image;
          try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
             image = new Image(input);
@@ -234,7 +237,7 @@ public class KlantTabel {
             Background background = new Background(backgroundImage);
             root.setBackground(background);
         } catch (IOException e) {
-			System.out.println("Kan plaatje niet vinden");
+		System.out.println("Kan plaatje niet vinden");
 	}
         
     }
@@ -244,18 +247,16 @@ public class KlantTabel {
          weerTeGevenPOJOs.addAll(facade.findKlanten() );
         }
         catch (SQLException e) {
-            
+            System.out.println("oplossen nog ");
         }
     }
     
     static void getAdressen() {
         try {
-            System.out.println(" hier adressen: "+ weerTeGevenPOJOs);
-         weerTeGevenPOJOs.addAll(facade.findAlleAdressen() );
-          System.out.println(" hier mere adressen: "+ weerTeGevenPOJOs);
+            weerTeGevenPOJOs.addAll(facade.findAlleAdressen() );
         }
         catch (SQLException e) {
-            
+            System.out.println("oplossen nog "); 
         }
     }
     
@@ -271,7 +272,6 @@ public class KlantTabel {
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("straatnaam", "postcode", "toevoeging", "huisnummer", "woonplaats"));
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
-        
     }
     
     static void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
