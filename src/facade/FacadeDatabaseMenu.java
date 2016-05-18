@@ -20,6 +20,7 @@ public class FacadeDatabaseMenu {
     private final DummyBestelDAO bestellingDAO;    // tijdelijke bestellingDAO
     private final ArtikelDAO artikelDAO;
     private List<Bestelling> bestellingen;
+    private List<Bestelling> alleBestellingen;
     private List<Klant> klanten;
     private Object[] toDisplay;
     private Object[] fromDisplay;
@@ -118,22 +119,24 @@ public class FacadeDatabaseMenu {
         
         return klanten;
     }
-    
-/*    public List<Adres> findAlleAdressen() throws SQLException {
-        Adres adres1 = new Adres();
-        adres1.setStraatnaam("Eresvierweg");
-        Adres adres2 = new Adres();
-        adres2.setStraatnaam("Boekweg");
-        
-        List<Adres> adresLijst =  Arrays.asList(adres1,adres2);
-        return adresLijst;
-    }
-*/
+
     public List<Adres> findAlleAdressen() throws SQLException {
     	adressen = adresDAO.findAll();
     	
     	return adressen;
     }
+    
+     public List<Bestelling> findAlleBestellingen() throws SQLException {
+    	alleBestellingen = bestellingDAO.findAlleBestellingen();
+    	
+    	return alleBestellingen;
+    }
+     
+     public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
+    	
+         return null;
+    } 
+        
     private Klant findKlant(Adres klantAdres) throws SQLException{   
       
         Klant ingelezenKlant = klantDAO.findKlant(klantAdres);

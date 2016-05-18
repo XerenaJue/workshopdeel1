@@ -70,9 +70,9 @@ public class TabelScherm {
     
     public void display() {  
         
-        clearTables();
-        getKlanten();
-        setUpForKlanten();
+       // clearTables();
+      //  getKlanten();
+      //  setUpForKlanten();
   
         initializeButtons();
         showDisplay();
@@ -82,7 +82,7 @@ public class TabelScherm {
     private void showDisplay() {
                        
         setBackground();
-        refreshPanes("Alle Klanten in de database.");
+        refreshPanes("zoek me dan als je kan");
         
         root.setCenter(pane);
         root.setRight(vBox);
@@ -113,7 +113,8 @@ public class TabelScherm {
                 refreshPanes("Alle Adressen in de database.");        
         }); 
         btnBestellingen = new MenuButton("Bestellingen");
-        btnBestellingen.setOnMouseClicked(event -> {  clearTables();  refreshPanes("Alle bestellingen in de database.");        
+        btnBestellingen.setOnMouseClicked(event -> {  clearTables();  getBestellingen(); setUpForBestellingen();
+                refreshPanes("Alle bestellingen in de database.");        
         });
         btnArtikelen = new MenuButton("Artikelen");
         btnArtikelen.setOnMouseClicked(event -> {  clearTables();  refreshPanes("Alle artikelen in de database.");        
@@ -181,6 +182,15 @@ public class TabelScherm {
         }
     }
     
+    private void getBestellingen() {
+        try {
+            weerTeGevenPOJOs.addAll(facade.findAlleBestellingen() );
+        }
+        catch (SQLException e) {
+            System.out.println("oplossen nog "); 
+        }
+    }
+    
     private void setUpForKlanten() {
         
         List<String> pojoVelden = new ArrayList<>();
@@ -195,6 +205,14 @@ public class TabelScherm {
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
+    private void setUpForBestellingen() {
+   
+        List<String> pojoVelden = new ArrayList<>();
+        pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
+        setUpTabel(pojoVelden, weerTeGevenPOJOs);
+    }
+    
+    
     private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
         
         pojoTabel.setItems(pojos);
@@ -202,15 +220,15 @@ public class TabelScherm {
         pojoTabel.setMinSize(250, 300);
         
         int aantalKolommen = pojoVelden.size();
-        System.out.println(aantalKolommen);
         String pojoNaam = "empty";
+        
         if (!pojos.isEmpty()) {
             pojoNaam = pojos.get(0).getClass().getName();
         }
         TableColumn hoofdKolom = new TableColumn(pojoNaam);
         
         for (int i =0; i < aantalKolommen; i++){
-            TableColumn<Klant, String> colNaam = new TableColumn<>(pojoVelden.get(i));
+            TableColumn<Integer,String> colNaam = new TableColumn<>(pojoVelden.get(i));
             colNaam.setCellValueFactory(new PropertyValueFactory<>(pojoVelden.get(i)));
             colNaam.setMinWidth(pojoTabel.getMaxWidth() / aantalKolommen);
             

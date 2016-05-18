@@ -64,7 +64,7 @@ public class DummyBestelDAO {
     
     public void deleteBestelling(Bestelling bestelling) throws SQLException {
     
-        String query = "delete from bestelling where bestelling_id = " + bestelling.getBestelling(); 
+        String query = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id(); 
         try (Connection connection = ConnectionFactory.getMySQLConnection(); 
                     PreparedStatement stmt = connection.prepareStatement(query); ){
             stmt.executeUpdate();
@@ -79,6 +79,32 @@ public class DummyBestelDAO {
             stmt.executeUpdate();
         }
     }
-    
+    public List<Bestelling> findAlleBestellingen() {
+             
+        List<Bestelling> bestellingen = new ArrayList<>();
+        
+        String query = "select * from bestelling " ;
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                       
+            while (resultSet.next()) {
+               Bestelling bestelling = new Bestelling();      
+               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant(resultSet.getInt("klant_id"));
+               bestelling.setAantalArtikel1(resultSet.getInt("artikel_aantal"));
+               bestelling.setAantalArtikel2(resultSet.getInt("artikel2_aantal"));
+               bestelling.setAantalArtikel3(resultSet.getInt("artikel3_aantal"));  
+               bestellingen.add(bestelling);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in readAlleBestellingen" );
+            ex.printStackTrace();
+        }
+        if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
+        return bestellingen;
+    }
 }
 

@@ -21,21 +21,21 @@ public class ArtikelDAO {
     
     public ArtikelPOJO readArtikel(Bestelling bestelling) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         return readArtikel(bestellingID);
     }
     
     public ArtikelPOJO readArtikel2(Bestelling bestelling) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         return readArtikel2(bestellingID);
     }
    
     public ArtikelPOJO readArtikel3(Bestelling bestelling) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         return readArtikel3(bestellingID);
     }
@@ -89,7 +89,7 @@ public class ArtikelDAO {
     
     public void updateArtikel(Bestelling bestelling, ArtikelPOJO artikel) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         updateArtikel(bestellingID, artikel);
         
@@ -103,7 +103,7 @@ public class ArtikelDAO {
              
      public void updateArtikel2(Bestelling bestelling, ArtikelPOJO artikel) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         updateArtikel(bestellingID, artikel, "2");
         
@@ -111,7 +111,7 @@ public class ArtikelDAO {
      
     public void updateArtikel3(Bestelling bestelling, ArtikelPOJO artikel) {
         
-        int bestellingID = bestelling.getBestelling();
+        int bestellingID = bestelling.getBestelling_id();
         
         updateArtikel(bestellingID, artikel, "3");
         
