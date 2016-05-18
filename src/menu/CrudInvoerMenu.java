@@ -39,63 +39,55 @@ import static javafx.application.Application.launch;
 
 public class CrudInvoerMenu {
     
-    static FacadeDatabaseMenu facade = new FacadeDatabaseMenu();
-    static Stage window = new Stage();
-    static BorderPane root = new BorderPane();
-    static GridPane pane = new GridPane();
-    static VBox vBox = new VBox(15);
-    static Scene scene = new Scene(root, 800, 500);
+    FacadeDatabaseMenu facade;
+    Stage window;
+    BorderPane root; 
+    GridPane pane;
+    VBox vBox;
+    Scene scene;
+  
+    MenuButton btnTerug;
+    MenuButton btnStop;
+    MenuButton btnClear;
+    MenuButton btnZoekKlant;
+    MenuButton btnAdressen;
+    MenuButton btnArtikelen;
+    MenuButton btnBestellingen;
     
-    static TableView pojoTabel = new TableView<>();
-    static ObservableList weerTeGevenPOJOs = FXCollections.observableArrayList();
-    
-    static MenuButton btnTerug;
-    static MenuButton btnStop;
-    static MenuButton btnClear;
-    static MenuButton btnZoekKlant;
-    static MenuButton btnAdressen;
-    static MenuButton btnArtikelen;
-    static MenuButton btnBestellingen;
-    
-    static TextField klantIDTF = new TextField();
-    static Label klantIdLabel = new Label("Klant ID:");
-    static TextField klantAchternaamTF = new TextField();
-    static Label klantAchternaamLabel = new Label("Achternaam:");
-    static TextField klantVoornaamTF = new TextField();
-    static Label klantVoornaamLabel = new Label("Voornaam:");
-    
-    
-    static Object[] nepAppArray = new Object[5];
-   
-    static Klant klant = new Klant();
-    static Adres adres = new Adres();
-    static Bestelling bestelling = new Bestelling();
-    static List<Bestelling> bestellingen = new ArrayList<>();
-    static List<ArtikelPOJO> artikelen =  new ArrayList<>();
-    
-    
-    static void display() {  
+    TextField klantIDTF = new TextField();
+    Label klantIdLabel = new Label("Klant ID:");
+    TextField klantAchternaamTF = new TextField();
+    Label klantAchternaamLabel = new Label("Achternaam:");
+    TextField klantVoornaamTF = new TextField();
+    Label klantVoornaamLabel = new Label("Voornaam:");
         
+    Object[] nepAppArray;
+    Klant klant = new Klant();
+    Adres adres = new Adres();
+    Bestelling bestelling = new Bestelling();
+    List<Bestelling> bestellingen = new ArrayList<>();
+    List<ArtikelPOJO> artikelen =  new ArrayList<>();
+    
+    
+    public CrudInvoerMenu() {  
+        
+        facade = new FacadeDatabaseMenu();
+        nepAppArray = new Object[5];
         nepAppArray[0] = klant;
         nepAppArray[1] = adres;
         nepAppArray[2] = new ArrayList();
         nepAppArray[3] = new ArrayList();
         nepAppArray[4] = new ArrayList();
         
-        clearTables();
-        getKlanten();
-        setUpForKlanten();
-  
-        initializeButtons();
-        showDisplay();
- 
+        this.setStage();
+        this.initializeButtons();
+     
     }
-    
-    static void showDisplay() {
-                       
-        setBackground();
-        refreshPanes("Klantgegevens");
-        
+       
+    public void startMenu() {
+              
+        this.setBackground();
+        this.refreshPanes("Klantgegevens");
         root.setCenter(pane);
         root.setRight(vBox);
     
@@ -103,8 +95,18 @@ public class CrudInvoerMenu {
         window.showAndWait();
     }
     
-    static void initializeButtons() {
+    private void setStage() {
         
+        window = new Stage();
+        root = new BorderPane();
+        pane = new GridPane();
+        vBox = new VBox(15);
+        scene = new Scene(root, 800, 500);
+           
+    }
+    
+    private void initializeButtons() {
+       
         btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
@@ -114,21 +116,21 @@ public class CrudInvoerMenu {
             System.exit(0);
         }); 
         btnClear = new MenuButton("Clear");
-        btnClear.setOnMouseClicked(event -> { clearTables();  refreshPanes("lege tabel");        
+        btnClear.setOnMouseClicked(event -> {  
         }); 
         btnZoekKlant = new MenuButton("Zoek Klant");
-        btnZoekKlant.setOnMouseClicked(event -> { zoekKlant(); setUpForKlanten(); 
-                refreshPanes("Alle Klanten in de database.");        
+        btnZoekKlant.setOnMouseClicked(event -> { zoekKlant(); 
+                refreshPanes("Klantgegevens");        
         }); 
-        
-        
+          
     }
     
-    static void refreshPanes(String header) {
-        
+    private void refreshPanes(String header) {
+       
         Text txtTitel = new Text(header);
         txtTitel.setFont(Font.font(20));
         txtTitel.setFill(Color.BLACK);   
+       
         pane.getChildren().clear();
         pane.setHgap(10);
         pane.setVgap(10);
@@ -146,10 +148,10 @@ public class CrudInvoerMenu {
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
         vBox.getChildren().addAll(btnZoekKlant, btnClear, btnTerug, btnStop);
-        
+       
     }
       
-    static void setBackground() {
+    private void setBackground() {
          Image image;
          try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
             image = new Image(input);
@@ -161,27 +163,15 @@ public class CrudInvoerMenu {
 	}
         
     }
-    
-    static void getKlanten() {
+        
+    public void zoekKlant()  {
         try {
-         weerTeGevenPOJOs.addAll(facade.findKlanten() );
-        }
-        catch (SQLException e) {
-            System.out.println("oplossen nog ");
-        }
-    }
-    
-    static void zoekKlant()  {
-        try {
-             
             int input = Integer.parseInt(klantIDTF.getText());
-            
             klant.setKlantID(input);
             facade.zoek(nepAppArray);
             nepAppArray = facade.getToDisplay();
-            
             klant =  (Klant)nepAppArray[0];
-            System.out.println(klant);
+            
             klantVoornaamTF.setText(klant.getVoornaam());
         }
         catch (SQLException e) {
@@ -191,61 +181,7 @@ public class CrudInvoerMenu {
     }
     
     
-    static void getAdressen() {
-        try {
-            weerTeGevenPOJOs.addAll(facade.findAlleAdressen() );
-        }
-        catch (SQLException e) {
-            System.out.println("oplossen nog "); 
-        }
-    }
-    
-    static void setUpForKlanten() {
-        
-        List<String> pojoVelden = new ArrayList<>();
-        pojoVelden.addAll(Arrays.asList("klantID", "voornaam", "achternaam", "tussenvoegsel", "email"));
-        setUpTabel(pojoVelden, weerTeGevenPOJOs);
-    }
-        
-    static void setUpForAdressen() {
-   
-        List<String> pojoVelden = new ArrayList<>();
-        pojoVelden.addAll(Arrays.asList("straatnaam", "postcode", "toevoeging", "huisnummer", "woonplaats"));
-        setUpTabel(pojoVelden, weerTeGevenPOJOs);
-    }
-    
-    static void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
-        
-        pojoTabel.setItems(pojos);
-        pojoTabel.setMaxSize(600, 1000);
-        pojoTabel.setMinSize(250, 300);
-        
-        int aantalKolommen = pojoVelden.size();
-        System.out.println(aantalKolommen);
-        String pojoNaam = "empty";
-        if (!pojos.isEmpty()) {
-            pojoNaam = pojos.get(0).getClass().getName();
-        }
-        TableColumn hoofdKolom = new TableColumn(pojoNaam);
-        
-        for (int i =0; i < aantalKolommen; i++){
-            TableColumn<Klant, String> colNaam = new TableColumn<>(pojoVelden.get(i));
-            colNaam.setCellValueFactory(new PropertyValueFactory<>(pojoVelden.get(i)));
-            colNaam.setMinWidth(pojoTabel.getMaxWidth() / aantalKolommen);
-            
-            hoofdKolom.getColumns().add(colNaam);
-        }
-        pojoTabel.getColumns().clear();
-        pojoTabel.getColumns().addAll(hoofdKolom);
-    }
-    
-
-    static void clearTables() {
-        
-        weerTeGevenPOJOs.clear(); 
-        setUpTabel(Collections.EMPTY_LIST, weerTeGevenPOJOs );
-    }
-    
+ 
 }
 
  

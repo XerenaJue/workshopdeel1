@@ -18,6 +18,8 @@ import javafx.util.Duration;
 
 public class Menu extends Parent {
 	static boolean terugNaarInlog;
+        static CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu();
+        static TabelScherm tabelScherm = new TabelScherm();
 	
     public static boolean display() {
         Stage window = new Stage();
@@ -51,45 +53,12 @@ public class Menu extends Parent {
         menu2.setTranslateX(OFFSET);
 
         MenuButton btnCRUD = new MenuButton("CRUD-Handelingen");
-        btnCRUD.setOnMouseClicked(event -> {CrudInvoerMenu.display(); });   
+        btnCRUD.setOnMouseClicked(event -> {crudInvoerMenu.startMenu(); });   
         
-        /*
-        btnCRUD.setOnMouseClicked(event -> { //slide hoofdmenu naar links 
-            layout.getChildren().add(menu1);
-            TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
-            tt.setToX(menu0.getTranslateX() - OFFSET);
-            //zet submenu op plek van hoofdmenu
-            TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu1);
-            tt2.setToX(menu0.getTranslateX());
 
-            tt.play();
-            tt2.play();
-            //als hooofdmenu naar links is verschoven laat het niet meer zien
-            tt.setOnFinished(event2 -> {
-                layout.getChildren().remove(menu0);
-            });
-        });
-*/
         MenuButton btnKlasseSelect = new MenuButton("klasse selectie");
-        btnKlasseSelect.setOnMouseClicked(event -> {KlantTabel.display(); });
-        
-        /*
-        btnKlasseSelect.setOnMouseClicked(event -> {
-            layout.getChildren().add(menu2);
-            TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
-            tt.setToX(menu0.getTranslateX() - OFFSET);
-            TranslateTransition tt2 = new TranslateTransition(Duration.seconds(0.5), menu2);
-            tt2.setToX(menu0.getTranslateX());
-            
-            tt.play();
-            tt2.play();
-            
-            tt.setOnFinished(event2 -> {
-                layout.getChildren().remove(menu0);
-            });
-        });
-        */
-        
+        btnKlasseSelect.setOnMouseClicked(event -> {tabelScherm.display(); });
+              
         
         MenuButton btnUitloggen = new MenuButton("Uitloggen");
         btnUitloggen.setOnMouseClicked(event -> {
@@ -130,7 +99,7 @@ public class Menu extends Parent {
         
         MenuButton btnKlant = new MenuButton("Klant");
         btnKlant.setOnMouseClicked(event -> {
-        	KlantTabel.display();        	
+        	tabelScherm.display();        	
         });
         MenuButton btnAdres = new MenuButton("Adres");
         MenuButton btnBestelling = new MenuButton("Bestelling");

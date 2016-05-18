@@ -33,130 +33,41 @@ import java.sql.*;
 import java.util.*;
 
 
-public class KlantTabel {
+public class TabelScherm {
     
-    static FacadeDatabaseMenu facade = new FacadeDatabaseMenu();
-    static Stage window = new Stage();
-    static BorderPane root = new BorderPane();
-    static GridPane pane = new GridPane();
-    static VBox vBox = new VBox(15);
-    static Scene scene = new Scene(root, 800, 500);
-    static TableView pojoTabel = new TableView<>();
-    static ObservableList weerTeGevenPOJOs = FXCollections.observableArrayList();
-    static MenuButton btnTerug;
-    static MenuButton btnStop;
-    static MenuButton btnClear;
-    static MenuButton btnKlanten;
-    static MenuButton btnAdressen;
-    static MenuButton btnArtikelen;
-    static MenuButton btnBestellingen;
+    private final FacadeDatabaseMenu facade;
+    private final Stage window;
+    private final BorderPane root ;
+    private final GridPane pane;
+    private final VBox vBox ;
+    private final Scene scene ;
+    private final TableView pojoTabel;
+    private ObservableList weerTeGevenPOJOs;
+    private MenuButton btnTerug;
+    private MenuButton btnStop;
+    private MenuButton btnClear;
+    private MenuButton btnKlanten;
+    private MenuButton btnAdressen;
+    private MenuButton btnArtikelen;
+    private MenuButton btnBestellingen;
     
-    /*
-	static void display()  {  
-		Stage window = new Stage();
-	              
-        FacadeDatabaseMenu facade = new FacadeDatabaseMenu();  
-        
-        //Titel text
-        Text txtTitel = new Text("Alle Klanten in de database.");
-        txtTitel.setFont(Font.font(20));
-        txtTitel.setFill(Color.BLACK);      
-        
-        //Tabel
-        TableView<Klant> klantTabel = new TableView<>();
-        ObservableList<Klant> klanten = FXCollections.observableArrayList();
-        
-        try {
-            klanten.addAll(facade.findKlanten() );
-        }
-        catch (SQLException e) {
-            
-        }
-        klantTabel.setItems(klanten);
-        klantTabel.setMaxSize(500, 600);
-        klantTabel.setMinSize(250, 300);
-        
-        //kolomen
-        TableColumn colKlantInfo = new TableColumn("Klanten informatie");
-        
-        TableColumn<Klant, String> colNaam = new TableColumn<>("Klant naam"); //naam vd kolom
-        colNaam.setCellValueFactory(new PropertyValueFactory<>("voornaam")); // naam van class field
-        colNaam.setMinWidth(klantTabel.getMaxWidth() / 4);
-        
-        TableColumn<Klant, String> colAchternaam = new TableColumn<>("Achternaam");
-        colAchternaam.setCellValueFactory(new PropertyValueFactory<>("achternaam"));
-        colAchternaam.setMinWidth(klantTabel.getMaxWidth() / 4);
-        
-        TableColumn<Klant, String> colTussenvoegsel = new TableColumn<>("Tussenvoegsel");
-        colTussenvoegsel.setCellValueFactory(new PropertyValueFactory<>("tussenvoegsel"));
-        colTussenvoegsel.setMinWidth(klantTabel.getMaxWidth() / 4);
-        
-        TableColumn<Klant, String> colEmail = new TableColumn<>("Email");
-        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colEmail.setMinWidth(klantTabel.getMaxWidth() / 4);
-        
-        //zet kolumen in tableview
-        colKlantInfo.getColumns().addAll(colNaam, colAchternaam, colTussenvoegsel, colEmail);
-        klantTabel.getColumns().addAll(colKlantInfo);
-        
-        //knoppen
-        Button btnTerug = new Button("Terug");
-        
-        btnTerug.setOnMouseClicked(event -> {
-        	window.close();        	
-        });       
-        
-        Button btnStop = new Button("Afsluiten");
-        btnStop.setOnMouseClicked(event -> {
-            System.exit(0);
-        }); 
-        
-        Button btnClear = new Button("Clear");
-        btnStop.setOnMouseClicked(event -> {
-            klanten.clear();
-        }); 
-        
-        //layout
-        GridPane pane = new GridPane();
-        pane.setHgap(10);
-        pane.setVgap(10);
-        pane.setPadding(new Insets(50, 50, 15, 50));
-        pane.add(txtTitel, 0, 0, 5, 1);
-        pane.setHalignment(txtTitel, HPos.CENTER);
-        pane.add(klantTabel, 0, 1, 5, 5);
-
-        VBox vBox = new VBox(15);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setPadding(new Insets(5, 100, 5, 5));
-        vBox.getChildren().addAll(btnTerug, btnStop, btnClear);        
-
-        BorderPane root = new BorderPane();
-        root.setCenter(pane);
-        root.setRight(vBox);
-        
-        //Achtergrond
-        Image image;
-        try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
-            image = new Image(input);
-            BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-            Background background = new Background(backgroundImage);
-            root.setBackground(background);
-        } catch (IOException e) {
-			System.out.println("Kan plaatje niet vinden");
-		}
-        
-        Scene scene = new Scene(root, 800, 500);
-        
-        window.setScene(scene);
-        window.showAndWait();
-
-
-    }
-*/
+ public TabelScherm() {
+     
+    facade = new FacadeDatabaseMenu();
+    window = new Stage();
+    root = new BorderPane();
+    pane = new GridPane();
+    vBox = new VBox(15);
+    scene = new Scene(root, 800, 500);
+    pojoTabel = new TableView<>();
+    weerTeGevenPOJOs = FXCollections.observableArrayList();
     
+    initializeButtons();
+     
+     
+ }    
     
-    
-    static void display() {  
+    public void display() {  
         
         clearTables();
         getKlanten();
@@ -167,7 +78,7 @@ public class KlantTabel {
  
     }
     
-    static void showDisplay() {
+    private void showDisplay() {
                        
         setBackground();
         refreshPanes("Alle Klanten in de database.");
@@ -179,7 +90,7 @@ public class KlantTabel {
         window.showAndWait();
     }
     
-    static void initializeButtons() {
+    private void initializeButtons() {
         
         btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
@@ -209,7 +120,7 @@ public class KlantTabel {
         
     }
     
-    static void refreshPanes(String header) {
+    private void refreshPanes(String header) {
         
         Text txtTitel = new Text(header);
         txtTitel.setFont(Font.font(20));
@@ -229,7 +140,7 @@ public class KlantTabel {
         
     }
       
-    static void setBackground() {
+    private void setBackground() {
          Image image;
          try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
             image = new Image(input);
@@ -242,7 +153,7 @@ public class KlantTabel {
         
     }
     
-    static void getKlanten() {
+    private void getKlanten() {
         try {
          weerTeGevenPOJOs.addAll(facade.findKlanten() );
         }
@@ -251,7 +162,7 @@ public class KlantTabel {
         }
     }
     
-    static void getAdressen() {
+    private void getAdressen() {
         try {
             weerTeGevenPOJOs.addAll(facade.findAlleAdressen() );
         }
@@ -260,21 +171,21 @@ public class KlantTabel {
         }
     }
     
-    static void setUpForKlanten() {
+    private void setUpForKlanten() {
         
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("klantID", "voornaam", "achternaam", "tussenvoegsel", "email"));
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
         
-    static void setUpForAdressen() {
+    private void setUpForAdressen() {
    
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("straatnaam", "postcode", "toevoeging", "huisnummer", "woonplaats"));
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
-    static void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
+    private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
         
         pojoTabel.setItems(pojos);
         pojoTabel.setMaxSize(600, 1000);
@@ -300,7 +211,7 @@ public class KlantTabel {
     }
     
 
-    static void clearTables() {
+    private void clearTables() {
         
         weerTeGevenPOJOs.clear(); 
         setUpTabel(Collections.EMPTY_LIST, weerTeGevenPOJOs );
