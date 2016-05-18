@@ -68,6 +68,9 @@ public class Menu extends Parent {
         });
 
         MenuButton btnKlasseSelect = new MenuButton("klasse selectie");
+        btnKlasseSelect.setOnMouseClicked(event -> {KlantTabel.display(); });
+        
+        /*
         btnKlasseSelect.setOnMouseClicked(event -> {
             layout.getChildren().add(menu2);
             TranslateTransition tt = new TranslateTransition(Duration.seconds(0.5), menu0);
@@ -82,7 +85,9 @@ public class Menu extends Parent {
                 layout.getChildren().remove(menu0);
             });
         });
-
+        */
+        
+        
         MenuButton btnUitloggen = new MenuButton("Uitloggen");
         btnUitloggen.setOnMouseClicked(event -> {
             terugNaarInlog = true;
