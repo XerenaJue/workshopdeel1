@@ -10,7 +10,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,7 +30,8 @@ import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
-
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
 public class TabelScherm {
     
@@ -50,6 +50,7 @@ public class TabelScherm {
     private MenuButton btnAdressen;
     private MenuButton btnArtikelen;
     private MenuButton btnBestellingen;
+ 
     
  public TabelScherm() {
      
@@ -147,6 +148,15 @@ public class TabelScherm {
             BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
             Background background = new Background(backgroundImage);
             root.setBackground(background);
+            
+            FadeTransition ft = new FadeTransition(Duration.millis(1000), root);
+            ft.setFromValue(0.0);
+            ft.setToValue(1.0);
+            ft.play();
+
+
+            
+            
         } catch (IOException e) {
 		System.out.println("Kan plaatje niet vinden");
 	}

@@ -31,10 +31,12 @@ import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
+import javafx.animation.FadeTransition;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import static javafx.application.Application.launch;
+import javafx.util.Duration;
 
 
 public class CrudInvoerMenu {
@@ -161,6 +163,10 @@ public class CrudInvoerMenu {
         } catch (IOException e) {
 		System.out.println("Kan plaatje niet vinden");
 	}
+        FadeTransition ft = new FadeTransition(Duration.millis(1000), root);
+            ft.setFromValue(0.0);
+            ft.setToValue(1.0);
+            ft.play(); 
         
     }
         
