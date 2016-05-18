@@ -345,7 +345,6 @@ public class CrudInvoerMenu {
             facade.zoek(nepAppArray);
             nepAppArray = facade.getToDisplay();
             klant =  (Klant)nepAppArray[0];
-            
             klantIDTF.setText(Integer.toString(klant.getKlantID()));
             klantVoornaamTF.setText(klant.getVoornaam());
             klantAchternaamTF.setText(klant.getAchternaam());
