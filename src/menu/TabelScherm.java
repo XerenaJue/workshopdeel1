@@ -50,6 +50,7 @@ public class TabelScherm {
     private MenuButton btnAdressen;
     private MenuButton btnArtikelen;
     private MenuButton btnBestellingen;
+    private MenuButton btnCrud;
  
     
  public TabelScherm() {
@@ -70,13 +71,8 @@ public class TabelScherm {
     
     public void display() {  
         
-       // clearTables();
-      //  getKlanten();
-      //  setUpForKlanten();
-  
         initializeButtons();
         showDisplay();
- 
     }
     
     private void showDisplay() {
@@ -94,11 +90,11 @@ public class TabelScherm {
     private void initializeButtons() {
         
         btnTerug = new MenuButton("Terug");
-        btnTerug.setOnMouseClicked(event -> {
+        btnTerug.setOnMouseClicked(event -> { clearTables();  refreshPanes("lege tabel"); 
         	window.close();        	
         });       
         btnStop = new MenuButton("Afsluiten");
-        btnStop.setOnMouseClicked(event -> {
+        btnStop.setOnMouseClicked(event -> {  
             System.exit(0);
         }); 
         btnClear = new MenuButton("Clear");
@@ -117,8 +113,12 @@ public class TabelScherm {
                 refreshPanes("Alle bestellingen in de database.");        
         });
         btnArtikelen = new MenuButton("Artikelen");
-        btnArtikelen.setOnMouseClicked(event -> {  clearTables();  refreshPanes("Alle artikelen in de database.");        
+        btnArtikelen.setOnMouseClicked(event -> {   clearTables();  refreshPanes("Alle artikelen in de database.");        
         });
+        btnCrud = new MenuButton("CRUD");
+        btnCrud.setOnMouseClicked(event -> {   openDezeKlantCrud();          
+        });
+       // pojoTabel.setOnMouseClicked(event -> {   openDezeKlantCrud(); } );
         
     }
     
@@ -138,7 +138,8 @@ public class TabelScherm {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnKlanten, btnAdressen, btnBestellingen, btnArtikelen, btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll(btnKlanten, btnAdressen, btnBestellingen, btnArtikelen, btnCrud, 
+                        btnClear, btnTerug, btnStop);
         
     }
       
@@ -236,6 +237,8 @@ public class TabelScherm {
         }
         pojoTabel.getColumns().clear();
         pojoTabel.getColumns().addAll(hoofdKolom);
+      
+        
     }
     
 
@@ -244,5 +247,28 @@ public class TabelScherm {
         weerTeGevenPOJOs.clear(); 
         setUpTabel(Collections.EMPTY_LIST, weerTeGevenPOJOs );
     }
-
+    private void openDezeKlantCrud() {
+        // aleen gebruiken bij klant
+        if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Klant ) {
+        
+            Klant person = (Klant)pojoTabel.getSelectionModel().getSelectedItem();
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+        
+            klantCrud.setKlant(person);
+            klantCrud.zoekKlant();
+            klantCrud.zoekAdresVanKlant(); 
+            klantCrud.startMenu();
+        }
+        else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Adres ) {
+        
+            Adres adres = (Adres)pojoTabel.getSelectionModel().getSelectedItem();
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+        
+            klantCrud.setAdres(adres);
+            klantCrud.zoekKlant();
+            klantCrud.zoekAdresVanKlant(); 
+            klantCrud.startMenu();
+        }
+    }
+    
 }

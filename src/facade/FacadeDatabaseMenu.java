@@ -133,7 +133,7 @@ public class FacadeDatabaseMenu {
     }
      
      public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
-    	
+    	System.out.println("lijst met alle artikelen nog niet zo ver eerst datas splitsen");
          return null;
     } 
         
