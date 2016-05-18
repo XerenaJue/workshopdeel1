@@ -1,6 +1,8 @@
 package opdracht2;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdresDaoImpl implements AdresDao {
 
@@ -145,6 +147,30 @@ public class AdresDaoImpl implements AdresDao {
 			}
 		}
 		return adres;
+	}
+
+	@Override
+	public List<Adres> findAll() throws SQLException {
+		List<Adres> adressen = new ArrayList<>();
+		Adres adres;
+		String query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats FROM klant";
+		
+		try (Connection connection = ConnectionFactory.getMySQLConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(query);
+				ResultSet resultSet = preparedStatement.executeQuery();) {
+
+			adres = new Adres();
+
+			while (resultSet.next()) {
+				adres.setStraatnaam(resultSet.getString("straatnaam"));
+				adres.setPostcode(resultSet.getString("postcode"));
+				adres.setHuisnummer(resultSet.getInt("huisnummer"));
+				adres.setToevoeging(resultSet.getString("toevoeging"));
+				adres.setWoonplaats(resultSet.getString("woonplaats"));
+				adressen.add(adres);
+			}
+		}
+		return adressen;
 	}
 
 }
