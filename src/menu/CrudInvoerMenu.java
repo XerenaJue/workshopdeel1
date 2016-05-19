@@ -4,16 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -36,137 +30,9 @@ import java.util.*;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import javafx.animation.FadeTransition;
-import static javafx.application.Application.launch;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import static javafx.application.Application.launch;
 import javafx.util.Duration;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
 
 
 public class CrudInvoerMenu {
@@ -181,33 +47,34 @@ public class CrudInvoerMenu {
     MenuButton btnTerug;
     MenuButton btnStop;
     MenuButton btnClear;
-    MenuButton btnZoekKlant;
+    MenuButton btnZoek;
     MenuButton btnAdressen;
     MenuButton btnArtikelen;
     MenuButton btnBestellingen;
-    MenuButton btnMaakKlant;
+    MenuButton btnMaak;
     
-    TextField klantIDTF = new TextField();
-    Label klantIdLabel = new Label("Klant ID:");
-    TextField klantAchternaamTF = new TextField();
-    Label klantAchternaamLabel = new Label("Achternaam:");
-    TextField klantVoornaamTF = new TextField();
-    Label klantVoornaamLabel = new Label("Voornaam:");
-    TextField tussenvoegselTF = new TextField();
-    Label tussenvoegselLabel = new Label("tussenvoegsel:");
-    TextField emailTF = new TextField();
-    Label emailLabel = new Label("email:");
     
-    TextField straatnaamTF = new TextField();
-    Label straatnaamLabel = new Label("straatnaam:");
-    TextField huisnrTF = new TextField();
-    Label huisnrLabel = new Label("huisnr:");
-    TextField toevoegingTF = new TextField();
-    Label toevoegingLabel = new Label("toevoeging:");
-    TextField postcodeTF = new TextField();
-    Label postcodeLabel = new Label("postcode:");
-    TextField woonplaatsTF = new TextField();
-    Label plaatsnaamLabel = new Label("plaatsnaam:");
+    TextField klantIDTF;
+    Label klantIdLabel;
+    TextField klantAchternaamTF;
+    Label klantAchternaamLabel;
+    TextField klantVoornaamTF;
+    Label klantVoornaamLabel;
+    TextField tussenvoegselTF;
+    Label tussenvoegselLabel;
+    TextField emailTF;
+    Label emailLabel;
+    
+    TextField straatnaamTF;
+    Label straatnaamLabel;
+    TextField huisnrTF;
+    Label huisnrLabel;
+    TextField toevoegingTF;
+    Label toevoegingLabel;
+    TextField postcodeTF;
+    Label postcodeLabel;
+    TextField woonplaatsTF;
+    Label plaatsnaamLabel;
     
         
     Object[] nepAppArray;
@@ -231,6 +98,7 @@ public class CrudInvoerMenu {
         
         this.setStage();
         this.initializeButtons();
+        this.setLabels();
      
     }
        
@@ -256,7 +124,7 @@ public class CrudInvoerMenu {
            
     }
     
-    private void initializeButtons() {
+    protected void initializeButtons() {
        
         btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
@@ -269,15 +137,46 @@ public class CrudInvoerMenu {
         btnClear = new MenuButton("Clear");
         btnClear.setOnMouseClicked(event -> {  
         }); 
-        btnZoekKlant = new MenuButton("Zoek Klant");
-        btnZoekKlant.setOnMouseClicked(event -> { zoekKlant(); zoekAdresVanKlant();
+        btnZoek = new MenuButton("Zoek Klant");
+        btnZoek.setOnMouseClicked(event -> { zoekKlant(); zoekAdresVanKlant();
                 refreshPanes("Klantgegevens");        
         }); 
-        btnMaakKlant = new MenuButton("Maak Klant");
-        btnMaakKlant.setOnMouseClicked(event -> { maakKlant(); zoekKlant();
+        btnMaak = new MenuButton("Maak Klant");
+        btnMaak.setOnMouseClicked(event -> { maakKlant(); zoekKlant();
                 refreshPanes("Klantgegevens");        
+        }); 
+        btnBestellingen = new MenuButton("Bestellingen");
+        btnBestellingen.setOnMouseClicked(event -> { BestellingScherm besteld = new BestellingScherm(Integer.parseInt(klantIDTF.getText()));  
+               besteld.startMenu(); 
+                besteld.refreshPanes("Bestellingsgegevens");   // even zolang zo
         }); 
           
+    }
+    
+    protected void setLabels() {
+        
+        klantIDTF = new TextField();
+        klantIdLabel = new Label("Klant ID:");
+        klantAchternaamTF = new TextField();
+        klantAchternaamLabel = new Label("Achternaam:");
+        klantVoornaamTF = new TextField();
+        klantVoornaamLabel = new Label("Voornaam:");
+        tussenvoegselTF = new TextField();
+        tussenvoegselLabel = new Label("tussenvoegsel:");
+        emailTF = new TextField();
+        emailLabel = new Label("email:");
+    
+        straatnaamTF = new TextField();
+        straatnaamLabel = new Label("straatnaam:");
+        huisnrTF = new TextField();
+        huisnrLabel = new Label("huisnr:");
+        toevoegingTF = new TextField();
+        toevoegingLabel = new Label("toevoeging:");
+        postcodeTF = new TextField();
+        postcodeLabel = new Label("postcode:");
+        woonplaatsTF = new TextField();
+        plaatsnaamLabel = new Label("plaatsnaam:");
+        
     }
     
     public void refreshPanes(String header) {
@@ -319,11 +218,11 @@ public class CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnZoekKlant, btnMaakKlant, btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll(btnZoek, btnMaak, btnBestellingen,  btnClear, btnTerug, btnStop);
        
     }
       
-    private void setBackground() {
+    protected void setBackground() {
          Image image;
          try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
             image = new Image(input);
