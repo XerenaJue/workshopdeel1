@@ -336,12 +336,15 @@ public class CrudInvoerMenu {
         
     public void zoekKlant()  {
         int input;
+        System.out.println(" klant en array0 koemen binenn..\n klant:"+ klant + "\nen array: " + nepAppArray[0]);
         try {
-            if (klantIDTF.getText().isEmpty()) { input = 0 ;}
+            if (klantIDTF.getText().isEmpty()) { input = 0 ; System.out.println("wordt veranderd "+nepAppArray[0]);}
             else {
                 input = Integer.parseInt(klantIDTF.getText());
             }
             klant.setKlantID(input);
+             System.out.println(" klant is veranderd "+ klant);
+            System.out.println(" en array0 is nu : " + nepAppArray[0]);
             facade.zoek(nepAppArray);
             nepAppArray = facade.getToDisplay();
             klant =  (Klant)nepAppArray[0];
