@@ -32,7 +32,7 @@ public class Bestelling {
         this.klant_id = klant_id;
     }
     
-        public int getArtikel_aantal(){
+    public int getArtikel_aantal(){
         return artikel_aantal;
     }
     
