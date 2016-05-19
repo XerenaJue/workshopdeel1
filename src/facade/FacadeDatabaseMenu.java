@@ -80,9 +80,9 @@ public class FacadeDatabaseMenu {
         else {
             System.out.println("Deze klant bestaat reeds: " + eventueelBestaandeKlant);
         }
-        Klant verseKlant = findKlant(inTeVoerenKlant); // zet m ook op toDisplay
+        Klant verseKlant = findKlant(inTeVoerenKlant); // zet in toe voeren klant ook op toDisplay
         zoek(toDisplay);  //update rest van toDisplay
-        return verseKlant;
+        return verseKlant; // is kopie van die op display staat
     }
     
     public void deleteKlant() throws SQLException {
