@@ -25,12 +25,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
+
+import org.apache.commons.validator.routines.EmailValidator;
+
 import javafx.animation.FadeTransition;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Label;
@@ -212,7 +216,8 @@ public class CrudInvoerMenu {
     Bestelling bestelling = new Bestelling();
     List<Bestelling> bestellingen = new ArrayList<>();
     List<ArtikelPOJO> artikelen =  new ArrayList<>();
-    
+    Label lblStatus = new Label();
+
     
     public CrudInvoerMenu() {  
         
@@ -235,6 +240,7 @@ public class CrudInvoerMenu {
         this.refreshPanes("Klantgegevens");
         root.setCenter(pane);
         root.setRight(vBox);
+        root.setBottom(lblStatus);
     
         window.setScene(scene);
         window.showAndWait();
@@ -362,6 +368,11 @@ public class CrudInvoerMenu {
                 klant.setKlantID(0); // zodat er geen bestaande klant opnieuw aangemaakt wordt, bij maak op bestaanID komt SQLexception
             }
             klant.setAchternaam(klantAchternaamTF.getText());
+            
+            if (!emailCheck(emailTF.getText())) {
+            	return;
+            }
+        	
             klant.setEmail(emailTF.getText());
             klant.setVoornaam(klantVoornaamTF.getText());
             klant.setTussenvoegsel(tussenvoegselTF.getText());
@@ -398,7 +409,16 @@ public class CrudInvoerMenu {
         
     }
     
-    
+    public boolean emailCheck(String email) {
+        EmailValidator emailVal = EmailValidator.getInstance();
+        if(!emailVal.isValid(email)) {
+        	lblStatus.setTextFill(Color.ORANGERED);
+        	lblStatus.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+        	lblStatus.setText("Ongeldig email adres");
+        	return false;
+        }
+        return true;
+    }
  
 }
 
