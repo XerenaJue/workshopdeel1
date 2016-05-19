@@ -5,6 +5,9 @@
  */
 package menu;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,12 +17,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import opdracht2.Bestelling;
+import opdracht2.Klant;
 
 /**
  *
@@ -27,30 +30,41 @@ import opdracht2.Bestelling;
  */
 public class BestellingScherm extends CrudInvoerMenu {
     
-    private List<Bestelling> mijnBestellingen;
+    
     MenuButton btnZoekBestellingen;
     private final TableView pojoTabel;
-    private ObservableList weerTeGevenPOJOs;
+    private final ObservableList weerTeGevenPOJOs;
+    private final Klant dezeKlant;
     
-    BestellingScherm(int klantnr) {
+    Label lbl1a, lbl1b, lbl2a , lbl2b;
+    
+    
+    
+    BestellingScherm(Object[] nepAppArray) {
+         
         super();
+        
+        dezeKlant = (Klant)nepAppArray[0];
         pojoTabel = new TableView<>();
         weerTeGevenPOJOs = FXCollections.observableArrayList();
-        
-        pojoTabel.setMaxSize(300, 700); // nog verplaatsen
-        pojoTabel.setMinSize(250, 700);
-        
+        super.nepAppArray = nepAppArray;
+     
+      
+      
     }
     
     @Override
     public void startMenu() {
               
-        this.setBackground();
-        this.refreshPanes("Klantgegevens");
+        super.setBackground();
         root.setCenter(pane);
         root.setRight(vBox);
         root.setBottom(pojoTabel);
-    
+              
+        setUpForBestellingen();
+        zoekBestellingen();
+        this.refreshPanes("Bestelgegevens");
+        schrijfLabels();
         window.setScene(scene);
         window.showAndWait();
     }
@@ -61,24 +75,18 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnTerug = new MenuButton("Terug");
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
-        });       
-        btnStop = new MenuButton("Afsluiten");
-        btnStop.setOnMouseClicked(event -> {
-            System.exit(0);
-        }); 
-        btnClear = new MenuButton("Clear");
-        btnClear.setOnMouseClicked(event -> {  
-        }); 
-        btnZoek = new MenuButton("Zoek Bestellingen");
-        btnZoek.setOnMouseClicked(event -> { zoekKlant(); zoekAdresVanKlant();
+        });
+        btnZoek = new MenuButton("Voeg artikel toe");
+        btnZoek.setOnMouseClicked(event -> {   System.out.println(klant); 
                 refreshPanes("Bestellingsgegevens");        
-        }); 
-        btnMaak = new MenuButton("Maak nieuwe bestelling");
-        btnMaak.setOnMouseClicked(event -> { maakKlant(); zoekKlant();
+        });
+        btnMaak = new MenuButton("Nieuwe bestelling ");
+        btnMaak.setOnMouseClicked(event -> { System.out.println("click Maakbutton met arrayklant "+nepAppArray[0]); plaatsBestelling();
                 refreshPanes("Bestellingsgegevens");        
         }); 
           
     }
+                
     @Override
     public void refreshPanes(String header) {
        
@@ -92,46 +100,38 @@ public class BestellingScherm extends CrudInvoerMenu {
         pane.setPadding(new Insets(50, 50, 15, 50));
         pane.add(txtTitel, 0, 0, 5, 1);
         pane.setHalignment(txtTitel, HPos.CENTER);
-        pane.add(klantIDTF, 5, 1, 5, 5);
-        pane.add(klantIdLabel, 0, 1, 5, 5);
-        pane.add(klantAchternaamTF, 5, 5, 5, 5);
-        pane.add(klantAchternaamLabel, 0, 5, 5, 5);
-        pane.add(klantVoornaamTF, 5, 10, 5, 5);
-        pane.add(klantVoornaamLabel, 0, 10, 5, 5);
-        pane.add(tussenvoegselTF, 5, 14, 5, 5);
-        pane.add(tussenvoegselLabel, 0, 14, 5, 5);
-        pane.add(emailTF, 5, 18, 5, 5);
-        pane.add(emailLabel, 0, 18, 5, 5);
-        
-           
+        pane.add(lbl1b, 5, 1, 5, 5);
+        pane.add(lbl1a, 0, 1, 5, 5);
+        pane.add(lbl2b, 5, 5, 5, 5);
+        pane.add(lbl2a, 0, 5, 5, 5);
+                        
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnZoek, btnMaak, btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll( btnTerug, btnZoek, btnMaak);
        
     }
     @Override
     protected void setLabels() {
         
-        klantIDTF = new TextField();
-        klantIdLabel = new Label("Klant ID:");
-        klantAchternaamTF = new TextField();
-        klantAchternaamLabel = new Label("Achternaam klant:");
-        klantVoornaamTF = new TextField();
-        klantVoornaamLabel = new Label("Bestellingsnr:");
-        tussenvoegselTF = new TextField();
-        tussenvoegselLabel = new Label("aantal artikelen");
-        emailTF = new TextField();
-        emailLabel = new Label("totaalbedrag");
-    
-        
-        
+        lbl1a= new Label("Klant ID:");
+        lbl1b = new Label(Integer.toString(klant.getKlantID()));
+        lbl2a = new Label("Achternaam klant:");
+        lbl2b = new Label(klant.getAchternaam());
+             
+    }
+     private void setUpForBestellingen() {
+   
+        List<String> pojoVelden = new ArrayList<>();
+        pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
+        setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
-      private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
+    
+    private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
         
         pojoTabel.setItems(pojos);
-        pojoTabel.setMaxSize(600, 1000);
+        pojoTabel.setMaxSize(300, 1000);
         pojoTabel.setMinSize(250, 300);
         
         int aantalKolommen = pojoVelden.size();
@@ -151,9 +151,36 @@ public class BestellingScherm extends CrudInvoerMenu {
         }
         pojoTabel.getColumns().clear();
         pojoTabel.getColumns().addAll(hoofdKolom);
-      
-        
+          
     }
     
+    private void zoekBestellingen() {
+        weerTeGevenPOJOs.clear();   
+        weerTeGevenPOJOs.addAll( (List)nepAppArray[2]);
+    }
+    
+    private void plaatsBestelling() {
+       try {
+            facade.zoek(nepAppArray);
+            facade.createBestelling();
+            nepAppArray = facade.getToDisplay();
+            facade.zoek(nepAppArray);
+            nepAppArray = facade.getToDisplay();
+           
+            setUpForBestellingen();
+            zoekBestellingen(); 
+         
+       }
+       catch (SQLException e) {
+           e.printStackTrace();
+           System.out.println("wordt nu wel ver gegooid deze SQL exc in Bestellingscherm.plaatsbestelling");
+       }
+    }
+      
+    private void schrijfLabels() {
+        
+      lbl2b.setText(dezeKlant.getAchternaam());
+      lbl1b.setText(Integer.toString(dezeKlant.getKlantID()));  
+    }
 }
 

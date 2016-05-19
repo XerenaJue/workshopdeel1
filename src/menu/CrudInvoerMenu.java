@@ -95,7 +95,7 @@ public class CrudInvoerMenu {
         nepAppArray[2] = bestellingen;
         nepAppArray[3] = artikelen;
         nepAppArray[4] = new ArrayList<Bestelling>();
-        
+       
         this.setStage();
         this.initializeButtons();
         this.setLabels();
@@ -146,9 +146,9 @@ public class CrudInvoerMenu {
                 refreshPanes("Klantgegevens");        
         }); 
         btnBestellingen = new MenuButton("Bestellingen");
-        btnBestellingen.setOnMouseClicked(event -> { BestellingScherm besteld = new BestellingScherm(Integer.parseInt(klantIDTF.getText()));  
+        btnBestellingen.setOnMouseClicked(event -> { BestellingScherm besteld = new BestellingScherm(nepAppArray);  
                besteld.startMenu(); 
-                besteld.refreshPanes("Bestellingsgegevens");   // even zolang zo
+                besteld.refreshPanes("Bestellingsgegevens");  
         }); 
           
     }
@@ -212,14 +212,11 @@ public class CrudInvoerMenu {
         pane.add(postcodeLabel, 0, 36, 5, 5);
         pane.add(woonplaatsTF, 5, 40, 5, 5);
         pane.add(plaatsnaamLabel, 0, 40, 5, 5);
-        
-        
-        
+               
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
         vBox.getChildren().addAll(btnZoek, btnMaak, btnBestellingen,  btnClear, btnTerug, btnStop);
-       
     }
       
     protected void setBackground() {
@@ -233,9 +230,9 @@ public class CrudInvoerMenu {
 		System.out.println("Kan plaatje niet vinden");
 	}
         FadeTransition ft = new FadeTransition(Duration.millis(1000), root);
-            ft.setFromValue(0.0);
-            ft.setToValue(1.0);
-            ft.play(); 
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play(); 
         
     }
         
@@ -271,7 +268,6 @@ public class CrudInvoerMenu {
             if (!emailCheck(emailTF.getText())) {
             	return;
             }
-        	
             klant.setEmail(emailTF.getText());
             klant.setVoornaam(klantVoornaamTF.getText());
             klant.setTussenvoegsel(tussenvoegselTF.getText());
@@ -287,16 +283,14 @@ public class CrudInvoerMenu {
     
     public void zoekAdresVanKlant()  {
                             
-            nepAppArray = facade.getToDisplay();
-            adres =  (Adres)nepAppArray[1];
+        nepAppArray = facade.getToDisplay();
+        adres =  (Adres)nepAppArray[1];
             
-            straatnaamTF.setText(adres.getStraatnaam());
-            huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
-            toevoegingTF.setText(adres.getToevoeging()) ;
-            postcodeTF.setText(adres.getPostcode());
-            woonplaatsTF.setText(adres.getWoonplaats());
-            
-        
+        straatnaamTF.setText(adres.getStraatnaam());
+        huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
+        toevoegingTF.setText(adres.getToevoeging()) ;
+        postcodeTF.setText(adres.getPostcode());
+        woonplaatsTF.setText(adres.getWoonplaats());
     }
     public void setKlant(Klant bestaandeKlant) {
                 

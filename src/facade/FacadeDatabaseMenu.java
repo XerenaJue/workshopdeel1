@@ -161,6 +161,15 @@ public class FacadeDatabaseMenu {
                                                                                     
         return bestellingen;
     } 
+    
+    public Bestelling createBestelling() throws SQLException{
+        System.out.println("nog leeg? " + (Klant)toDisplay[0]);
+        Bestelling netBesteld = bestellingDAO.createBestelling((Klant)toDisplay[0]);
+        
+        findBestellingen((Klant)toDisplay[0]);
+        
+        return netBesteld;
+    }
      
     private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
        artikelen = new ArrayList<>();
