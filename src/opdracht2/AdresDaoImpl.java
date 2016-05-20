@@ -12,6 +12,7 @@ public class AdresDaoImpl implements AdresDao {
 
 	public Adres findAdres(String straatnaam, String postcode, int huisnummer, String toevoeging, String woonplaats)
 			throws SQLException {
+		
 		Klant klant;
 		Adres adres;
 
