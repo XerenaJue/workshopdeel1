@@ -8,6 +8,7 @@ public class KlantDAOImpl implements KlantDAO {
     ResultSet resultSet;
     PreparedStatement statement;
     
+    //test
     @Override
     public Klant findKlant(Klant bestaandeKlant) throws SQLException {
         
