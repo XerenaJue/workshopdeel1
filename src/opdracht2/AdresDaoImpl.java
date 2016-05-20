@@ -65,7 +65,6 @@ public class AdresDaoImpl implements AdresDao {
 				adres.setHuisnummer(resultSet.getInt("huisnummer"));
 				adres.setToevoeging(resultSet.getString("toevoeging"));
 				adres.setWoonplaats(resultSet.getString("woonplaats"));
-
 			}
 		}
 		return adres;
@@ -90,9 +89,7 @@ public class AdresDaoImpl implements AdresDao {
 			if (rowsInserted > 0) {
 				System.out.println("Adres gegevens zijn succesvol aangepast");
 			}
-
 		}
-
 	}
 
 	@Override
@@ -154,12 +151,10 @@ public class AdresDaoImpl implements AdresDao {
 		List<Adres> adressen = new ArrayList<>();
 		Adres adres;
 		String query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats FROM klant";
-		
+
 		try (Connection connection = ConnectionFactory.getMySQLConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query);
 				ResultSet resultSet = preparedStatement.executeQuery();) {
-
-			
 
 			while (resultSet.next()) {
 				adres = new Adres();
