@@ -253,21 +253,21 @@ public class TabelScherm {
         
             Klant person = (Klant)pojoTabel.getSelectionModel().getSelectedItem();
             CrudInvoerMenu klantCrud = new CrudInvoerMenu();
-        
+            klantCrud.prepareMenu();
             klantCrud.setKlant(person);
             klantCrud.zoekKlant();
             klantCrud.zoekAdresVanKlant(); 
-            klantCrud.startMenu();
+            klantCrud.showMenu();
         }
         else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Adres ) {
         
             Adres adres = (Adres)pojoTabel.getSelectionModel().getSelectedItem();
             CrudInvoerMenu klantCrud = new CrudInvoerMenu();
-        
+            klantCrud.prepareMenu();
             klantCrud.setAdres(adres);
             klantCrud.zoekKlant();
             klantCrud.zoekAdresVanKlant(); 
-            klantCrud.startMenu();
+            klantCrud.showMenu();
         }
     }
     

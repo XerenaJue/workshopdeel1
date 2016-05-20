@@ -21,7 +21,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import opdracht2.Bestelling;
 import opdracht2.Klant;
 
 /**
@@ -43,28 +42,29 @@ public class BestellingScherm extends CrudInvoerMenu {
     BestellingScherm(Object[] nepAppArray) {
          
         super();
-        
         dezeKlant = (Klant)nepAppArray[0];
         pojoTabel = new TableView<>();
         weerTeGevenPOJOs = FXCollections.observableArrayList();
         super.nepAppArray = nepAppArray;
-     
-      
-      
+          
     }
     
     @Override
     public void startMenu() {
-              
+       
+        this.setStage();
+        this.initializeButtons();
+        this.setLabels();
         super.setBackground();
         root.setCenter(pane);
         root.setRight(vBox);
         root.setBottom(pojoTabel);
-              
+             
         setUpForBestellingen();
         zoekBestellingen();
-        this.refreshPanes("Bestelgegevens");
         schrijfLabels();
+       
+        this.refreshPanes("Bestelgegevens");
         window.setScene(scene);
         window.showAndWait();
     }

@@ -96,25 +96,36 @@ public class CrudInvoerMenu {
         nepAppArray[3] = artikelen;
         nepAppArray[4] = new ArrayList<Bestelling>();
        
-        this.setStage();
-        this.initializeButtons();
-        this.setLabels();
+      //  this.setStage();
+     //   this.initializeButtons();
+      //  this.setLabels();
      
     }
        
     public void startMenu() {
-              
+        
+        prepareMenu();
+        showMenu();
+    }
+    public void prepareMenu() {
+       
+        this.setStage();
+        this.initializeButtons();
+        this.setLabels();
         this.setBackground();
+    }
+    
+    protected void showMenu() {
+        
         this.refreshPanes("Klantgegevens");
         root.setCenter(pane);
         root.setRight(vBox);
         root.setBottom(lblStatus);
-    
         window.setScene(scene);
         window.showAndWait();
+        
     }
-    
-    private void setStage() {
+    protected void setStage() {
         
         window = new Stage();
         root = new BorderPane();
