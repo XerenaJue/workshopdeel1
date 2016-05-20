@@ -138,7 +138,7 @@ public class CrudInvoerMenu {
         btnClear.setOnMouseClicked(event -> {  
         }); 
         btnZoek = new MenuButton("Zoek Klant");
-        btnZoek.setOnMouseClicked(event -> { zoekKlant(); zoekAdresVanKlant();
+        btnZoek.setOnMouseClicked(event -> { getIDfromInputField(); zoekKlant(); zoekAdresVanKlant();
                 refreshPanes("Klantgegevens");        
         }); 
         btnMaak = new MenuButton("Maak Klant");
@@ -237,13 +237,9 @@ public class CrudInvoerMenu {
     }
         
     public void zoekKlant()  {
-        int input;
+     
         try {
-            if (klantIDTF.getText().isEmpty()) { input = 0 ; }
-            else {
-                input = Integer.parseInt(klantIDTF.getText());
-            }
-            klant.setKlantID(input);
+       
             facade.zoek(nepAppArray);
             nepAppArray = facade.getToDisplay();
             klant =  (Klant)nepAppArray[0];
@@ -293,8 +289,9 @@ public class CrudInvoerMenu {
         woonplaatsTF.setText(adres.getWoonplaats());
     }
     public void setKlant(Klant bestaandeKlant) {
-                
-        klantIDTF.setText(Integer.toString(bestaandeKlant.getKlantID()));
+    
+        nepAppArray[0] = bestaandeKlant;   
+        
     }
     public void setAdres(Adres bestaandAdres) {
                 
@@ -312,6 +309,16 @@ public class CrudInvoerMenu {
         }
         return true;
     }
+    public void getIDfromInputField() {
+        
+        int input;
+        if (klantIDTF.getText().isEmpty()) { input = 0 ; }
+        else {
+             input = Integer.parseInt(klantIDTF.getText());
+        }
+        klant.setKlantID(input);   
+    } 
+    
  
 }
 
