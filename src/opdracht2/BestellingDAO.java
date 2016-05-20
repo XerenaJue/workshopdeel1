@@ -23,17 +23,17 @@ public class BestellingDAO{
 
 //no args constructor
     
-    public BestellingDAO() throws SQLException, ClassNotFoundException{
-            Class.forName("com.mysql.jdbc.Driver");
+    public BestellingDAO(){
+
     }
     
     //overloaded getter method voor bestelling_id
 
     //overloaded getter method voor klant_id
-    public Bestelling readBestelling(int klant_id) throws SQLException, ClassNotFoundException{
+    public Bestelling readBestelling(int klant_id) throws SQLException{
         System.out.println("geen resultset");
         Bestelling bestelling = new Bestelling();
-        String SQLStatement = "SELECT * FROM bestelling WHERE bestelling_id = '3'";
+        String SQLStatement = "SELECT * FROM bestelling WHERE bestelling_id =" + klant_id;
         try{
         createCS(SQLStatement);
         //statement.setInt(1, klant_id);
@@ -56,7 +56,7 @@ public class BestellingDAO{
         return bestelling; 
     }
     
-    public void createCS(String SQLStatement) throws SQLException, ClassNotFoundException{
+    public void createCS(String SQLStatement) throws SQLException{
         connection = ConnectionFactory.getMySQLConnection();
         statement = connection.prepareStatement(SQLStatement);
     }
@@ -90,26 +90,36 @@ public class BestellingDAO{
        // }
     //}
     
-    public void createBestelling(Klant klant)throws SQLException, ClassNotFoundException{
-           String SQLStatement = "Insert into Bestelling (artikel_aantal, artikel2_aantal, artikel3_aantal, klant_id) values (?, ?, ?, ?)" ;
+    public void createBestelling(Klant klant)throws SQLException{
         try {
+           String SQLStatement = "UPDATE bestelling SET bestelling_id = ?, artikel_aantal = ?, artikel2_aantal = ?, artikel3_aantal = ? WHERE klant_id = ?";
+
             Bestelling bestelling = new Bestelling();
+           bestelling.setAantalArtikel1(1);
+           bestelling.setAantalArtikel2(2);
+           bestelling.setAantalArtikel3(3);
+
             connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(SQLStatement, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, bestelling.getArtikel_aantal());
-            statement.setInt(2, bestelling.getAantalArtikel2());
-            statement.setInt(3, bestelling.getAantalArtikel3());
-            statement.setInt(4, klant.getKlantID());
-            statement.executeUpdate();
-            
-            
-            
             //wijs door database gegenereerde id toe aan bestelling
             resultSet = statement.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 bestelling.setBestellingID(resultSet.getInt(1));
             }
+                   System.out.println(bestelling.getBestelling_id());
+            statement.setInt(1, bestelling.getBestelling_id());
+            statement.setInt(2, klant.getKlantID());
+            System.out.println(klant.getKlantID());
+                   System.out.println(bestelling.getArtikel_aantal());
+            statement.setInt(3, bestelling.getArtikel_aantal());
+            statement.setInt(4, bestelling.getAantalArtikel2());
+            statement.setInt(5, bestelling.getAantalArtikel3());
+            statement.executeUpdate();
+            
+            
+            
+
             
             
 
@@ -122,9 +132,9 @@ public class BestellingDAO{
     }
     
     //overloaded setter method voor klant_id
-    public void updateBestelling(Bestelling bestelling) throws SQLException, ClassNotFoundException{
+    public void updateBestelling(Bestelling bestelling) throws SQLException{
            String SQLStatement = 
-                   "update Bestelling set artikel_aantal = ?, artikel2_aantal = ?, artikel3_aantal = ? where bestelling_id = ?"; 
+                   "update bestelling set artikel_aantal = ?, artikel2_aantal = ?, artikel3_aantal = ? where bestelling_id = ?"; 
         try {
             createCS(SQLStatement);
             statement.setInt(1,bestelling.getArtikel_aantal());
@@ -140,14 +150,12 @@ public class BestellingDAO{
         
     }
     
-    public void createBestellingRow(int klant_id, String... rowInserts){
-        
-    }
+
     
-    public void deleteBestelling(Bestelling bestelling) throws SQLException, ClassNotFoundException{
+    public void deleteBestelling(Bestelling bestelling) throws SQLException{
     
                String SQLStatement = 
-                   "delete from Bestelling where bestelling_id = ?"; 
+                   "delete from bestelling where bestelling_id = ?"; 
         try {
             createCS(SQLStatement);
             statement.setInt(1,bestelling.getBestelling_id());
@@ -161,11 +169,18 @@ public class BestellingDAO{
     }
     public static void main(String args[]) throws SQLException, ClassNotFoundException{
         BestellingDAO test = new BestellingDAO();
-        Bestelling bestelling = test.readBestelling(3);
-        System.out.println("BestellingsID: " + bestelling.getBestelling_id());
-        System.out.println("Artikel aantal: " + bestelling.getArtikel_aantal());
-                System.out.println("tostring"+ bestelling.toString());
-                    System.out.println("blablablabla");
+        Klant klant = new Klant();
+        klant.setKlantID(15);
+        test.createBestelling(klant);
+        //Bestelling bestelling = new Bestelling();
+        //bestelling.setBestellingID(16);
+        //test.deleteBestelling(bestelling);
+        
+        //Bestelling bestelling = test.readBestelling(3);
+        //System.out.println("BestellingsID: " + bestelling.getBestelling_id());
+        //System.out.println("Artikel aantal: " + bestelling.getArtikel_aantal());
+         //       System.out.println("tostring"+ bestelling.toString());
+         //           System.out.println("blablablabla");
     }
             
 }
