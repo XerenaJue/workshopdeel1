@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package opdracht2;
-
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 /**
  *
  * @author maurice
@@ -60,5 +61,22 @@ public class Bestelling {
         return "Bestelling_ID: " + bestelling_id + ", klant ID: " + klant_id +",artikel aantal: " +artikel_aantal +
                 ", artikel 2 aantal: " + artikel2_aantal + "artikel 3 aantal: " + artikel3_aantal;
 
-    } 
+    }
+    
+        @Override
+    public int hashCode() {
+        return new HashCodeBuilder(37, 41).append(bestelling_id).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof Bestelling))
+            return false;
+        if (obj == this)
+            return true;
+
+        Bestelling anderArtikel = (Bestelling) obj;
+        return new EqualsBuilder().
+            append(bestelling_id, anderArtikel.getBestelling_id()).isEquals();
+    }
 }
