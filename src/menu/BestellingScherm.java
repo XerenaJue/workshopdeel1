@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import opdracht2.Klant;
+import opdracht2.Bestelling;
 
 /**
  *
@@ -83,6 +84,10 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnMaak = new MenuButton("Nieuwe bestelling ");
         btnMaak.setOnMouseClicked(event -> { System.out.println("click Maakbutton met arrayklant "+nepAppArray[0]); plaatsBestelling();
                 refreshPanes("Bestellingsgegevens");        
+        });
+        btnVerwijder = new MenuButton("Verwijder bestelling");
+        btnVerwijder.setOnMouseClicked(event -> { System.out.println("click Deletebutton "+nepAppArray[0]); verwijderBestelling();
+                refreshPanes("Bestellingsgegevens");        
         }); 
           
     }
@@ -108,7 +113,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll( btnTerug, btnZoek, btnMaak);
+        vBox.getChildren().addAll( btnTerug, btnZoek, btnMaak, btnVerwijder);
        
     }
     @Override
@@ -157,6 +162,17 @@ public class BestellingScherm extends CrudInvoerMenu {
     private void zoekBestellingen() {
         weerTeGevenPOJOs.clear();   
         weerTeGevenPOJOs.addAll( (List)nepAppArray[2]);
+    }
+    
+    
+    private void verwijderBestelling(){
+        try {           
+            facade.deleteBestelling((Bestelling)pojoTabel.getSelectionModel().getSelectedItem()); // dit komt uit TabelScherm.java
+        }
+           catch (SQLException e) {
+           e.printStackTrace();
+           System.out.println("verwijdering niet gelukt");
+       }
     }
     
     private void plaatsBestelling() {
