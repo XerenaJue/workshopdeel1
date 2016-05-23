@@ -53,6 +53,7 @@ public class CrudInvoerMenu {
     MenuButton btnBestellingen;
     MenuButton btnMaak;
     MenuButton btnUpdate;
+    MenuButton btnDelete;
     
     
     TextField klantIDTF;
@@ -166,6 +167,10 @@ public class CrudInvoerMenu {
         btnUpdate.setOnMouseClicked(event -> { getIDfromInputField(); updateKlant(); updateAdres();
         	refreshPanes("Klantgegevens");        	
         });
+        btnDelete = new MenuButton("Verwijder Klant");
+        btnDelete.setOnMouseClicked(event -> { getIDfromInputField(); deleteKlant();
+        	refreshPanes("Klantgegevens");
+        });
           
     }
     
@@ -232,7 +237,7 @@ public class CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnZoek, btnMaak, btnUpdate, btnBestellingen,  btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll(btnZoek, btnMaak, btnUpdate, btnDelete, btnBestellingen,  btnClear, btnTerug, btnStop);
     }
       
     protected void setBackground() {
@@ -370,7 +375,14 @@ public class CrudInvoerMenu {
 		}
     	
     }
-    
+    public void deleteKlant() {
+    	try {
+    		klant.setKlantID(Integer.parseInt(klantIDTF.getText()));
+    		facade.deleteKlant(klant);
+    	} catch (SQLException ex) {
+    		System.out.println("Nog op te lossen");
+    	}
+    }
  
 }
 
