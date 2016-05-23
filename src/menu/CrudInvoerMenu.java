@@ -378,7 +378,8 @@ public class CrudInvoerMenu {
     public void deleteKlant() {
     	try {
     		klant.setKlantID(Integer.parseInt(klantIDTF.getText()));
-    		facade.deleteKlant(klant);
+    		facade.deleteKlant();
+    		nepAppArray = facade.getToDisplay();
     	} catch (SQLException ex) {
     		System.out.println("Nog op te lossen");
     	}

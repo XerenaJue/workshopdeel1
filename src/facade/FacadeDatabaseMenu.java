@@ -90,7 +90,7 @@ public class FacadeDatabaseMenu {
     
     }
     
-    public void deleteKlant(Klant overbodigeKlant) throws SQLException {
+    private void deleteKlant(Klant overbodigeKlant) throws SQLException {
         bestellingDAO.deleteBestellingen(overbodigeKlant);
         klantDAO.delete(overbodigeKlant);
         this.zoek(toDisplay); // update scherm
