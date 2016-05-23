@@ -354,13 +354,16 @@ public class CrudInvoerMenu {
     public void updateAdres() {
     	
     	try {
-    	adres.setStraatnaam(straatnaamTF.getText());
-		adres.setHuisnummer(Integer.parseInt(huisnrTF.getText()));
-		adres.setToevoeging(toevoegingTF.getText()) ;
-		adres.setPostcode(postcodeTF.getText());
-		adres.setWoonplaats(woonplaatsTF.getText());
-		facade.update(klant.getKlantID(), adres);
-		nepAppArray = facade.getToDisplay();
+    		klant.setKlantID(Integer.parseInt(klantIDTF.getText()));
+    		
+    		adres.setStraatnaam(straatnaamTF.getText());
+    		adres.setHuisnummer(Integer.parseInt(huisnrTF.getText()));
+    		adres.setToevoeging(toevoegingTF.getText()) ;
+    		adres.setPostcode(postcodeTF.getText());
+    		adres.setWoonplaats(woonplaatsTF.getText());
+    		facade.update(klant.getKlantID(), adres);
+    		
+    		nepAppArray = facade.getToDisplay();
 		
 		} catch (SQLException e) {
 			System.out.println("Nog op te lossen");

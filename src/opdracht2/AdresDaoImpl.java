@@ -74,7 +74,7 @@ public class AdresDaoImpl implements AdresDao {
 	@Override
 	public void update(int klant_id, Adres adres) throws SQLException {
 		String query = "UPDATE klant SET straatnaam = ?, postcode = ?, "
-				+ "huisnummer = ?, toevoeging = ?, woonplaats = ?";
+				+ "huisnummer = ?, toevoeging = ?, woonplaats = ? WHERE klant_id =" + klant_id;
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query);) {
