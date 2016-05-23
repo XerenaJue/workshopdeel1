@@ -89,7 +89,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnVerwijder.setOnMouseClicked(event -> { System.out.println("click Deletebutton "+nepAppArray[0]); verwijderBestelling();
                 refreshPanes("Bestellingsgegevens");        
         }); 
-          
+        //blll  
     }
                 
     @Override
