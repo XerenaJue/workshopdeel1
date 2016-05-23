@@ -53,6 +53,7 @@ public class CrudInvoerMenu {
     MenuButton btnBestellingen;
     MenuButton btnMaak;
     MenuButton btnUpdate;
+    MenuButton btnVerwijder;
     
     
     TextField klantIDTF;
