@@ -185,6 +185,10 @@ public class FacadeDatabaseMenu {
      
        return artikelen;
    }
+   public void update(int klant_id, Adres adres) throws SQLException {
+	   adresDAO.update(klant_id, adres);
+	   
+   }
    
 
 }

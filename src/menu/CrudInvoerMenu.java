@@ -52,6 +52,7 @@ public class CrudInvoerMenu {
     MenuButton btnArtikelen;
     MenuButton btnBestellingen;
     MenuButton btnMaak;
+    MenuButton btnUpdate;
     
     
     TextField klantIDTF;
@@ -161,6 +162,10 @@ public class CrudInvoerMenu {
                besteld.startMenu(); 
                 besteld.refreshPanes("Bestellingsgegevens");  
         }); 
+        btnUpdate = new MenuButton("Pas Klant Aan");
+        btnUpdate.setOnMouseClicked(event -> { getIDfromInputField(); updateKlant(); updateAdres();
+        	refreshPanes("Klantgegevens");        	
+        });
           
     }
     
@@ -227,7 +232,7 @@ public class CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnZoek, btnMaak, btnBestellingen,  btnClear, btnTerug, btnStop);
+        vBox.getChildren().addAll(btnZoek, btnMaak, btnUpdate, btnBestellingen,  btnClear, btnTerug, btnStop);
     }
       
     protected void setBackground() {
@@ -328,7 +333,40 @@ public class CrudInvoerMenu {
              input = Integer.parseInt(klantIDTF.getText());
         }
         klant.setKlantID(input);   
-    } 
+    }
+    public void updateKlant() {
+    	try {
+    		klant.setAchternaam(klantAchternaamTF.getText());
+		 
+    		if (!emailCheck(emailTF.getText())) {
+		 	return;
+    		}
+    		klant.setEmail(emailTF.getText());
+    		klant.setVoornaam(klantVoornaamTF.getText());
+    		klant.setTussenvoegsel(tussenvoegselTF.getText());
+    		facade.updateKlant(klant);
+    		nepAppArray = facade.getToDisplay();
+		 
+    } catch (SQLException ex) {
+    	System.out.println("Nog op te lossen");
+    	}
+    }
+    public void updateAdres() {
+    	
+    	try {
+    	adres.setStraatnaam(straatnaamTF.getText());
+		adres.setHuisnummer(Integer.parseInt(huisnrTF.getText()));
+		adres.setToevoeging(toevoegingTF.getText()) ;
+		adres.setPostcode(postcodeTF.getText());
+		adres.setWoonplaats(woonplaatsTF.getText());
+		facade.update(klant.getKlantID(), adres);
+		nepAppArray = facade.getToDisplay();
+		
+		} catch (SQLException e) {
+			System.out.println("Nog op te lossen");
+		}
+    	
+    }
     
  
 }
