@@ -57,8 +57,8 @@ public class BestellingDAOTest {
         expResult.setBestellingID(3);
         expResult.setAantalArtikel1(4);
         Bestelling result = instance.readBestelling(klant_id);
-        assertEquals(expResult.getBestelling(), result.getBestelling());
-        assertEquals(expResult.getAantalArtikel1(), result.getAantalArtikel1());
+        assertEquals(expResult.getBestelling_id(), result.getBestelling_id());
+        assertEquals(expResult.getArtikel_aantal(), result.getArtikel_aantal());
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

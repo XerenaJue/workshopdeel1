@@ -170,6 +170,11 @@ public class FacadeDatabaseMenu {
         
         return netBesteld;
     }
+    
+    public void deleteBestelling(Bestelling bestelling) throws SQLException{
+       BestellingDAO bestellingDAO = new BestellingDAO();
+       bestellingDAO.deleteBestelling(bestelling);
+    }
      
     private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
        artikelen = new ArrayList<>();

@@ -23,8 +23,7 @@ public class BestellingDAOTest {
     
     @Before
     public void setUp() throws SQLException, ClassNotFoundException {
-        FillBatchDatabase.addSomeRandomKlanten();
-        FillBatchDatabase.addSomeBestellingen();
+
         
     }
     
