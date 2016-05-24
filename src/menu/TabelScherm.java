@@ -269,6 +269,18 @@ public class TabelScherm {
             klantCrud.zoekAdresVanKlant(); 
             klantCrud.showMenu();
         }
+        else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Bestelling ) {
+        
+            Bestelling bestelling = (Bestelling)pojoTabel.getSelectionModel().getSelectedItem();
+            Klant klant = new Klant();
+            klant.setKlantID(bestelling.getKlant_id());
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+            klantCrud.prepareMenu();
+            klantCrud.setKlant(klant);
+            klantCrud.zoekKlant();
+            klantCrud.zoekAdresVanKlant(); 
+            klantCrud.showMenu();
+        }
     }
     
 }
