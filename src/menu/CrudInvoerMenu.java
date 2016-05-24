@@ -335,6 +335,10 @@ public class CrudInvoerMenu {
 
 	}
 
+
+                
+
+
 	public boolean emailCheck(String email) {
 		EmailValidator emailVal = EmailValidator.getInstance();
 		if (!emailVal.isValid(email)) {
