@@ -168,7 +168,14 @@ public class BestellingScherm extends CrudInvoerMenu {
     private void verwijderBestelling(){
         try {           
             facade.deleteBestelling((Bestelling)pojoTabel.getSelectionModel().getSelectedItem()); // dit komt uit TabelScherm.java
+            //nepAppArray = facade.getToDisplay();
+            facade.zoek(nepAppArray);
+            nepAppArray = facade.getToDisplay();
+            setUpForBestellingen();
+            zoekBestellingen();
+            System.out.println("verwijdering gelukt1111");
         }
+        
            catch (SQLException e) {
            e.printStackTrace();
            System.out.println("verwijdering niet gelukt");
