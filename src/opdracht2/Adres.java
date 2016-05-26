@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.*;
 
 public class Adres {
     
+	private int adres_id;
     private String straatnaam;
     private String postcode;
     private String toevoeging;
@@ -11,6 +12,14 @@ public class Adres {
     private String woonplaats;
     
     public Adres() {}
+    
+    public int getAdresID() {
+    	return adres_id;
+    }
+    
+    public void setAdresID(int adres_id) {
+    	this.adres_id = adres_id;
+    }
     
     public String getStraatnaam() {
         return straatnaam;        
