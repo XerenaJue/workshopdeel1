@@ -23,7 +23,11 @@ public class FillBatchDatabase {
         
         try { 
             addSomeRandomKlanten(aantal);
-            addSomeBestellingen((int)(aantal * 0.9));
+            addSomeRandomAdresses(aantal);
+            koppelKlantenAdressen(aantal);
+            addSomeBestellingen(aantal);
+            addSomeArtikelen(8);
+            koppelBestellingArtikel((int)(aantal * 1.4));
         }
         catch (SQLException ex) {
             System.out.println("er gaat hier wat fout in batchschrijven");
@@ -32,12 +36,10 @@ public class FillBatchDatabase {
     } 
     
     public static void addSomeRandomKlanten(int aantal) throws SQLException{
-        String query = "Insert into klant(voornaam, achternaam, tussenvoegsel, email, "
-                    + "straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
-                    + " values (?, ? ,?, ?, ?, ?, ?, ?, ? )";
+        String query1 = "INSERT INTO klant(voornaam, achternaam, tussenvoegsel, email) VALUES (?, ? ,?, ?)";
         
         try (Connection connection = ConnectionFactory.getMySQLConnection();
-                PreparedStatement statement = connection.prepareStatement(query);) { 
+                PreparedStatement statement1 = connection.prepareStatement(query1); ){ 
        
             connection.setAutoCommit(false);
                                
@@ -47,51 +49,142 @@ public class FillBatchDatabase {
                 String achternaam = generateString(rand, ALFABET, 2 +  rand.nextInt(10));
                 String tussenvoegsel = generateString(rand, ALFABET, rand.nextInt(3));
                 String email = generateEmail();
-                String straatnaam = generateString(rand, ALFABET, 2 + rand.nextInt(10)); 
-                String postcode = generatePostcode(); 
-                String toevoeging = generateString(rand, "123456789abcdefgh", rand.nextInt(2)); 
-                int huisnummer = rand.nextInt(1000);
-                String woonplaats = generateString(rand, ALFABET, 2 + rand.nextInt(12)); 
-                       
-                statement.setString(1, voornaam);
-                statement.setString(2, achternaam);
-                statement.setString(3, tussenvoegsel);
-                statement.setString(4, email);
-                statement.setString(5, straatnaam);
-                statement.setString(6, postcode);
-                statement.setString(7, toevoeging);
-                statement.setInt(8, huisnummer);
-                statement.setString(9, woonplaats);
-        
-                statement.addBatch();
+                                       
+                statement1.setString(1, voornaam);
+                statement1.setString(2, achternaam);
+                statement1.setString(3, tussenvoegsel);
+                statement1.setString(4, email);
+                statement1.addBatch();
+            
             }
-            int[] count = statement.executeBatch();
+            
+            int[] count = statement1.executeBatch();
+                                     
             connection.commit();
             connection.setAutoCommit(true);
         }
     }
     
+        public static void addSomeRandomAdresses(int aantal) throws SQLException{
+       
+        String query2 = "INSERT INTO adres (straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
+					+ " VALUES (?, ?, ?,?, ?)";
+       
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement2 = connection.prepareStatement(query2); ){ 
+       
+            connection.setAutoCommit(false);
+                               
+            for (int i = 0; i < aantal; i++){
+        
+                String straatnaam = generateString(rand, ALFABET, 2 + rand.nextInt(10)); 
+                String postcode = generatePostcode(); 
+                String toevoeging = generateString(rand, "123456789abcdefgh", rand.nextInt(2)); 
+                int huisnummer = rand.nextInt(1000);
+                String woonplaats = generateString(rand, ALFABET, 2 + rand.nextInt(12)); 
+                                
+                statement2.setString(1, straatnaam);
+                statement2.setString(2, postcode);
+                statement2.setString(3, toevoeging);
+                statement2.setInt(4, huisnummer);
+                statement2.setString(5, woonplaats);
+                       
+                statement2.addBatch();
+                
+            }
+            
+            statement2.executeBatch();
+           
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+    }
+    public static void koppelKlantenAdressen(int aantal) throws SQLException{
+       
+        String query = "INSERT INTO klant_has_adres (klant_klant_id, adres_adres_id) VALUES (?, ?)";
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(query); ){ 
+       
+            connection.setAutoCommit(false);
+                               
+            for (int i = 1; i <= aantal; i++){
+                       
+                statement.setInt(1, i);
+                statement.setInt(2, i);
+                       
+                statement.addBatch();
+            }
+            statement.executeBatch();
+           
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+    }
+    
+    
+    
     public static void addSomeBestellingen(int aantal) throws SQLException{
-        String query = "Insert into bestelling(klant_id, artikel_id, artikel_naam, artikel_aantal, artikel_prijs )"
-                + " values (?, ?, ?, ?, ? )";
+        String query = "Insert into bestelling(klant_klant_id ) values (?)";
         
         try (Connection connection = ConnectionFactory.getMySQLConnection(); 
                 PreparedStatement statement = connection.prepareStatement(query); ) {  
         
             connection.setAutoCommit(false);
                 
-            for (int i = 1; i < aantal; i++){
+            for (int i = 1; i <= aantal; i++){
                 statement.setInt(1, i);
-                statement.setInt(2, 1 + rand.nextInt(8));
-                statement.setString(3, generateString(rand, ALFABET, 5 + rand.nextInt(5)));
-                statement.setInt(4, 1 + rand.nextInt(5));
-                statement.setInt(5, 1 + rand.nextInt(100));
+                if (i%2 == 0) statement.addBatch();
                 statement.addBatch();
             }
             int[] count = statement.executeBatch();
             connection.commit();
             connection.setAutoCommit(true);
         }            
+    }
+    
+    public static void addSomeArtikelen(int aantal) throws SQLException{
+        String query = "Insert into artikel(artikel_naam, artikel_prijs ) values (?, ?)";
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection(); 
+                PreparedStatement statement = connection.prepareStatement(query); ) {  
+        
+            connection.setAutoCommit(false);
+                
+            for (int i = 1; i <= aantal; i++){
+                statement.setString(1, generateString(rand, ALFABET, 2 + rand.nextInt(10)));
+                statement.setInt(2, rand.nextInt(100) + 10);
+                statement.addBatch();
+            }
+            int[] count = statement.executeBatch();
+            connection.commit();
+            connection.setAutoCommit(true);
+        }            
+    }
+    public static void koppelBestellingArtikel(int aantalBestellingen) throws SQLException{
+       
+        String query = "INSERT INTO bestelling_has_artikel (bestelling_bestelling_id, artikel_artikel_id, aantal_artikelen)"
+                        + " VALUES (?, ?, ?)";
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(query); ){ 
+       
+            connection.setAutoCommit(false);
+            int maxAantalGekocht = 20;
+            int aantalInCatalogus = 5 ;
+            for (int i = 1; i <= aantalBestellingen; i++){
+                       
+                statement.setInt(1, i);
+                statement.setInt(2, rand.nextInt(aantalInCatalogus)+1);
+                statement.setInt(3, rand.nextInt(maxAantalGekocht)+ 1);
+                
+                statement.addBatch();
+            }
+            statement.executeBatch();
+           
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
     }
     
     public static String generateEmail() {
@@ -123,11 +216,35 @@ public class FillBatchDatabase {
     public static void clearDatabase() {
         try (Connection connection = ConnectionFactory.getMySQLConnection();){ 
             
-            String query = "delete from bestelling";
-            PreparedStatement statement = connection.prepareStatement(query);        
+            String query = "delete from klant_has_adres";   
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.executeUpdate();
+                        
+            query = "delete from bestelling_has_artikel";
+            statement = connection.prepareStatement(query);        
+            statement.executeUpdate();
+            
+            query = "delete from bestelling";
+            statement = connection.prepareStatement(query);        
+            statement.executeUpdate();
+            
+            query = "delete from artikel";
+            statement = connection.prepareStatement(query);        
+            statement.executeUpdate();
+            
+            query = "delete from adres";
+            statement = connection.prepareStatement(query);        
             statement.executeUpdate();
             
             query = "delete from klant";   
+            statement = connection.prepareStatement(query);
+            statement.executeUpdate();
+                                    
+            query = "ALTER TABLE adres AUTO_INCREMENT = 1";   
+            statement = connection.prepareStatement(query);
+            statement.executeUpdate();
+            
+            query = "ALTER TABLE klant AUTO_INCREMENT = 1";   
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
             
@@ -135,7 +252,7 @@ public class FillBatchDatabase {
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
             
-            query = "ALTER TABLE klant AUTO_INCREMENT = 1";   
+            query = "ALTER TABLE artikel AUTO_INCREMENT = 1";   
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
                    

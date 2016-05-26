@@ -176,19 +176,9 @@ public class FacadeDatabaseMenu {
        bestellingDAO.deleteBestelling(bestelling);
     }
      
-    private List<ArtikelPOJO> findArtikelen(Bestelling bestelling) {
-       artikelen = new ArrayList<>();
-              
-       ArtikelPOJO artikel = artikelDAO.readArtikel(bestelling); 
-       artikelen.add(artikel);
-       ArtikelPOJO artikel2 = artikelDAO.readArtikel2(bestelling); 
-       artikelen.add(artikel2);
-       ArtikelPOJO artikel3 = artikelDAO.readArtikel3(bestelling); 
-       artikelen.add(artikel3);
-             
-     //  toDisplay[3] = artikelen;
-     
-       return artikelen;
+    private List<BesteldeArtikelen> findArtikelen(BestellingDummy bestelling) {
+            
+       return bestelling.getBesteldeArtikelLijst();
    }
    public void update(int klant_id, Adres adres) throws SQLException {
 	   adresDAO.update(klant_id, adres);
