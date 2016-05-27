@@ -281,7 +281,8 @@ public class CrudInvoerMenu {
 			tussenvoegselTF.setText(klant.getTussenvoegsel());
 			emailTF.setText(klant.getEmail());
 		} catch (SQLException e) {
-			System.out.println("oplossen nog ");
+			System.out.println("oplossen nog zoekklantcrudinvoermenu ");
+                        e.printStackTrace();
 		}
 	}
 

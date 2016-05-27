@@ -23,7 +23,6 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> alleBestellingen;
     private List<Klant> klanten;
     private Object[] toDisplay;
-    private Object[] fromDisplay;
     private List<ArtikelPOJO> artikelen;  
     private List<Adres> adressen;
     
@@ -48,7 +47,7 @@ public class FacadeDatabaseMenu {
     }
     
     public void zoek(Object[] watNuOpScherm) throws SQLException {  
-        fromDisplay = watNuOpScherm;                                                                                    
+                                                                                           
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
         bestellingen = (List)watNuOpScherm[2];
@@ -98,7 +97,7 @@ public class FacadeDatabaseMenu {
     
     private Adres findAdres(Klant bestaandeKlant) throws SQLException {
         
-        Adres adres = adresDAO.findAdres(bestaandeKlant);
+        Adres adres = adresDAO.findAdres(bestaandeKlant).get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
         toDisplay[1] = adres;
         
         return adres;
@@ -133,8 +132,8 @@ public class FacadeDatabaseMenu {
     }
      
      public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
-    	System.out.println("lijst met alle artikelen nog niet zo ver eerst datas splitsen");
-         return null;
+    	
+        return artikelDAO.findAlleArtikelen();
     } 
         
     private Klant findKlant(Adres klantAdres) throws SQLException{   
@@ -157,7 +156,7 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
         bestellingen = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
-    //    toDisplay[2] = bestellingen;                                              //  dit asap fixen    nu Dummy gemaakt  
+    //  toDisplay[2] = bestellingen;           ff kijken of handig nu update of apart       //  dit asap fixen    nu Dummy gemaakt  
                                                                                     
         return bestellingen;
     } 
