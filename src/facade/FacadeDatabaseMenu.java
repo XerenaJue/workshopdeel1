@@ -172,7 +172,7 @@ public class FacadeDatabaseMenu {
     }
     
     public void deleteBestelling(Bestelling bestelling) throws SQLException{
-       BestellingDAO bestellingDAO = new BestellingDAO();
+       DummyBestelDAO bestellingDAO = new DummyBestelDAO();
        bestellingDAO.deleteBestelling(bestelling);
     }
      
