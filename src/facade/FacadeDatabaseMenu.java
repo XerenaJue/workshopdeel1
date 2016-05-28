@@ -17,7 +17,7 @@ public class FacadeDatabaseMenu {
     
     private final KlantDAO klantDAO;
     private final AdresDao adresDAO;
-    private final DummyBestelDAO bestellingDAO;    // tijdelijke bestellingDAO
+    private final BestellingDAO bestellingDAO;    // tijdelijke bestellingDAO
     private final ArtikelDAO artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
@@ -29,7 +29,7 @@ public class FacadeDatabaseMenu {
     public FacadeDatabaseMenu() {
         klantDAO = new KlantDAOImpl();
         adresDAO = new AdresDaoImpl();
-        bestellingDAO = new DummyBestelDAO();
+        bestellingDAO = new BestellingDAO();
         artikelDAO = new ArtikelDAO();
         
         toDisplay = new Object[5];
