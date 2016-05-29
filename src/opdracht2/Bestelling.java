@@ -39,8 +39,12 @@ public class Bestelling {
         return artikel_aantal;
     }
     
-    public void addArtikelBestellingList(List<ArtikelBestelling> artikelList){
+    public void setArtikelBestellingList(List<ArtikelBestelling> artikelList){
         this.artikelList = artikelList;
+    }
+    
+    public List<ArtikelBestelling> getArtikelBestellingList(){
+        return artikelList;
     }
     
     public void setAantalArtikel1(int artikel_aantal){
