@@ -97,7 +97,7 @@ public class FacadeDatabaseMenu {
     
     private Adres findAdres(Klant bestaandeKlant) throws SQLException {
         
-        Adres adres = adresDAO.findAdres(bestaandeKlant).get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
+        Adres adres = adresDAO.findAdres(bestaandeKlant.getKlantID()).get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
         toDisplay[1] = adres;
         
         return adres;
