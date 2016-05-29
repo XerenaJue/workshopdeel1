@@ -17,6 +17,7 @@ public class AdresDaoImpl implements AdresDao {
 
 	public List<Klant> findAdres(String straatnaam, String postcode, int huisnummer, String toevoeging,
 			String woonplaats) throws SQLException {
+		logger.info("klanten vinden via volledig adres gestart");
 
 		klanten = new ArrayList<>();
 		Klant klant;
@@ -25,9 +26,11 @@ public class AdresDaoImpl implements AdresDao {
 
 			klant = new Klant();
 
-			String query = "SELECT klant_id FROM klant_adres LEFT OUTER JOIN adres ON klant_adres.adres_id = adres.adres_id"
-					+ " WHERE straatnaam = '" + straatnaam + "' AND postcode = '" + postcode + "' AND huisnummer = "
-					+ huisnummer + " AND toevoeging = '" + toevoeging + "' AND woonplaats = '" + woonplaats + "'";
+			String query = "SELECT klant_id FROM klant_has_adres LEFT OUTER JOIN "
+					+ "adres ON klant_adres.adres_id = adres.adres_id WHERE straatnaam = '" 
+					+ straatnaam + "' AND postcode = '" + postcode + "' AND huisnummer = "
+					+ huisnummer + " AND toevoeging = '" + toevoeging + "' AND woonplaats = '" 
+					+ woonplaats + "'";
 
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
@@ -45,8 +48,12 @@ public class AdresDaoImpl implements AdresDao {
 				klant.setEmail(resultSet.getString("email"));
 				klanten.add(klant);
 			}
+			logger.info("vinden van klanten via volledig adres succesvol");
+		} catch (SQLException ex) {
+			logger.info("vinden van klanten via volledig adres gefaald");
 		}
 		return klanten;
+		
 	}
 
 	@Override
@@ -57,8 +64,9 @@ public class AdresDaoImpl implements AdresDao {
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
 
-			String query = "SELECT klant_id FROM klant_adres LEFT OUTER JOIN adres ON klant_adres.adres_id = adres.adres_id"
-					+ " WHERE straatnaam = '" + straatnaam + "'";
+			String query = "SELECT klant_id FROM klant_has_adres LEFT OUTER JOIN adres "
+					+ "ON klant_adres.adres_id = adres.adres_id WHERE straatnaam = '" 
+					+ straatnaam + "'";
 
 			klant = new Klant();
 
@@ -80,6 +88,8 @@ public class AdresDaoImpl implements AdresDao {
 				klanten.add(klant);
 			}
 			logger.info("klanten vinden via straatnaam gelukt");
+		} catch (SQLException ex) {
+			logger.info("vinden van klanten via straatnaam gefaald");
 		}
 		return klanten;
 	}
@@ -87,8 +97,8 @@ public class AdresDaoImpl implements AdresDao {
 	@Override
 	public void update(int klant_id, Adres adres) throws SQLException {
 		logger.info("update adres gestart");
-		String query = "UPDATE adres SET straatnaam = ?, postcode = ?, "
-				+ "huisnummer = ?, toevoeging = ?, woonplaats = ? WHERE adres_id =" + adres.getAdresID();
+		String query = "UPDATE adres SET straatnaam = ?, postcode = ?, huisnummer = ?, "
+				+ "toevoeging = ?, woonplaats = ? WHERE adres_id =" + adres.getAdresID();
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query);) {
@@ -102,6 +112,8 @@ public class AdresDaoImpl implements AdresDao {
 			preparedStatement.executeUpdate();
 
 			logger.info("Adres gegevens zijn succesvol aangepast");
+		} catch (SQLException ex) {
+			logger.info("Update adres niet gelukt");
 		}
 	}
 
@@ -114,8 +126,9 @@ public class AdresDaoImpl implements AdresDao {
 		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
 
 			klant = new Klant();
-			String query = "SELECT klant_id FROM klant_adres LEFT OUTER JOIN adres ON klant_adres.adres_id = adres.adres_id"
-					+ " WHERE postcode = '" + postcode + "' AND huisnummer = " + huisnummer;
+			String query = "SELECT klant_id FROM klant_has_adres LEFT OUTER JOIN adres "
+					+ "ON klant_has_adres.adres_id = adres.adres_id WHERE postcode = '" 
+					+ postcode + "' AND huisnummer = " + huisnummer;
 
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
@@ -133,6 +146,8 @@ public class AdresDaoImpl implements AdresDao {
 				klanten.add(klant);
 			}
 			logger.info("klanten vinden via postcode en huisnummer succesvol");
+		} catch (SQLException ex) {
+			logger.info("klanten vinden via postcode en huisnummer gefaald");
 		}
 		return klanten;
 	}
@@ -141,24 +156,31 @@ public class AdresDaoImpl implements AdresDao {
 	public List<Adres> findAdres(Klant klant) throws SQLException {
 		Adres adres;
 		List<Adres> adressen = new ArrayList<>();
+		logger.info("adres vinden via klant gegevens gestart");
 
-		String query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats "
-				+ "FROM klant WHERE klant_id = " + klant.getKlantID();
+		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
+			String query = "SELECT adres_id FROM klant_has_adres WHERE klant_id = "
+					+ klant.getKlantID();
+			preparedStatement = connection.prepareStatement(query);
+			resultSet = preparedStatement.executeQuery();
 
-		try (Connection connection = ConnectionFactory.getMySQLConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(query);
-				ResultSet resultSet = preparedStatement.executeQuery();) {
-
-			adres = new Adres();
-
-			if (resultSet.next()) {
+			while (resultSet.next()) {
+				adres = new Adres();
+				adres.setAdresID(resultSet.getInt("adres_id"));
+				query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats "
+						+ "FROM adres WHERE adres_id = " + adres.getAdresID();
+				preparedStatement = connection.prepareStatement(query);
 				adres.setStraatnaam(resultSet.getString("straatnaam"));
 				adres.setPostcode(resultSet.getString("postcode"));
 				adres.setHuisnummer(resultSet.getInt("huisnummer"));
 				adres.setToevoeging(resultSet.getString("toevoeging"));
 				adres.setWoonplaats(resultSet.getString("woonplaats"));
+				
 				adressen.add(adres);
 			}
+			logger.info("adressen van klant succesvol gevonden");
+		} catch (SQLException ex) {
+			logger.info("vinden van adressen via de klantgegevens mislukt");
 		}
 		return adressen;
 	}
@@ -168,7 +190,8 @@ public class AdresDaoImpl implements AdresDao {
 		logger.info("vind alle adressen gestart");
 		List<Adres> adressen = new ArrayList<>();
 		Adres adres;
-		String query = "SELECT adres_id, straatnaam, postcode, huisnummer, toevoeging, woonplaats FROM adres";
+		String query = "SELECT adres_id, straatnaam, postcode, huisnummer, "
+				+ "toevoeging, woonplaats FROM adres";
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -185,6 +208,8 @@ public class AdresDaoImpl implements AdresDao {
 				adressen.add(adres);
 			}
 			logger.info("succesvol alle adressen gevonden");
+		} catch (SQLException ex) {
+			logger.info("kon niet alle adressen vinden");
 		}
 		return adressen;
 	}
@@ -206,11 +231,13 @@ public class AdresDaoImpl implements AdresDao {
 			preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			resultSet = preparedStatement.executeQuery();
 
-			query = "INSERT INTO klant_adres (klant_id, adres_id) VALUES (?, ?)";
+			query = "INSERT INTO klant_has_adres (klant_id, adres_id) VALUES (?, ?)";
 			preparedStatement.setInt(1, klant_id);
 			preparedStatement.setInt(2, adres.getAdresID());
 
 			logger.info("Adres succesvol aangemaakt");
+		} catch (SQLException ex) {
+			logger.info("Adres niet kunnen toevoegen");
 		}
 		return adres;
 
