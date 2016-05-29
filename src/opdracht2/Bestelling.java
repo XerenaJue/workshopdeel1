@@ -6,12 +6,14 @@
 package opdracht2;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import java.util.*;
 /**
  *
  * @author maurice
  */
 public class Bestelling {
     private int bestelling_id, klant_id, artikel_aantal, artikel2_aantal, artikel3_aantal;
+    private List<ArtikelBestelling> artikelList;
     
    
             
@@ -35,6 +37,10 @@ public class Bestelling {
     
     public int getArtikel_aantal(){
         return artikel_aantal;
+    }
+    
+    public void addArtikelBestellingList(List<ArtikelBestelling> artikelList){
+        this.artikelList = artikelList;
     }
     
     public void setAantalArtikel1(int artikel_aantal){
