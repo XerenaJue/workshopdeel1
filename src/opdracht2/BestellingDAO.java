@@ -54,7 +54,24 @@ public class BestellingDAO {
         
         return bestelling; 
     }
-    //SELECT COUNT(*) FROM pet;
+
+    public void addArtikelToBestelling(Bestelling bestelling, ArtikelPOJO artikel, int artikelAantal){
+           ArtikelDAO artikeldao = new ArtikelDAO();
+           artikeldao.createArtikel(artikel);
+           String query ="INSERT INTO bestelling_has_artikel (bestelling_bestelling_id,"+
+               "artikel_artikel_id,aantal_artikelen) VALUES ("+bestelling.getBestelling_id()+","+ artikel.getArtikelID() + ","+artikelAantal+")"; 
+           try{
+           createCS(query);
+           statement.executeUpdate();
+           }
+           catch(SQLException e){
+               System.out.println("helaas pindakaas");
+           }
+           finally{closeCS();}
+
+           
+    }
+    
     public List<ArtikelBestelling> readArtikelBestelling(Klant klant) throws SQLException{
         List<ArtikelBestelling> artikelBestellingen = new ArrayList<>(); // lijst met artikelBestellingPOJO's
         BestellingDAO bestelDAO = new BestellingDAO();
