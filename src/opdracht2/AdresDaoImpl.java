@@ -153,14 +153,14 @@ public class AdresDaoImpl implements AdresDao {
 	}
 
 	@Override
-	public List<Adres> findAdres(Klant klant) throws SQLException {
+	public List<Adres> findAdres(int klant_id) throws SQLException {
 		Adres adres;
 		List<Adres> adressen = new ArrayList<>();
 		logger.info("adres vinden via klant gegevens gestart");
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
 			String query = "SELECT adres_id FROM klant_has_adres WHERE klant_id = "
-					+ klant.getKlantID();
+					+ klant_id;
 			preparedStatement = connection.prepareStatement(query);
 			resultSet = preparedStatement.executeQuery();
 
@@ -219,17 +219,24 @@ public class AdresDaoImpl implements AdresDao {
 		logger.info("Adres toevoegen gestart");
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection();) {
-			String query = "INSERT INTO adres (straatnaam, postcode, huisnummer, toevoeging, woonplaats)"
-					+ " VALUES (?, ?, ?,?, ?)";
-
+			String query = "INSERT INTO adres (straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
+					+ " VALUES (?, ?, ?, ?, ?)";
+			preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			
 			preparedStatement.setString(1, adres.getStraatnaam());
 			preparedStatement.setString(2, adres.getPostcode());
-			preparedStatement.setInt(3, adres.getHuisnummer());
-			preparedStatement.setString(4, adres.getToevoeging());
+			preparedStatement.setString(3, adres.getToevoeging());
+			preparedStatement.setInt(4, adres.getHuisnummer());
 			preparedStatement.setString(5, adres.getWoonplaats());
-
-			preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			
 			resultSet = preparedStatement.executeQuery();
+			try (ResultSet resultSet = preparedStatement.getGeneratedKeys();){
+				if (resultSet.isBeforeFirst()) {
+					resultSet.next();
+					adres.setAdresID(resultSet.getInt(1));
+				}
+				
+			}
 
 			query = "INSERT INTO klant_has_adres (klant_id, adres_id) VALUES (?, ?)";
 			preparedStatement.setInt(1, klant_id);

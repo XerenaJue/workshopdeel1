@@ -12,7 +12,7 @@ public class TestAdres {
 
 	@Before
 	public void setUp() throws Exception {
-
+		FillBatchDatabase.fillBatchDatabase();
 	}
 
 	@After
@@ -22,22 +22,15 @@ public class TestAdres {
 
 	@Test
 	public void testAdres() throws SQLException {
-		Klant klant = new Klant();
-		klant.setVoornaam("Han");
-		klant.setTussenvoegsel("");
-		klant.setAchternaam("Solo");
-		klant.setEmail("hansolo@hotmail.com");
-		klant.setKlantID(1);
-		KlantDAOImpl instance = new KlantDAOImpl();
-		instance.create(klant);
+		
 		Adres adres = new Adres();
 		adres.setStraatnaam("Corellia");
 		adres.setPostcode("2566GJ");
 		adres.setHuisnummer(22);
 		adres.setWoonplaats("Galaxy Far Far Away");
 		AdresDaoImpl instanceAdres = new AdresDaoImpl();
-		int id = klant.getKlantID();
-		instanceAdres.update(id, adres);
+		
+		instanceAdres.createAdres(22, adres);
 
 		assertEquals("Corellia", adres.getStraatnaam());
 		assertEquals("2566GJ", adres.getPostcode());
@@ -48,36 +41,27 @@ public class TestAdres {
 
 	@Test
 	public void testFindAdres() throws SQLException {
-		Klant klant = new Klant();
-		klant.setVoornaam("Luke");
-		klant.setTussenvoegsel("");
-		klant.setAchternaam("Skywalker");
-		klant.setEmail("lskywalker@hotmail.com");
-		klant.setKlantID(2);
-		KlantDAOImpl instance = new KlantDAOImpl();
-		instance.create(klant);
+		
 		Adres adres = new Adres();
 		adres.setStraatnaam("Tatooine");
 		adres.setPostcode("5866LS");
 		adres.setHuisnummer(33);
 		adres.setToevoeging("");
 		adres.setWoonplaats("Galaxy Far Far Away");
-		AdresDaoImpl instanceAdres = new AdresDaoImpl();
-		int id = klant.getKlantID();
+		AdresDaoImpl instanceAdres = new AdresDaoImpl();		
 		
-		instanceAdres.update(id, adres);
+		instanceAdres.update(2, adres);
 
 		instanceAdres.findAdres(adres.getStraatnaam());
-
-		instanceAdres.findAdres(klant);
-		System.out.println("Gaat tot nu toe goed");
+		
+		Klant klant = new Klant();
+		klant.setKlantID(4);
+		instanceAdres.findAdres(klant.getKlantID());
 
 		instanceAdres.findAdres(adres.getPostcode(), adres.getHuisnummer());
-		System.out.println("So far, so good");
 
 		instanceAdres.findAdres(adres.getStraatnaam(), adres.getPostcode(), adres.getHuisnummer(),
 				adres.getToevoeging(), adres.getWoonplaats());
-		System.out.println("Deze werkt ook");
 
 	}
 
