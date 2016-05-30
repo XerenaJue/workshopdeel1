@@ -59,12 +59,12 @@ public class FacadeDatabaseMenu {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
         }
-        bestellingen = findBestellingen(bestaandeKlant);
-        artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
+      //  bestellingen = findBestellingen(bestaandeKlant);
+      //  artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
-        toDisplay[2] = bestellingen;
+     //   toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
                
     }

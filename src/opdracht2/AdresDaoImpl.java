@@ -126,8 +126,8 @@ public class AdresDaoImpl implements AdresDao {
 		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
 
 			klant = new Klant();
-			String query = "SELECT klant_id FROM klant_has_adres LEFT OUTER JOIN adres "
-					+ "ON klant_has_adres.adres_id = adres.adres_id WHERE postcode = '" 
+			String query = "SELECT klant_klant_id FROM klant_has_adres LEFT OUTER JOIN adres "
+					+ "ON klant_has_adres.adres_adres_id = adres.adres_id WHERE postcode = '" 
 					+ postcode + "' AND huisnummer = " + huisnummer;
 
 			preparedStatement = connection.prepareStatement(query);
@@ -154,35 +154,49 @@ public class AdresDaoImpl implements AdresDao {
 
 	@Override
 	public List<Adres> findAdres(int klant_id) throws SQLException {
-		Adres adres;
-		List<Adres> adressen = new ArrayList<>();
-		logger.info("adres vinden via klant gegevens gestart");
-
-		try (Connection connection = ConnectionFactory.getMySQLConnection()) {
-			String query = "SELECT adres_id FROM klant_has_adres WHERE klant_id = "
-					+ klant_id;
-			preparedStatement = connection.prepareStatement(query);
-			resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next()) {
-				adres = new Adres();
-				adres.setAdresID(resultSet.getInt("adres_id"));
-				query = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats "
-						+ "FROM adres WHERE adres_id = " + adres.getAdresID();
-				preparedStatement = connection.prepareStatement(query);
-				adres.setStraatnaam(resultSet.getString("straatnaam"));
-				adres.setPostcode(resultSet.getString("postcode"));
-				adres.setHuisnummer(resultSet.getInt("huisnummer"));
-				adres.setToevoeging(resultSet.getString("toevoeging"));
-				adres.setWoonplaats(resultSet.getString("woonplaats"));
-				
-				adressen.add(adres);
-			}
-			logger.info("adressen van klant succesvol gevonden");
-		} catch (SQLException ex) {
-			logger.info("vinden van adressen via de klantgegevens mislukt");
-		}
-		return adressen;
+            Adres adres;
+            List<Adres> adressen = new ArrayList<>();
+            logger.info("adres vinden via klant gegevens klant_id gestart");
+            String query1 = "SELECT adres_adres_id FROM klant_has_adres WHERE klant_klant_id = "
+			+ klant_id;
+            try (Connection connection = ConnectionFactory.getMySQLConnection();
+                  PreparedStatement stmt = connection.prepareStatement(query1);
+                  ResultSet resultSet = stmt.executeQuery();) {
+	
+                while (resultSet.next()) {
+                            
+                    adres = new Adres();
+                    adres.setAdresID(resultSet.getInt("adres_adres_id"));
+                    adressen.add(adres);
+                                
+                }
+            }
+            catch (SQLException ex) {
+		logger.info("vinden van adressen in klant_has_adres via de klantgegevens-klant_id mislukt");
+            }
+            for (Adres a: adressen) {
+                    
+                String query2 = "SELECT straatnaam, postcode, huisnummer, toevoeging, woonplaats "
+				+ "FROM adres WHERE adres_id = " + a.getAdresID();
+                try (Connection connection = ConnectionFactory.getMySQLConnection();
+                       PreparedStatement stmt = connection.prepareStatement(query2);
+                        ResultSet resultSet = stmt.executeQuery();) {
+                    if (resultSet.next()) {
+                
+                        a.setStraatnaam(resultSet.getString("straatnaam"));
+                        a.setPostcode(resultSet.getString("postcode"));
+                        a.setHuisnummer(resultSet.getInt("huisnummer"));
+                        a.setToevoeging(resultSet.getString("toevoeging"));
+                        a.setWoonplaats(resultSet.getString("woonplaats"));
+                    }	
+                    logger.info("adres van klant succesvol gevonden");
+                }
+		catch (SQLException ex) {
+                    logger.info("vinden van adressen via de klantgegevens-klant_id mislukt");
+                    ex.printStackTrace();
+                }
+            }
+            return adressen;
 	}
 
 	@Override
