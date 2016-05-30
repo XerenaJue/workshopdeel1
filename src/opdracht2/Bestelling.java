@@ -14,11 +14,17 @@ import java.util.*;
 public class Bestelling {
     private int bestelling_id, klant_id;
     private List<ArtikelBestelling> artikelList;
+    private ArtikelBestelling bestellingArtikel;
     
    
-            
+    public void setArtikelBestelling(ArtikelBestelling bestellingArtikel){
+        this.bestellingArtikel = bestellingArtikel;
+    }
     
-    
+    public ArtikelBestelling getArtikelBestelling(){
+        return bestellingArtikel;
+    }
+
     public int getBestelling_id(){
         return bestelling_id;
     }
