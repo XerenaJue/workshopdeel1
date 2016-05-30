@@ -8,16 +8,18 @@ package facade;
 import opdracht2.*;
 import java.util.*;
 import java.sql.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jeroen
  */
 public class FacadeDatabaseMenu {
-    
+    static Logger logger = LoggerFactory.getLogger(FacadeDatabaseMenu.class); 
     private final KlantDAO klantDAO;
     private final AdresDao adresDAO;
-    private final BestellingDAO bestellingDAO;    // tijdelijke bestellingDAO
+    private final BestellingDAO bestellingDAO;    
     private final ArtikelDAO artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
@@ -59,12 +61,12 @@ public class FacadeDatabaseMenu {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
         }
-      //  bestellingen = findBestellingen(bestaandeKlant);
+        bestellingen = findBestellingen(bestaandeKlant);
       //  artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
-     //   toDisplay[2] = bestellingen;
+        toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
                
     }
@@ -115,13 +117,13 @@ public class FacadeDatabaseMenu {
         
         klanten = klantDAO.findAll();
         toDisplay[4] = klanten;
-        
+        logger.info("alle klanten: " + klanten);
         return klanten;
     }
 
     public List<Adres> findAlleAdressen() throws SQLException {
     	adressen = adresDAO.findAll();
-    	
+    	logger.info("alle adressen: " + adressen);
     	return adressen;
     }
     
@@ -138,7 +140,7 @@ public class FacadeDatabaseMenu {
         
     private Klant findKlant(Adres klantAdres) throws SQLException{   
       
-        Klant ingelezenKlant = klantDAO.findKlant(klantAdres);
+        Klant ingelezenKlant = klantDAO.findKlant(klantAdres).get(0);
         toDisplay[0] = ingelezenKlant;
         
         return ingelezenKlant;
@@ -155,7 +157,7 @@ public class FacadeDatabaseMenu {
     
     private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
-        bestellingen = bestellingDAO.readBestelling(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
+        bestellingen = bestellingDAO.findAlleBestellingen(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
     //  toDisplay[2] = bestellingen;           ff kijken of handig nu update of apart       //  dit asap fixen    nu Dummy gemaakt  
                                                                                     
         return bestellingen;
@@ -171,13 +173,13 @@ public class FacadeDatabaseMenu {
     }
     
     public void deleteBestelling(Bestelling bestelling) throws SQLException{
-       DummyBestelDAO bestellingDAO = new DummyBestelDAO();
+      
        bestellingDAO.deleteBestelling(bestelling);
     }
      
-    private List<BesteldeArtikelen> findArtikelen(BestellingDummy bestelling) {
+    private List<ArtikelBestelling> findArtikelen(Bestelling bestelling) {
             
-       return bestelling.getBesteldeArtikelLijst();
+        return bestelling.getArtikelBestellingList();
    }
    public void update(int klant_id, Adres adres) throws SQLException {
 	   adresDAO.update(klant_id, adres);
