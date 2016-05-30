@@ -20,6 +20,29 @@ public class KlantDAOImpl implements KlantDAO {
     } 
     
     @Override
+    public List<Klant> findKlant(Adres klantAdres) {//throws SQLException {
+    	List<Klant> klanten = new ArrayList<>();
+        Klant klant = new Klant();
+    	int adresId = klantAdres.getAdresID();
+    	String query = "SELECT * FROM klant_has_adres WHERE adres_adres_id = " + adresId;
+    	try (Connection connection = ConnectionFactory.getMySQLConnection();
+    			PreparedStatement preparedStatement = connection.prepareStatement(query);
+    			ResultSet resultSet = preparedStatement.executeQuery();) {    		
+    		
+    			while (resultSet.next()) {   
+    				int klantID = resultSet.getInt("klant_klant_id");
+    				klant = findByID(klantID);
+                    klanten.add(klant);
+    			}
+    	
+    	} catch (SQLException ex) {
+    		logger.info("gaat iets mis");    		
+    	}
+    	return klanten;
+    }
+    
+    /* oude findklant met adres methode
+    @Override
     public Klant findKlant(Adres klantAdres) throws SQLException {
         Klant klant = new Klant();
         String postcode = klantAdres.getPostcode();
@@ -41,7 +64,7 @@ public class KlantDAOImpl implements KlantDAO {
             }
         }
         return klant;
-    }
+    }*/
     
     @Override
     public List<Klant> findAll() {//throws SQLException {
