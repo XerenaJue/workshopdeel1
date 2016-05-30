@@ -19,13 +19,12 @@ public class BestellingDAO {
         PreparedStatement statement;
         ResultSet resultSet;
         public void updateBestelling(Bestelling bestelling) throws SQLException{
-           String SQLStatement ="update bestelling set artikel_aantal = ?, artikel2_aantal = ?, artikel3_aantal = ? where bestelling_id = ?";
+            ArtikelDAO artikeldao = new ArtikelDAO();
+            artikeldao.updateArtikel(bestelling.getArtikelBestelling().getArtikelPojo());
+            String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ?, where artikel_artikel_id = "+bestelling.getArtikelBestelling().getArtikelPojo().getArtikelID();
         try {
             createCS(SQLStatement);
-            statement.setInt(1,bestelling.getArtikel_aantal());
-            statement.setInt(2,bestelling.getAantalArtikel2());
-            statement.setInt(3,bestelling.getAantalArtikel3());
-            statement.setInt(4,bestelling.getBestelling_id());
+            statement.setInt(1,bestelling.getArtikelBestelling().getArtikelenAantal());
             statement.executeUpdate();
         }
             catch(SQLException ex){}
@@ -34,32 +33,11 @@ public class BestellingDAO {
             
         
     }
-    public Bestelling readBestelling(int klant_id) throws SQLException{
-        Bestelling bestelling = new Bestelling();
-        String SQLStatement = "SELECT * FROM bestelling WHERE bestelling_id =" + klant_id;
-        try{
-        createCS(SQLStatement);
-        //statement.setInt(1, klant_id);
-        resultSet = statement.executeQuery();
-        while(resultSet.next()){
-            bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-            bestelling.setKlant(resultSet.getInt("klant_id"));
-            bestelling.setAantalArtikel1(resultSet.getInt("artikel_aantal"));
-            bestelling.setAantalArtikel2(resultSet.getInt("artikel1_aantal"));
-            bestelling.setAantalArtikel3(resultSet.getInt("artikel2_aantal"));
-        }
-        }
-        catch (SQLException e){}
-        finally{closeCS();}
-        
-        return bestelling; 
-    }
 
-    public void addArtikelToBestelling(Bestelling bestelling, ArtikelPOJO artikel, int artikelAantal){
-           ArtikelDAO artikeldao = new ArtikelDAO();
-           artikeldao.createArtikel(artikel);
+
+    public void addArtikelToBestelling(Bestelling bestelling, ArtikelBestelling artikelBestelling){
            String query ="INSERT INTO bestelling_has_artikel (bestelling_bestelling_id,"+
-               "artikel_artikel_id,aantal_artikelen) VALUES ("+bestelling.getBestelling_id()+","+ artikel.getArtikelID() + ","+artikelAantal+")"; 
+               "artikel_artikel_id,aantal_artikelen) VALUES ("+bestelling.getBestelling_id()+","+ artikelBestelling.getArtikelPojo().getArtikelID() + ","+artikelBestelling.getArtikelenAantal()+")"; 
            try{
            createCS(query);
            statement.executeUpdate();
@@ -72,10 +50,8 @@ public class BestellingDAO {
            
     }
     
-    public List<ArtikelBestelling> readArtikelBestelling(Klant klant) throws SQLException{
+    public List<ArtikelBestelling> readArtikelBestelling(Bestelling bestelling) throws SQLException{
         List<ArtikelBestelling> artikelBestellingen = new ArrayList<>(); // lijst met artikelBestellingPOJO's
-        BestellingDAO bestelDAO = new BestellingDAO();
-        Bestelling bestelling = bestelDAO.readBestelling(klant.getKlantID()); 
         int i = 0;
         int z = 0;
         //haal het aantal artikel rijen op zodat BHA_artikelIdOpslag array gedeclared kan worden.
@@ -119,41 +95,14 @@ public class BestellingDAO {
         return artikelBestellingen;
     }    
     
-    public List<Bestelling> readBestelling(Klant klant) {
-             
-        List<Bestelling> bestellingen = new ArrayList<>();
-        
-        String query = "select * from bestelling where klant_id = " + klant.getKlantID();
-
-        
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery();  ){
-                       
-            while (resultSet.next()) {
-               Bestelling bestelling = new Bestelling();      
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_id"));
-               bestelling.setAantalArtikel1(resultSet.getInt("artikel_aantal"));
-               bestelling.setAantalArtikel2(resultSet.getInt("artikel2_aantal"));
-               bestelling.setAantalArtikel3(resultSet.getInt("artikel3_aantal"));  
-               bestellingen.add(bestelling);
-            }
-        }
-        catch (SQLException ex) {
-            System.out.println("gaat iets fout in readBestelling" );
-            ex.printStackTrace();
-        }
-        if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
-        return bestellingen;
-    }
+ 
     
     public Bestelling createBestelling(Klant klant)throws SQLException {
         
         Bestelling bestelling = new Bestelling();
         bestelling.setKlant(klant.getKlantID());
         
-        String query = "insert into bestelling (klant_id) values (" + klant.getKlantID() + ")" ;
+        String query = "insert into bestelling (klant_klant_id) values (" + klant.getKlantID() + ")";
         try (Connection connection = ConnectionFactory.getMySQLConnection(); 
                     PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS); ){
             stmt.executeUpdate(); 
@@ -167,28 +116,43 @@ public class BestellingDAO {
         return bestelling;
     }
     
-    public void deleteBestelling(Bestelling bestelling) throws SQLException {
+     public void deleteArtikelFromBestelling(Bestelling bestelling) throws SQLException {
+     String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + bestelling.getArtikelBestelling().getArtikelPojo().getArtikelID();
+         try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(queryBHA); ){
+            statement.executeUpdate();
+            
+        }         
+     }   
     
-        String query = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id(); 
-        try (Connection connection = ConnectionFactory.getMySQLConnection(); 
-                    PreparedStatement stmt = connection.prepareStatement(query); ){
-            stmt.executeUpdate();
-        }
+    
+    public void deleteBestelling(Bestelling bestelling) throws SQLException {
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                Statement statement = connection.createStatement(); ){ 
+            connection.setAutoCommit(false);
+            String queryBestelling = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id();
+            statement.addBatch(queryBestelling);
+
+            String queryBHA = "delete from bestelling_has_artikel where bestelling_bestelling_id = " + bestelling.getBestelling_id();
+            statement.addBatch(queryBHA);
+            statement.executeBatch();
+            connection.commit();            
+    }
     }
     
     public void deleteBestellingen(Klant klant) throws SQLException{
-    
-        String query = "delete from bestelling where klant_id = " + klant.getKlantID(); 
-        try (Connection connection = ConnectionFactory.getMySQLConnection(); 
-                    PreparedStatement stmt = connection.prepareStatement(query); ){
-            stmt.executeUpdate();
-        }
+        List<Bestelling> bestellingen = new ArrayList<>();
+        bestellingen = (ArrayList<Bestelling>)findAlleBestellingen(klant);
+        for (Bestelling bestelling: bestellingen)
+            deleteBestelling(bestelling);
     }
+    
     public List<Bestelling> findAlleBestellingen() {
              
         List<Bestelling> bestellingen = new ArrayList<>();
         
-        String query = "select * from bestelling " ;
+        String query = "select * from bestelling";
         
         try (Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);
@@ -197,10 +161,32 @@ public class BestellingDAO {
             while (resultSet.next()) {
                Bestelling bestelling = new Bestelling();      
                bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_id"));
-               bestelling.setAantalArtikel1(resultSet.getInt("artikel_aantal"));
-               bestelling.setAantalArtikel2(resultSet.getInt("artikel2_aantal"));
-               bestelling.setAantalArtikel3(resultSet.getInt("artikel3_aantal"));  
+               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
+               bestellingen.add(bestelling);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("gaat iets fout in readAlleBestellingen" );
+            ex.printStackTrace();
+        }
+        if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
+        return bestellingen;
+    }
+
+    public List<Bestelling> findAlleBestellingen(Klant klant) {
+             
+        List<Bestelling> bestellingen = new ArrayList<>();
+        
+        String query = "select * from bestelling where klant_klant_id = " +klant.getKlantID();
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet resultSet = stmt.executeQuery();  ){
+                       
+            while (resultSet.next()) {
+               Bestelling bestelling = new Bestelling();      
+               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
                bestellingen.add(bestelling);
             }
         }
@@ -217,21 +203,20 @@ public class BestellingDAO {
 
     public void createBestelling(Bestelling bestelling)throws SQLException{
         try {
-           String SQLStatement = "insert into bestelling (klant_id, artikel_aantal, artikel2_aantal, artikel3_aantal) VALUES (?,?,?,?)";
+           String SQLStatement = "insert into bestelling (klant_klant_id) VALUES (?)";
             connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(SQLStatement, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, bestelling.getKlant_id());
-            statement.setInt(2, bestelling.getArtikel_aantal());
-            statement.setInt(3, bestelling.getAantalArtikel2());
-            statement.setInt(4, bestelling.getAantalArtikel3());
             statement.executeUpdate();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 bestelling.setBestellingID(resultSet.getInt(1));
             }
- 
-
+            SQLStatement = "insert into bestelling_has_artikel (bestelling_bestelling_id) VALUES (?)";
+            statement = connection.prepareStatement(SQLStatement);
+            statement.setInt(1, bestelling.getBestelling_id());
+            statement.executeUpdate();
         }
             catch(SQLException ex){}
             finally{closeCS();}                
