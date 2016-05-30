@@ -12,7 +12,7 @@ import java.util.*;
  * @author maurice
  */
 public class Bestelling {
-    private int bestelling_id, klant_id, artikel_aantal, artikel2_aantal, artikel3_aantal;
+    private int bestelling_id, klant_id;
     private List<ArtikelBestelling> artikelList;
     
    
@@ -35,10 +35,6 @@ public class Bestelling {
         this.klant_id = klant_id;
     }
     
-    public int getArtikel_aantal(){
-        return artikel_aantal;
-    }
-    
     public void setArtikelBestellingList(List<ArtikelBestelling> artikelList){
         this.artikelList = artikelList;
     }
@@ -47,29 +43,11 @@ public class Bestelling {
         return artikelList;
     }
     
-    public void setAantalArtikel1(int artikel_aantal){
-        this.artikel_aantal = artikel_aantal;
-    }
-    
-        public int getAantalArtikel2(){
-        return artikel2_aantal;
-    }
-    
-    public void setAantalArtikel2(int artikel2_aantal){
-        this.artikel2_aantal = artikel2_aantal;
-    }
-        public int getAantalArtikel3(){
-        return artikel3_aantal;
-    }
-    
-    public void setAantalArtikel3(int artikel3_aantal){
-        this.artikel3_aantal = artikel3_aantal;
-    }
+
     
            @Override
     public String toString() {
-        return "Bestelling_ID: " + bestelling_id + ", klant ID: " + klant_id +",artikel aantal: " +artikel_aantal +
-                ", artikel 2 aantal: " + artikel2_aantal + "artikel 3 aantal: " + artikel3_aantal;
+        return "Bestelling_ID: " + bestelling_id + ", klant ID: " + klant_id +", artikelenlijst: "+artikelList;
 
     }
     
