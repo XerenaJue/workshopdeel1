@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -16,11 +15,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import opdracht2.ConnectionFactory;
 
 public class Menu extends Parent {
 	static boolean terugNaarInlog;
         static CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu();
         static TabelScherm tabelScherm = new TabelScherm();
+        
 	
     public static boolean display() {
         Stage window = new Stage();
@@ -72,7 +73,11 @@ public class Menu extends Parent {
             System.exit(0);
         });
         
-        menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnUitloggen, btnStop);
+        MenuButton btnChangeConnector = new MenuButton("change connection pool");
+        btnChangeConnector.setOnMouseClicked(event -> { System.out.println("knap"); ConnectionFactory.changeConnectionPool(); System.out.println("knop");
+        });
+        
+        menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnChangeConnector, btnUitloggen, btnStop);
 
         Rectangle bg = new Rectangle(300, 250);
         bg.setTranslateX(75);

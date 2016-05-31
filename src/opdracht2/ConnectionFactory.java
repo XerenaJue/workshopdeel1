@@ -45,8 +45,13 @@ public class ConnectionFactory {
         }
         return connection;
     }   
-            
-    public static void useC3PO() {
+    
+    public static void changeConnectionPool() {
+        if (usingHikari) useC3PO();
+        else useHikari();
+    }
+    
+    private static void useC3PO() {
         closeConnectionPool();
         usingHikari = false;
         try {
@@ -65,7 +70,7 @@ public class ConnectionFactory {
         }
     } 
     
-    public static void useHikari() {
+    private static void useHikari() {
         closeConnectionPool();
         usingHikari = true;
         try {
@@ -83,4 +88,5 @@ public class ConnectionFactory {
         if (cpds != null) cpds.close();
         if (hds != null) hds.close();
     }
+   
 }
