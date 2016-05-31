@@ -53,10 +53,14 @@ public class FacadeDatabaseMenu {
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
         bestellingen = (List)watNuOpScherm[2];
-        if (bestaandeKlant.getKlantID() != 0) {
+        if (findKlant(bestaandeKlant) != null) {
+        	adres = findAdres(bestaandeKlant);
+        	bestaandeKlant = findKlant(bestaandeKlant);
+        }
+/*        if (bestaandeKlant.getKlantID() != 0) {
             adres = findAdres(bestaandeKlant);
             bestaandeKlant = findKlant(bestaandeKlant);
-        }
+        } */
         else {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);

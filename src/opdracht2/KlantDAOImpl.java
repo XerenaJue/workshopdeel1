@@ -15,8 +15,28 @@ public class KlantDAOImpl implements KlantDAO {
     public Klant findKlant(Klant bestaandeKlant) {//throws SQLException {
         
         int klantID = bestaandeKlant.getKlantID();
+        String klantVoornaam = bestaandeKlant.getVoornaam();
+        String klantAchternaam = bestaandeKlant.getAchternaam();
         
-        return findByID(klantID);
+        if (klantID != 0) {        	
+        	logger.info("klant zoeken op id -- id was niet nul");
+        	return findByID(klantID);
+        	}        
+        
+        else if (klantVoornaam.length() >= 1 && klantAchternaam.length() >= 1) {
+        	logger.info("klant zoeken op voor en achternaam -- namen waren groter dan 0");
+        	return findByName(klantVoornaam, klantAchternaam);
+        }
+        
+        else if (klantVoornaam.length() >= 1) {
+        	logger.info("klant zoeken op voornaam -- voornaam was groter dan 0");
+        	return FindByName(klantVoornaam);
+        	}
+        
+        else {
+        	logger.info("geen bruikbaare velden gevonden om klant te zoeken probeer op andere manier");
+        	return null;
+        }
     } 
     
     @Override
