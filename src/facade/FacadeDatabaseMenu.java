@@ -53,7 +53,7 @@ public class FacadeDatabaseMenu {
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         Adres adres = (Adres)watNuOpScherm[1];
         bestellingen = (List)watNuOpScherm[2];
-        if (findKlant(bestaandeKlant) != null) {        	
+        if (findKlant(bestaandeKlant) != null) {       	
         	bestaandeKlant = findKlant(bestaandeKlant);
         	adres = findAdres(bestaandeKlant);
         }
@@ -62,9 +62,9 @@ public class FacadeDatabaseMenu {
             bestaandeKlant = findKlant(bestaandeKlant);
         } 
 */
-        else {
+        else { 
             bestaandeKlant = findKlant(adres);
-            adres = findAdres(bestaandeKlant);
+            adres = findAdres(bestaandeKlant); 
         }
         bestellingen = findBestellingen(bestaandeKlant);
       //  artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
@@ -103,8 +103,9 @@ public class FacadeDatabaseMenu {
     }
     
     private Adres findAdres(Klant bestaandeKlant) throws SQLException {
-        
-        Adres adres = adresDAO.findAdres(bestaandeKlant.getKlantID()).get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
+        List<Adres> postbussen = adresDAO.findAdres(bestaandeKlant.getKlantID());
+        if (postbussen.isEmpty()) postbussen.add(new Adres());   // om nullpointers en outofbounds te vermijden
+        Adres adres = postbussen.get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
         toDisplay[1] = adres;
         
         return adres;
@@ -144,8 +145,9 @@ public class FacadeDatabaseMenu {
     } 
         
     private Klant findKlant(Adres klantAdres) throws SQLException{   
-      
-        Klant ingelezenKlant = klantDAO.findKlant(klantAdres).get(0);
+        List<Klant> bewoners = klantDAO.findKlant(klantAdres);
+        if (bewoners.isEmpty()) bewoners.add(new Klant()); // om arrayoutofbounds en nullpinters te vermijden
+        Klant ingelezenKlant = bewoners.get(0);
         toDisplay[0] = ingelezenKlant;
         
         return ingelezenKlant;

@@ -74,7 +74,7 @@ public class Menu extends Parent {
         });
         
         MenuButton btnChangeConnector = new MenuButton("change connection pool");
-        btnChangeConnector.setOnMouseClicked(event -> { System.out.println("knap"); ConnectionFactory.changeConnectionPool(); System.out.println("knop");
+        btnChangeConnector.setOnMouseClicked(event -> {  ConnectionFactory.changeConnectionPool(); 
         });
         
         menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnChangeConnector, btnUitloggen, btnStop);

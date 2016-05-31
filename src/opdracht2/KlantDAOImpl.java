@@ -22,12 +22,12 @@ public class KlantDAOImpl implements KlantDAO {
         	return findByID(klantID);
         	}        
         
-        else if (klantVoornaam.length() >= 1 && klantAchternaam.length() >= 1) {
+        else if (klantVoornaam != null && klantVoornaam.length() >= 1 && klantAchternaam.length() >= 1) {
         	logger.info("klant zoeken op voor en achternaam -- namen waren groter dan 0");
         	return findByName(klantVoornaam, klantAchternaam);
         }
         
-        else if (klantVoornaam.length() >= 1) {
+        else if (klantVoornaam != null && klantVoornaam.length() >= 1) {
         	logger.info("klant zoeken op voornaam -- voornaam was groter dan 0");
         	return FindByName(klantVoornaam);
         	}
