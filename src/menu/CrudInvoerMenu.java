@@ -361,7 +361,7 @@ public class CrudInvoerMenu {
 		}
 		klant.setKlantID(input);
 		
-		//zet andere klant velden in klant.
+		//zet andere klant velden ook in klant.
 		klant.setAchternaam(klantAchternaamTF.getText());
 		klant.setVoornaam(klantVoornaamTF.getText());
 		klant.setTussenvoegsel(tussenvoegselTF.getText());
