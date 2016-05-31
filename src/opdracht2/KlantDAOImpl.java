@@ -12,8 +12,7 @@ public class KlantDAOImpl implements KlantDAO {
     PreparedStatement statement;*/
     
     @Override
-    public Klant findKlant(Klant bestaandeKlant) {//throws SQLException {
-        
+    public Klant findKlant(Klant bestaandeKlant) {//throws SQLException {        
         int klantID = bestaandeKlant.getKlantID();
         String klantVoornaam = bestaandeKlant.getVoornaam();
         String klantAchternaam = bestaandeKlant.getAchternaam();

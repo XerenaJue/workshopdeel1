@@ -60,7 +60,8 @@ public class FacadeDatabaseMenu {
 /*        if (bestaandeKlant.getKlantID() != 0) {
             adres = findAdres(bestaandeKlant);
             bestaandeKlant = findKlant(bestaandeKlant);
-        } */
+        } 
+*/
         else {
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant);
