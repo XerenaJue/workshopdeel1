@@ -6,6 +6,11 @@
 package facade;
 import java.sql.*;
 import java.util.*;
+
+import POJO.Adres;
+import POJO.ArtikelPOJO;
+import POJO.Bestelling;
+import POJO.Klant;
 import opdracht2.*;
 /**
  *

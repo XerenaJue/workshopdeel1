@@ -1,4 +1,4 @@
-package opdracht2;
+package POJO;
 
 public class Klant {
 	private int klantID;

@@ -11,6 +11,18 @@ import java.sql.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import DAO.AdresDaoImpl;
+import DAO.ArtikelDAO;
+import DAO.BestellingDAO;
+import DAO.KlantDAOImpl;
+import Interface.AdresDao;
+import Interface.KlantDAO;
+import POJO.Adres;
+import POJO.ArtikelBestelling;
+import POJO.ArtikelPOJO;
+import POJO.Bestelling;
+import POJO.Klant;
+
 /**
  *
  * @author jeroen

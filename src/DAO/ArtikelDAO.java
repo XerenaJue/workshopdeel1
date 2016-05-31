@@ -1,4 +1,4 @@
-package opdracht2;
+package DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+import POJO.ArtikelPOJO;
+import opdracht2.ConnectionFactory;
 
 /**
  *

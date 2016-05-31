@@ -29,6 +29,10 @@ import java.util.*;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import POJO.Adres;
+import POJO.ArtikelPOJO;
+import POJO.Bestelling;
+import POJO.Klant;
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;

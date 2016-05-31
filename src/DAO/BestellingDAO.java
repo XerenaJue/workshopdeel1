@@ -3,10 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package opdracht2;
+package DAO;
 
 import java.sql.*;
 import java.util.*;
+
+import POJO.ArtikelBestelling;
+import POJO.ArtikelPOJO;
+import POJO.Bestelling;
+import POJO.Klant;
+import opdracht2.ConnectionFactory;
 
 
 /**

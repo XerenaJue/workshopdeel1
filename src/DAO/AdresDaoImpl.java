@@ -1,4 +1,4 @@
-package opdracht2;
+package DAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -6,6 +6,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import Interface.AdresDao;
+import POJO.Adres;
+import POJO.Klant;
+import opdracht2.ConnectionFactory;
 
 public class AdresDaoImpl implements AdresDao {
 

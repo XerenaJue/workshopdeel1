@@ -28,9 +28,10 @@ public class TestAdres {
 		adres.setPostcode("2566GJ");
 		adres.setHuisnummer(22);
 		adres.setWoonplaats("Galaxy Far Far Away");
+		adres.setAdresID(45);
 		AdresDaoImpl instanceAdres = new AdresDaoImpl();
 		
-		instanceAdres.createAdres(22, adres);
+		instanceAdres.createAdres(45, adres);
 
 		assertEquals("Corellia", adres.getStraatnaam());
 		assertEquals("2566GJ", adres.getPostcode());
@@ -48,20 +49,28 @@ public class TestAdres {
 		adres.setHuisnummer(33);
 		adres.setToevoeging("");
 		adres.setWoonplaats("Galaxy Far Far Away");
+		adres.setAdresID(2);
+		
 		AdresDaoImpl instanceAdres = new AdresDaoImpl();		
 		
-		instanceAdres.update(2, adres);
+		instanceAdres.update(adres);
+		System.out.println(adres);
 
 		instanceAdres.findAdres(adres.getStraatnaam());
 		
 		Klant klant = new Klant();
-		klant.setKlantID(4);
+		klant.setKlantID(22);
+		
 		instanceAdres.findAdres(klant.getKlantID());
 
 		instanceAdres.findAdres(adres.getPostcode(), adres.getHuisnummer());
 
 		instanceAdres.findAdres(adres.getStraatnaam(), adres.getPostcode(), adres.getHuisnummer(),
 				adres.getToevoeging(), adres.getWoonplaats());
+		
+		instanceAdres.findAdres(adres.getStraatnaam());
+		
+		instanceAdres.deleteAdres(klant, adres);
 
 	}
 

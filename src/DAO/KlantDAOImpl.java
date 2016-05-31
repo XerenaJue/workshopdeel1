@@ -1,9 +1,14 @@
-package opdracht2;
+package DAO;
 
 import java.sql.*;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import Interface.KlantDAO;
+import POJO.Adres;
+import POJO.Klant;
+import opdracht2.ConnectionFactory;
 
 public class KlantDAOImpl implements KlantDAO {
 	static Logger logger = LoggerFactory.getLogger(KlantDAOImpl.class);

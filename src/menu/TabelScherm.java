@@ -30,6 +30,10 @@ import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
+
+import POJO.Adres;
+import POJO.Bestelling;
+import POJO.Klant;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
 

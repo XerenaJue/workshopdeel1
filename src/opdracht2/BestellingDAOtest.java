@@ -8,6 +8,12 @@ package opdracht2;
 import java.sql.*;
 import java.util.*;
 
+import DAO.BestellingDAO;
+import POJO.ArtikelBestelling;
+import POJO.ArtikelPOJO;
+import POJO.Bestelling;
+import POJO.Klant;
+
 /**
  *
  * @author maurice

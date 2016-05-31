@@ -1,7 +1,10 @@
-package opdracht2;
+package Interface;
 
 import java.sql.*;
 import java.util.List;
+
+import POJO.Adres;
+import POJO.Klant;
 
 public interface AdresDao {
 	

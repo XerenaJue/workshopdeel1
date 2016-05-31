@@ -6,6 +6,9 @@
 package facade;
 import opdracht2.*;
 import java.util.*;
+
+import POJO.Adres;
+import POJO.Klant;
 /**
  *
  * @author jeroen
