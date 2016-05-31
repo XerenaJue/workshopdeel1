@@ -63,7 +63,8 @@ public class Adres {
     
     public String toString() {
     	return "Straatnaam: " + straatnaam + ", huisnummer: " + huisnummer + ", toevoeging: " 
-    			+ toevoeging + ", postcode: " + postcode + ", woonplaats: " + woonplaats;
+    			+ toevoeging + ", postcode: " + postcode + ", woonplaats: " + woonplaats 
+    			+ ", adres_id: " + adres_id;
     }
     
     @Override
