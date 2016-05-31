@@ -1,6 +1,5 @@
 package opdracht2;
 
-import opdracht2.ArtikelPOJO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
