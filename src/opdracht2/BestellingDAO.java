@@ -21,8 +21,9 @@ public class BestellingDAO {
         // in facade maak je een arrayList van artikelBestellingen die geupdate moeten worden. 
         //vervolgens werk je met een for each loop om voor elke aan te passen artikelBestelling een
         // updateBestelling te invoken.
-        public void updateBestelling(ArtikelBestelling artikelBestelling ) throws SQLException{
-            String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ?, where artikel_artikel_id = "+artikelBestelling.getArtikelPojo().getArtikelID();
+        public void updateBestelling(ArtikelBestelling artikelBestelling,int bestel_id ) throws SQLException{
+            //artikelBestelling.setArtikelenAantal(4);
+            String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ? where artikel_artikel_id = "+artikelBestelling.getArtikelPojo().getArtikelID()+ " AND bestelling_bestelling_id = "+ bestel_id;
         try {
             createCS(SQLStatement);
             statement.setInt(1,artikelBestelling.getArtikelenAantal());
@@ -61,23 +62,32 @@ public class BestellingDAO {
         resultSet.next(); 
         int[][] BHA_artikelIdOpslag = new int[resultSet.getInt("count")][2];//array slaat in eerste dimensie artikel_id op en in tweede dimensie aantal_artikelen
                  
-        String queryBHA = "select * from bestelling_has_artikel where bestelling_bestelling_id = " + bestelling.getBestelling_id();
-        
+        //String queryBHA = "select * from bestelling_has_artikel where bestelling_bestelling_id = " + bestelling.getBestelling_id();
+        String queryBHA = "select * from bestelling RIGHT OUTER JOIN bestelling_has_artikel ON bestelling_id = bestelling_bestelling_id where bestelling_bestelling_id = " + bestelling.getBestelling_id();
         statement = connection.prepareStatement(queryBHA);
         resultSet = statement.executeQuery();
+       // ArtikelPOJO artikel = new ArtikelPOJO();
+       // ArtikelBestelling artikelBestelling = new ArtikelBestelling();
+        
+        
              //haal artikel_id en aantal artikelen uit resultset          
             while (resultSet.next()) {
                BHA_artikelIdOpslag[i][0] = resultSet.getInt("artikel_artikel_id");
                BHA_artikelIdOpslag[i][1] = resultSet.getInt("aantal_artikelen");
+               //System.out.println(i);
+               
                i++;
+              // if (i==4) break;
             }
+        
+        
         
         String queryJOIN;
         //gebruik opgeslagen artikel id's om artikel eigenschappen op te halen en breng ze onder in artikelPOJO en daarna in 
         // artikelBestelling Pojo samen met artikel_aantal.
-        for (z = 0; z < i+1; z++){
-        queryJOIN = "select * bestelling_has_artikel LEFT OUTER JOIN artikel ON artikel_artikel_id = artikel_id "+
-                "WHERE artikel_artikel_id = " + BHA_artikelIdOpslag[z][0];
+        for (z = 0; z < i; z++){
+            queryJOIN = "select * from artikel WHERE artikel_id = " + BHA_artikelIdOpslag[z][0];
+        
         ArtikelPOJO artikel = new ArtikelPOJO();
         ArtikelBestelling artikelBestelling = new ArtikelBestelling();
         statement = connection.prepareStatement(queryJOIN);
@@ -117,8 +127,8 @@ public class BestellingDAO {
         return bestelling;
     }
     // idem dito als bij updateBestelling
-     public void deleteArtikelFromBestelling(ArtikelBestelling artikelBestelling) throws SQLException {
-     String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + artikelBestelling.getArtikelPojo().getArtikelID();
+     public void deleteArtikelFromBestelling(ArtikelBestelling artikelBestelling, int bestel_id) throws SQLException {
+     String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + artikelBestelling.getArtikelPojo().getArtikelID()+" AND bestelling_bestelling_id = "+bestel_id;
          try (Connection connection = ConnectionFactory.getMySQLConnection();
                 PreparedStatement statement = connection.prepareStatement(queryBHA); ){
             statement.executeUpdate();
@@ -132,21 +142,34 @@ public class BestellingDAO {
         try (Connection connection = ConnectionFactory.getMySQLConnection();
                 Statement statement = connection.createStatement(); ){ 
             connection.setAutoCommit(false);
-            String queryBestelling = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id();
-            statement.addBatch(queryBestelling);
-
             String queryBHA = "delete from bestelling_has_artikel where bestelling_bestelling_id = " + bestelling.getBestelling_id();
             statement.addBatch(queryBHA);
+            String queryBestelling = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id();
+            statement.addBatch(queryBestelling);
+            statement.executeBatch();
+            connection.commit();            
+    }
+    }
+        public void deleteBestelling(ArrayList<Bestelling> bestelling) throws SQLException {
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                Statement statement = connection.createStatement(); ){ 
+            connection.setAutoCommit(false);
+            for (Bestelling element: bestelling){
+                String queryBHA = "delete from bestelling_has_artikel where bestelling_bestelling_id = " + element.getBestelling_id();
+                statement.addBatch(queryBHA);
+                String queryBestelling = "delete from bestelling where bestelling_id = " + element.getBestelling_id();
+                statement.addBatch(queryBestelling);
+            }
             statement.executeBatch();
             connection.commit();            
     }
     }
     
     public void deleteBestellingen(Klant klant) throws SQLException{
-        List<Bestelling> bestellingen = new ArrayList<>();
+        ArrayList<Bestelling> bestellingen = new ArrayList<>();
         bestellingen = (ArrayList<Bestelling>)findAlleBestellingen(klant);
-        for (Bestelling bestelling: bestellingen)
-            deleteBestelling(bestelling);
+            deleteBestelling(bestellingen);
     }
     
     public List<Bestelling> findAlleBestellingen() {
