@@ -16,14 +16,7 @@ public class Bestelling {
     private List<ArtikelBestelling> artikelList;
     private ArtikelBestelling bestellingArtikel;
     
-   
-    public void setArtikelBestelling(ArtikelBestelling bestellingArtikel){
-        this.bestellingArtikel = bestellingArtikel;
-    }
-    
-    public ArtikelBestelling getArtikelBestelling(){
-        return bestellingArtikel;
-    }
+ 
 
     public int getBestelling_id(){
         return bestelling_id;
