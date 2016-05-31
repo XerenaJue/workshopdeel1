@@ -360,6 +360,13 @@ public class CrudInvoerMenu {
 			input = Integer.parseInt(klantIDTF.getText());
 		}
 		klant.setKlantID(input);
+		
+		//zet andere klant velden in klant 
+		klant.setAchternaam(klantAchternaamTF.getText());
+		klant.setVoornaam(klantVoornaamTF.getText());
+		klant.setTussenvoegsel(tussenvoegselTF.getText());
+		klant.setEmail(emailTF.getText());
+		
 	}
 
 	public void updateKlant() {
