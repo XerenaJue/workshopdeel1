@@ -18,13 +18,14 @@ public class BestellingDAO {
         Connection connection;
         PreparedStatement statement;
         ResultSet resultSet;
-        public void updateBestelling(Bestelling bestelling) throws SQLException{
-            ArtikelDAO artikeldao = new ArtikelDAO();
-            artikeldao.updateArtikel(bestelling.getArtikelBestelling().getArtikelPojo());
-            String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ?, where artikel_artikel_id = "+bestelling.getArtikelBestelling().getArtikelPojo().getArtikelID();
+        // in facade maak je een arrayList van artikelBestellingen die geupdate moeten worden. 
+        //vervolgens werk je met een for each loop om voor elke aan te passen artikelBestelling een
+        // updateBestelling te invoken.
+        public void updateBestelling(ArtikelBestelling artikelBestelling ) throws SQLException{
+            String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ?, where artikel_artikel_id = "+artikelBestelling.getArtikelPojo().getArtikelID();
         try {
             createCS(SQLStatement);
-            statement.setInt(1,bestelling.getArtikelBestelling().getArtikelenAantal());
+            statement.setInt(1,artikelBestelling.getArtikelenAantal());
             statement.executeUpdate();
         }
             catch(SQLException ex){}
@@ -115,9 +116,9 @@ public class BestellingDAO {
         }
         return bestelling;
     }
-    
-     public void deleteArtikelFromBestelling(Bestelling bestelling) throws SQLException {
-     String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + bestelling.getArtikelBestelling().getArtikelPojo().getArtikelID();
+    // idem dito als bij updateBestelling
+     public void deleteArtikelFromBestelling(ArtikelBestelling artikelBestelling) throws SQLException {
+     String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + artikelBestelling.getArtikelPojo().getArtikelID();
          try (Connection connection = ConnectionFactory.getMySQLConnection();
                 PreparedStatement statement = connection.prepareStatement(queryBHA); ){
             statement.executeUpdate();
