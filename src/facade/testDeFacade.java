@@ -29,9 +29,9 @@ public class testDeFacade {
             System.out.println(o);
         }
         
-        zoekAdres.setPostcode("8890UN");
-        zoekAdres.setHuisnummer(945);
-        zoekAdres.setToevoeging("c");
+        zoekAdres.setPostcode("8441NX");
+        zoekAdres.setHuisnummer(83);
+        
         
        
         System.out.println("\nsherm bevat ingetypte waarden: ");

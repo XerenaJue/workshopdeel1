@@ -69,12 +69,14 @@ public class FacadeDatabaseMenu {
         	bestaandeKlant = findKlant(bestaandeKlant);
         	adres = findAdres(bestaandeKlant);
         }
-/*        if (bestaandeKlant.getKlantID() != 0) {
-            adres = findAdres(bestaandeKlant);
+       /* 
+        if (bestaandeKlant.getKlantID() != 0) {
+           adres = findAdres(bestaandeKlant);
             bestaandeKlant = findKlant(bestaandeKlant);
-        } 
-*/
+        }
+        */
         else { 
+            adres = findAdres(adres);
             bestaandeKlant = findKlant(adres);
             adres = findAdres(bestaandeKlant); 
         }
@@ -121,6 +123,14 @@ public class FacadeDatabaseMenu {
         toDisplay[1] = adres;
         
         return adres;
+    }
+    
+    private Adres findAdres(Adres onvolledigAdres) throws SQLException {
+        List<Adres> adresMetID =  adresDAO.findAdres(onvolledigAdres.getPostcode(), onvolledigAdres.getHuisnummer());
+        if (adresMetID.isEmpty()) adresMetID.add(new Adres());
+        toDisplay[1] = adresMetID.get(0);
+        
+        return adresMetID.get(0);
     }
         
     private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
