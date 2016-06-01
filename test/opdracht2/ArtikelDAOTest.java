@@ -5,6 +5,8 @@
  */
 package opdracht2;
 
+import DAO.ArtikelDAO;
+import POJO.ArtikelPOJO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

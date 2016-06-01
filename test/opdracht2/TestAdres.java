@@ -1,5 +1,8 @@
 package opdracht2;
 
+import DAO.AdresDaoImpl;
+import POJO.Adres;
+import POJO.Klant;
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;
