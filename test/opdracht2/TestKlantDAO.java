@@ -1,5 +1,7 @@
 package DAOs;
 
+import DAO.KlantDAOImpl;
+import POJO.Klant;
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;
@@ -7,7 +9,7 @@ import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestDAOCreateKlant {
+public class TestKlantDAO {
 	private KlantDAOImpl daoimpl;
 	
 	@Before

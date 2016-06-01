@@ -37,6 +37,7 @@ public class ArtikelDAOTest {
     
     @Before
     public void setUp() {
+        FillBatchDatabase.clearDatabase();
         FillBatchDatabase.fillBatchDatabase();
     }
     
