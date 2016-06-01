@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package DAO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.*;
 
@@ -24,6 +25,8 @@ public class BestellingDAO {
         Connection connection;
         PreparedStatement statement;
         ResultSet resultSet;
+        Logger logger = LoggerFactory.getLogger(BestellingDAO.class);
+        
         // in facade maak je een arrayList van artikelBestellingen die geupdate moeten worden. 
         //vervolgens werk je met een for each loop om voor elke aan te passen artikelBestelling een
         // updateBestelling te invoken.
@@ -36,7 +39,8 @@ public class BestellingDAO {
             statement.executeUpdate();
         }
             catch(SQLException ex){}
-            finally{closeCS();}                
+            finally{closeConnectionStatement();}
+        logger.info("de bestelling is succesvol geupdate");
                 
             
         
@@ -51,9 +55,10 @@ public class BestellingDAO {
            statement.executeUpdate();
            }
            catch(SQLException e){
-               System.out.println("helaas pindakaas");
+               logger.error("helaas pindakaas");
            }
-           finally{closeCS();}
+           finally{closeConnectionStatement();}
+                   logger.info("er is succesvol een artikel toegevoegd");
 
            
     }
@@ -108,7 +113,8 @@ public class BestellingDAO {
                artikelBestellingen.add(artikelBestelling);
             }
         }
-        closeCS();//sluit resultset,statement,connection
+        closeConnectionStatement();//sluit resultset,statement,connection
+        logger.info("artikelbestelling lijst succesvol ingelezen");
         return artikelBestellingen;
     }    
     
@@ -130,6 +136,7 @@ public class BestellingDAO {
                 }
             }
         }
+        logger.info("bestelling gecreeerd");
         return bestelling;
     }
     // idem dito als bij updateBestelling
@@ -138,7 +145,7 @@ public class BestellingDAO {
          try (Connection connection = ConnectionFactory.getMySQLConnection();
                 PreparedStatement statement = connection.prepareStatement(queryBHA); ){
             statement.executeUpdate();
-            
+           logger.info("artikel succesvol gedelete"); 
         }         
      }   
     
@@ -153,7 +160,8 @@ public class BestellingDAO {
             String queryBestelling = "delete from bestelling where bestelling_id = " + bestelling.getBestelling_id();
             statement.addBatch(queryBestelling);
             statement.executeBatch();
-            connection.commit();            
+            connection.commit();  
+            logger.info("bestelling gedelete");
     }
     }
         public void deleteBestelling(ArrayList<Bestelling> bestelling) throws SQLException {
@@ -168,7 +176,8 @@ public class BestellingDAO {
                 statement.addBatch(queryBestelling);
             }
             statement.executeBatch();
-            connection.commit();            
+            connection.commit();
+            logger.info("bestelling gedelete");            
     }
     }
     
@@ -176,6 +185,7 @@ public class BestellingDAO {
         ArrayList<Bestelling> bestellingen = new ArrayList<>();
         bestellingen = (ArrayList<Bestelling>)findAlleBestellingen(klant);
             deleteBestelling(bestellingen);
+            logger.info("alle bestellignen van klant gedelete");
     }
     
     public List<Bestelling> findAlleBestellingen() {
@@ -200,6 +210,7 @@ public class BestellingDAO {
             ex.printStackTrace();
         }
         if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
+                    logger.info("alle bestellingen weergegeven");
         return bestellingen;
     }
 
@@ -221,10 +232,11 @@ public class BestellingDAO {
             }
         }
         catch (SQLException ex) {
-            System.out.println("gaat iets fout in readAlleBestellingen" );
+            logger.error("gaat iets fout in readAlleBestellingen" );
             ex.printStackTrace();
         }
         if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
+                    logger.info("alle bestellingen van klant weergegeven");
         return bestellingen;
     }
     
@@ -249,13 +261,14 @@ public class BestellingDAO {
             statement.executeUpdate();
         }
             catch(SQLException ex){}
-            finally{closeCS();}                
+            finally{closeConnectionStatement();}
+                    logger.info("lege bestelling gecreeerd");
                 
                 
                 
     }
     
-        public void closeCS(){
+        public void closeConnectionStatement(){
         {
             // kijk of er verbinding is en zo ja sluit deze
             if (resultSet != null) {
