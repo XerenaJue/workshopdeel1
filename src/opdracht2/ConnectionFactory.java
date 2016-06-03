@@ -16,31 +16,41 @@ public class ConnectionFactory {
     private static ComboPooledDataSource cpds;  
     private static HikariDataSource hds ;
         
-    public static final String URL = "jdbc:mysql://localhost/workshopdeel1?&useSSL=false";
-    public static final String USER = "hallo";
-    public static final String PASSWORD = "doei";
-    public static final String DRIVER_CLASS = "com.mysql.jdbc.Driver";
-    static Logger logger = LoggerFactory.getLogger(ConnectionFactory.class); 
+    private static final String MYSQL_URL =   "jdbc:mysql://localhost/workshopdeel1?&useSSL=false";
+    private static final String FIREBIRD_URL = "jdbc:firebirdsql://localhost:3050//var/lib/firebird/2.5/data/workshopdeel.fdb"; // "jdbc:firebirdsql://localhost:3050/workshopdeel1"; 
+    private static String activeURL = MYSQL_URL;
+    
+    private static final String USER = "hallo";
+    private static final String PASSWORD = "doei";
+    
+    private static final String DRIVER_CLASS_MYSQL = "com.mysql.jdbc.Driver";
+    private static final String DRIVER_CLASS_FIREBIRD = "org.firebirdsql.jdbc.FBDriver";
+    private static String activeDriverClass = DRIVER_CLASS_MYSQL;
+    
+    private static Logger logger = LoggerFactory.getLogger(ConnectionFactory.class); 
     private static boolean usingHikari = true;
+    
     //private constructor
     private ConnectionFactory() {
         useHikari();
     }
      
     public static Connection getMySQLConnection() {
-        logger.trace("wordt verbinding met MySql databse gevraagd ");
+        logger.trace("wordt verbinding met " +  activeURL.substring(5,13) + " databse gevraagd ");
+        
         return INSTANCE.createConnection();
     }
-    
+           
     private Connection createConnection() {
         Connection connection = null;
+        
         try {
             if (usingHikari) connection = hds.getConnection();
             else connection = cpds.getConnection();
-            logger.debug("is verbinding met MySql databse gelegd ");
+            logger.debug("is verbinding met " +  activeURL.substring(5,13) + " database gelegd ");
         } 
         catch (SQLException e) {
-            logger.error("wordt verbinding geen verbinding met MySQl gemaakt " + e);
+            logger.error("wordt verbinding geen verbinding met " +  activeURL.substring(5,13) + " gemaakt " + e);
             e.printStackTrace();
         }
         return connection;
@@ -56,8 +66,8 @@ public class ConnectionFactory {
         usingHikari = false;
         try {
             cpds = new ComboPooledDataSource(); 
-            cpds.setDriverClass( DRIVER_CLASS ); //loads the jdbc driver 
-            cpds.setJdbcUrl( URL ); 
+            cpds.setDriverClass( activeDriverClass ); //loads the jdbc driver 
+            cpds.setJdbcUrl( activeURL ); 
             cpds.setUser(USER);
             cpds.setPassword(PASSWORD); 
 
@@ -75,7 +85,7 @@ public class ConnectionFactory {
         usingHikari = true;
         try {
             hds = new HikariDataSource();
-            hds.setJdbcUrl( URL ); 
+            hds.setJdbcUrl( activeURL ); 
             hds.setUsername(USER);
             hds.setPassword(PASSWORD); 
         }
@@ -87,6 +97,22 @@ public class ConnectionFactory {
     public static void closeConnectionPool() {
         if (cpds != null) cpds.close();
         if (hds != null) hds.close();
+    }
+    
+    public static void useFirebird() {
+          
+       activeURL = FIREBIRD_URL;
+       activeDriverClass = DRIVER_CLASS_FIREBIRD;
+       if (usingHikari) useHikari();
+       else useC3PO();
+    }
+    
+    public static void useMySQL() {
+          
+       activeURL = MYSQL_URL;
+       activeDriverClass = DRIVER_CLASS_MYSQL;
+       if (usingHikari) useHikari();
+       else useC3PO();
     }
    
 }

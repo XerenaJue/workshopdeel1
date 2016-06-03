@@ -15,6 +15,13 @@ public class FillBatchDatabase {
   
     private final static String ALFABET = "abcdefghijklmnopqrstuvwxyz";
     private static Random rand = new Random(1000);
+    private static boolean firebird = false; 
+    
+    public static void fillBatchDatabase(String databaseMySQLofFirebird)  {
+        if (databaseMySQLofFirebird.equals("Firebird")) firebird = true;
+        else firebird = false;
+        fillBatchDatabase(20);   
+    }
     
     public static void fillBatchDatabase()  {
          fillBatchDatabase(20);   
@@ -65,7 +72,7 @@ public class FillBatchDatabase {
         }
     }
     
-        public static void addSomeRandomAdresses(int aantal) throws SQLException{
+    public static void addSomeRandomAdresses(int aantal) throws SQLException{
        
         String query2 = "INSERT INTO adres (straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
 					+ " VALUES (?, ?, ?,?, ?)";
@@ -121,9 +128,7 @@ public class FillBatchDatabase {
             connection.setAutoCommit(true);
         }
     }
-    
-    
-    
+          
     public static void addSomeBestellingen(int aantal) throws SQLException{
         String query = "Insert into bestelling(klant_klant_id ) values (?)";
         
@@ -161,7 +166,7 @@ public class FillBatchDatabase {
             connection.setAutoCommit(true);
         }            
     }
-    public static void koppelBestellingArtikel(int aantalBestellingen) throws SQLException{
+    private static void koppelBestellingArtikel(int aantalBestellingen) throws SQLException{
        
         String query = "INSERT INTO bestelling_has_artikel (bestelling_bestelling_id, artikel_artikel_id, aantal_artikelen)"
                         + " VALUES (?, ?, ?)";
@@ -187,7 +192,7 @@ public class FillBatchDatabase {
         }
     }
     
-    public static String generateEmail() {
+    private static String generateEmail() {
         
         String emailHuis = generateString(rand, ALFABET, 3 + rand.nextInt(8));
         String emailPlaats = generateString(rand, ALFABET, 3 + rand.nextInt(8));
@@ -196,7 +201,7 @@ public class FillBatchDatabase {
         return emailHuis + "@" + emailPlaats + "." + emailLand; 
     }
     
-    public static String generatePostcode() {
+    private static String generatePostcode() {
         
         String postcode = "";
         postcode +=  1000 + rand.nextInt(9000);
@@ -205,12 +210,18 @@ public class FillBatchDatabase {
         return postcode; 
     }
     
-    public static String generateString(Random rng, String characters, int length) {
+    private static String generateString(Random rng, String characters, int length) {
         char[] text = new char[length];
         for (int i = 0; i < length; i++)  {
             text[i] = characters.charAt(rng.nextInt(characters.length()));
         }
         return new String(text);
+    }
+    
+    public static void clearDatabase(String databaseMySQLofFirebird)  {
+        if (databaseMySQLofFirebird.equals("Firebird")) firebird = true;
+        else firebird = false;
+        clearDatabase();   
     }
    
     public static void clearDatabase() {
@@ -239,9 +250,49 @@ public class FillBatchDatabase {
             query = "delete from klant";   
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
-                                    
-            query = "ALTER TABLE adres AUTO_INCREMENT = 1";   
-            statement = connection.prepareStatement(query);
+            
+            if (firebird) resetAutoGeneratorFirebirdDatabase();
+            else resetAutoIncrementMySQL();
+        
+        }
+        catch (SQLException ex) {
+            System.out.println("er gaat hier wat fout in batchschrijven");
+            ex.printStackTrace();
+        }
+    }
+    
+    private static void resetAutoGeneratorFirebirdDatabase() {
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();){ 
+            
+           String query = "SET GENERATOR GEN_ADRES_ID TO 0";
+           PreparedStatement statement = connection.prepareStatement(query);
+           statement.executeUpdate();
+           query = "SET GENERATOR GEN_ARTIKEL_ID TO 0";
+           statement = connection.prepareStatement(query);
+           statement.executeUpdate();
+           query = "SET GENERATOR GEN_BESTELLING_ID TO 0";
+           statement = connection.prepareStatement(query);
+           statement.executeUpdate();
+           query = "SET GENERATOR GEN_KLANT_ID TO 0";
+           statement = connection.prepareStatement(query);
+           statement.executeUpdate();
+                  
+        }
+        
+        catch (SQLException ex) {
+            System.out.println("er gaat hier wat fout in batchschrijven");
+            ex.printStackTrace();
+        }
+               
+    }
+    
+    private static void resetAutoIncrementMySQL() {
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();){ 
+            
+            String query = "ALTER TABLE adres AUTO_INCREMENT = 1";   
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.executeUpdate();
             
             query = "ALTER TABLE klant AUTO_INCREMENT = 1";   
@@ -255,8 +306,9 @@ public class FillBatchDatabase {
             query = "ALTER TABLE artikel AUTO_INCREMENT = 1";   
             statement = connection.prepareStatement(query);
             statement.executeUpdate();
-                   
+                  
         }
+        
         catch (SQLException ex) {
             System.out.println("er gaat hier wat fout in batchschrijven");
             ex.printStackTrace();
