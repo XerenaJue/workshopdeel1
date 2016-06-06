@@ -12,6 +12,7 @@ import java.util.List;
 
 import POJO.Bestelling;
 import POJO.Klant;
+import facade.FacadeDatabaseMenu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -32,23 +33,22 @@ import javafx.scene.text.Text;
 public class BestellingScherm extends CrudInvoerMenu {
     
     
-    MenuButton btnZoekBestellingen;
+    private MenuButton btnZoekBestellingen, btnVoegToe ;
     private final TableView pojoTabel;
     private final ObservableList weerTeGevenPOJOs;
     private final Klant dezeKlant;
     
-    Label lbl1a, lbl1b, lbl2a , lbl2b;
+    private Label lbl1a, lbl1b, lbl2a , lbl2b;
     
     
     
-    BestellingScherm(Object[] nepAppArray) {
+    BestellingScherm(FacadeDatabaseMenu deFacade) {
          
-        super();
-        dezeKlant = (Klant)nepAppArray[0];
+        super(deFacade);
+        dezeKlant = klant;
         pojoTabel = new TableView<>();
         weerTeGevenPOJOs = FXCollections.observableArrayList();
-        super.nepAppArray = nepAppArray;
-          
+               
     }
     
     @Override
@@ -78,8 +78,8 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
         });
-        btnZoek = new MenuButton("Voeg artikel toe");
-        btnZoek.setOnMouseClicked(event -> {   System.out.println(klant); 
+        btnVoegToe = new MenuButton("Voeg artikel toe");
+        btnVoegToe.setOnMouseClicked(event -> {   System.out.println(klant); 
                 refreshPanes("Bestellingsgegevens");        
         });
         btnMaak = new MenuButton("Nieuwe bestelling ");

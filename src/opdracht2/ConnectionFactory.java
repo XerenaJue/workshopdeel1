@@ -100,7 +100,7 @@ public class ConnectionFactory {
     }
     
     public static void useFirebird() {
-          
+       logger.info("now using firebird");   
        activeURL = FIREBIRD_URL;
        activeDriverClass = DRIVER_CLASS_FIREBIRD;
        if (usingHikari) useHikari();
@@ -108,7 +108,7 @@ public class ConnectionFactory {
     }
     
     public static void useMySQL() {
-          
+       logger.info("now using MySQL");     
        activeURL = MYSQL_URL;
        activeDriverClass = DRIVER_CLASS_MYSQL;
        if (usingHikari) useHikari();

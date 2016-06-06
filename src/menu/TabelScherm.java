@@ -57,9 +57,9 @@ public class TabelScherm {
     private MenuButton btnCrud;
  
     
- public TabelScherm() {
+ public TabelScherm(FacadeDatabaseMenu deFacade) {
      
-    facade = new FacadeDatabaseMenu();
+    facade = deFacade;
     window = new Stage();
     root = new BorderPane();
     pane = new GridPane();
@@ -256,7 +256,7 @@ public class TabelScherm {
         if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Klant ) {
         
             Klant person = (Klant)pojoTabel.getSelectionModel().getSelectedItem();
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
             klantCrud.prepareMenu();
             klantCrud.setKlant(person);
             klantCrud.zoekKlant();
@@ -266,7 +266,7 @@ public class TabelScherm {
         else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Adres ) {
         
             Adres adres = (Adres)pojoTabel.getSelectionModel().getSelectedItem();
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
             klantCrud.prepareMenu();
             klantCrud.setAdres(adres);
             klantCrud.zoekKlant();
@@ -278,7 +278,7 @@ public class TabelScherm {
             Bestelling bestelling = (Bestelling)pojoTabel.getSelectionModel().getSelectedItem();
             Klant klant = new Klant();
             klant.setKlantID(bestelling.getKlant_id());
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu();
+            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
             klantCrud.prepareMenu();
             klantCrud.setKlant(klant);
             klantCrud.zoekKlant();

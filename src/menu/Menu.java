@@ -1,5 +1,6 @@
 package menu;
 //jjj
+import facade.FacadeDatabaseMenu;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -18,9 +19,11 @@ import javafx.util.Duration;
 import opdracht2.ConnectionFactory;
 
 public class Menu extends Parent {
+        static FacadeDatabaseMenu deFacade = new FacadeDatabaseMenu();
 	static boolean terugNaarInlog;
-        static CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu();
-        static TabelScherm tabelScherm = new TabelScherm();
+        static CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu(deFacade);
+        static TabelScherm tabelScherm = new TabelScherm(deFacade);
+        static DatasourceScherm datasourceScherm;
         
 	
     public static boolean display() {
@@ -63,21 +66,21 @@ public class Menu extends Parent {
               
         
         MenuButton btnUitloggen = new MenuButton("Uitloggen");
-        btnUitloggen.setOnMouseClicked(event -> {
+        btnUitloggen.setOnMouseClicked(event -> { ConnectionFactory.closeConnectionPool();
             terugNaarInlog = true;
             window.close();
         });
 
         MenuButton btnStop = new MenuButton("Afsluiten");
-        btnStop.setOnMouseClicked(event -> {
+        btnStop.setOnMouseClicked(event -> { ConnectionFactory.closeConnectionPool();
             System.exit(0);
         });
         
-        MenuButton btnChangeConnector = new MenuButton("change connection pool");
-        btnChangeConnector.setOnMouseClicked(event -> {  ConnectionFactory.changeConnectionPool(); 
+        MenuButton btnDatasourceScherm = new MenuButton("Datasources");
+        btnDatasourceScherm.setOnMouseClicked(event -> { datasourceScherm = new DatasourceScherm(deFacade); datasourceScherm.display();
         });
         
-        menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnChangeConnector, btnUitloggen, btnStop);
+        menu0.getChildren().addAll(btnCRUD, btnKlasseSelect, btnDatasourceScherm, btnUitloggen, btnStop);
 
         Rectangle bg = new Rectangle(300, 250);
         bg.setTranslateX(75);

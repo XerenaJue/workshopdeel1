@@ -40,6 +40,7 @@ public class FacadeDatabaseMenu {
     private List<ArtikelPOJO> artikelen;  
     private List<Adres> adressen;
     
+    
     public FacadeDatabaseMenu() {
         klantDAO = new KlantDAOImpl();
         adresDAO = new AdresDaoImpl();
@@ -52,7 +53,8 @@ public class FacadeDatabaseMenu {
         toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
         toDisplay[4] = klanten;
-           
+ //       ConnectionFactory.useFirebird();  
+            ConnectionFactory.useMySQL();
     }
     
     public Object[] getToDisplay() {
@@ -69,12 +71,6 @@ public class FacadeDatabaseMenu {
         	bestaandeKlant = findKlant(bestaandeKlant);
         	adres = findAdres(bestaandeKlant);
         }
-       /* 
-        if (bestaandeKlant.getKlantID() != 0) {
-           adres = findAdres(bestaandeKlant);
-            bestaandeKlant = findKlant(bestaandeKlant);
-        }
-        */
         else { 
             adres = findAdres(adres);
             bestaandeKlant = findKlant(adres);
@@ -215,5 +211,19 @@ public class FacadeDatabaseMenu {
 	   
    }
    
+   public void changeConnectionPool() {
+       ConnectionFactory.changeConnectionPool();
+   }
+   
+   public void changeDatabase(String naamDatabase) {
+      
+       if (naamDatabase.equals("MySQL")) {
+           ConnectionFactory.useMySQL();
+       }
+       else if (naamDatabase.equals("Firebird")) {
+           ConnectionFactory.useFirebird();
+       }
+       
+   }
 
 }

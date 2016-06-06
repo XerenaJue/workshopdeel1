@@ -82,29 +82,23 @@ public class CrudInvoerMenu {
 	Label plaatsnaamLabel;
 
 	Object[] nepAppArray;
-	Klant klant = new Klant();
-	Adres adres = new Adres();
-	Bestelling bestelling = new Bestelling();
-	List<Bestelling> bestellingen = new ArrayList<>();
-	List<ArtikelPOJO> artikelen = new ArrayList<>();
+	Klant klant ;
+	Adres adres ;
+	Bestelling bestelling;
+	List<Bestelling> bestellingen; 
+	List<ArtikelPOJO> artikelen;
 	Label lblStatus = new Label();
 
-	public CrudInvoerMenu() {
+	public CrudInvoerMenu(FacadeDatabaseMenu deFacade) {
 
-		facade = new FacadeDatabaseMenu();
-		nepAppArray = new Object[5];
-		nepAppArray[0] = klant;
-		nepAppArray[1] = adres;
-		nepAppArray[2] = bestellingen;
-		nepAppArray[3] = artikelen;
-		nepAppArray[4] = new ArrayList<Bestelling>();
-
-		// this.setStage();
-		// this.initializeButtons();
-		// this.setLabels();
-
-	}
-
+		facade = deFacade;
+                nepAppArray = facade.getToDisplay();
+                klant = (Klant)nepAppArray[0];
+                adres = (Adres)nepAppArray[1];
+                bestellingen = (List<Bestelling>)nepAppArray[2];
+                artikelen = (List<ArtikelPOJO> )nepAppArray[3];
+        }
+                
 	public void startMenu() {
 
 		prepareMenu();
@@ -168,7 +162,7 @@ public class CrudInvoerMenu {
 		});
 		btnBestellingen = new MenuButton("Bestellingen");
 		btnBestellingen.setOnMouseClicked(event -> {
-			BestellingScherm besteld = new BestellingScherm(nepAppArray);
+			BestellingScherm besteld = new BestellingScherm(facade);
 			besteld.startMenu();
 			besteld.refreshPanes("Bestellingsgegevens");
 		});
