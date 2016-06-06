@@ -114,7 +114,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll( btnTerug, btnZoek, btnMaak, btnVerwijder);
+        vBox.getChildren().addAll( btnTerug, btnVoegToe, btnMaak, btnVerwijder);
        
     }
     @Override
