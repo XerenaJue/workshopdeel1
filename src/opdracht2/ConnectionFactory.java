@@ -17,7 +17,7 @@ public class ConnectionFactory {
     private static HikariDataSource hds ;
         
     private static final String MYSQL_URL =   "jdbc:mysql://localhost/workshopdeel1?&useSSL=false";
-    private static final String FIREBIRD_URL = "jdbc:firebirdsql://localhost:3050//var/lib/firebird/2.5/data/workshopdeel.fdb"; // "jdbc:firebirdsql://localhost:3050/workshopdeel1"; 
+    private static final String FIREBIRD_URL =  "jdbc:firebirdsql://localhost:3050/workshopdeel1" ; 
     private static String activeURL = MYSQL_URL;
     
     private static final String USER = "hallo";
