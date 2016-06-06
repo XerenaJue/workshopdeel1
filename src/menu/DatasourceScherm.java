@@ -54,7 +54,7 @@ public class DatasourceScherm {
     
     public DatasourceScherm(FacadeDatabaseMenu activeFacade) {
      
-        facade = new FacadeDatabaseMenu();
+        facade = activeFacade;
         window = new Stage();
         root = new BorderPane();
         pane = new GridPane();
