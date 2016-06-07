@@ -228,7 +228,7 @@ public class TabelScherm {
         String pojoNaam = "empty";
         
         if (!pojos.isEmpty()) {
-            pojoNaam = pojos.get(0).getClass().getName();
+            pojoNaam = pojos.get(0).getClass().getSimpleName();
         }
         TableColumn hoofdKolom = new TableColumn(pojoNaam);
         
