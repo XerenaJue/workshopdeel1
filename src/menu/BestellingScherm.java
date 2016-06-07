@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -95,7 +96,12 @@ public class BestellingScherm extends CrudInvoerMenu {
                 
     @Override
     public void refreshPanes(String header) {
-       
+        Label bestellingLabel = new Label("(nieuw) bestellingsID");
+        TextField bestellingTextField = new TextField(); 
+        Label artikelLabel = new Label("Artikel ID");
+        TextField artikelTextField = new TextField(); 
+        Label artikelAantalLabel = new Label("Artikel Aantal");
+        TextField artikelAantalTextField = new TextField(); 
         Text txtTitel = new Text(header);
         txtTitel.setFont(Font.font(20));
         txtTitel.setFill(Color.BLACK);   
@@ -110,6 +116,14 @@ public class BestellingScherm extends CrudInvoerMenu {
         pane.add(lbl1a, 0, 1, 5, 5);
         pane.add(lbl2b, 5, 5, 5, 5);
         pane.add(lbl2a, 0, 5, 5, 5);
+        pane.add(bestellingTextField, 5, 9, 5, 5);
+        pane.add(bestellingLabel, 0, 9, 5, 5);
+        pane.add(artikelTextField, 5, 13, 5, 5);
+        pane.add(artikelLabel, 0, 13, 5, 5);
+        pane.add(artikelAantalTextField, 5, 17, 5, 5);
+        pane.add(artikelAantalLabel, 0, 17, 5, 5);
+        //pane.
+//pane.addRow(0,bestellingTextField,bestellingLabel);
                         
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
@@ -124,12 +138,13 @@ public class BestellingScherm extends CrudInvoerMenu {
         lbl1b = new Label(Integer.toString(klant.getKlantID()));
         lbl2a = new Label("Achternaam klant:");
         lbl2b = new Label(klant.getAchternaam());
+
              
     }
      private void setUpForBestellingen() {
    
         List<String> pojoVelden = new ArrayList<>();
-        pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
+        pojoVelden.addAll(Arrays.asList("bestelling_id", "artikel_id", "artikel_aantal" ) );
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
