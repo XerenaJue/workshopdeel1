@@ -27,6 +27,7 @@ import facade.*;
 import java.sql.*;
 import java.util.*;
 
+
 import org.apache.commons.validator.routines.EmailValidator;
 
 import POJO.Adres;
@@ -162,7 +163,7 @@ public class CrudInvoerMenu {
 		});
 		btnBestellingen = new MenuButton("Bestellingen");
 		btnBestellingen.setOnMouseClicked(event -> {
-			BestellingScherm besteld = new BestellingScherm(facade);
+                        BestellingScherm besteld = new BestellingScherm(facade);
 			besteld.startMenu();
 			besteld.refreshPanes("Bestellingsgegevens");
 		});
