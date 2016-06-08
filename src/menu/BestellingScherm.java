@@ -9,9 +9,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
+import POJO.ArtikelBestelling;
 import facade.FacadeDatabaseMenu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +41,12 @@ public class BestellingScherm extends CrudInvoerMenu {
     private final Klant dezeKlant;
     
     private Label lbl1a, lbl1b, lbl2a , lbl2b;
+        Label bestellingLabel;
+        TextField bestellingTextField;
+        Label artikelLabel;
+        TextField artikelTextField;
+        Label artikelAantalLabel;
+        TextField artikelAantalTextField;
     
     
     
@@ -79,9 +86,11 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnTerug.setOnMouseClicked(event -> {
         	window.close();        	
         });
-        btnVoegToe = new MenuButton("Voeg artikel toe");
+        btnVoegToe = new MenuButton("Bestelling aanpassen");
         btnVoegToe.setOnMouseClicked(event -> {   System.out.println(klant); 
-                refreshPanes("Bestellingsgegevens");        
+        pasArtikelAan();        
+        refreshPanes("Bestellingsgegevens"); 
+                
         });
         btnMaak = new MenuButton("Nieuwe bestelling ");
         btnMaak.setOnMouseClicked(event -> { System.out.println("click Maakbutton met arrayklant "+nepAppArray[0]); plaatsBestelling();
@@ -96,12 +105,12 @@ public class BestellingScherm extends CrudInvoerMenu {
                 
     @Override
     public void refreshPanes(String header) {
-        Label bestellingLabel = new Label("(nieuw) bestellingsID");
-        TextField bestellingTextField = new TextField(); 
-        Label artikelLabel = new Label("Artikel ID");
-        TextField artikelTextField = new TextField(); 
-        Label artikelAantalLabel = new Label("Artikel Aantal");
-        TextField artikelAantalTextField = new TextField(); 
+        bestellingLabel = new Label("(nieuw) bestellingsID");
+        bestellingTextField = new TextField(); 
+        artikelLabel = new Label("Artikel ID");
+        artikelTextField = new TextField(); 
+        artikelAantalLabel = new Label("Artikel Aantal");
+        artikelAantalTextField = new TextField(); 
         Text txtTitel = new Text(header);
         txtTitel.setFont(Font.font(20));
         txtTitel.setFill(Color.BLACK);   
@@ -144,7 +153,7 @@ public class BestellingScherm extends CrudInvoerMenu {
      private void setUpForBestellingen() {
    
         List<String> pojoVelden = new ArrayList<>();
-        pojoVelden.addAll(Arrays.asList("bestelling_id", "artikel_id", "artikel_aantal" ) );
+        pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
@@ -156,7 +165,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         pojoTabel.setMinSize(250, 300);
         
         int aantalKolommen = pojoVelden.size();
-        String pojoNaam = "empty";
+        String pojoNaam = "KlantBestellingen";
         
         if (!pojos.isEmpty()) {
             pojoNaam = pojos.get(0).getClass().getSimpleName();
@@ -180,6 +189,22 @@ public class BestellingScherm extends CrudInvoerMenu {
         weerTeGevenPOJOs.addAll( (List)nepAppArray[2]);
     }
     
+    
+    private void pasArtikelAan(){
+        ArtikelBestelling artikelBestelling = new ArtikelBestelling();
+        ArtikelPOJO artikel = new ArtikelPOJO();
+        artikel.setArtikelID(Integer.parseInt(artikelTextField.getText()));
+        artikelBestelling.setArtikelPojo(artikel);
+        artikelBestelling.setArtikelenAantal(Integer.parseInt(artikelAantalTextField.getText()));
+        try{
+        facade.updateBestelling(artikelBestelling, Integer.parseInt(bestellingTextField.getText()));
+        System.out.println("aanpassing wel gelukt");
+        }
+        catch (SQLException e) {
+           e.printStackTrace();
+           System.out.println("aanpassing niet gelukt");
+        }
+    }
     
     private void verwijderBestelling(){
         try {           
