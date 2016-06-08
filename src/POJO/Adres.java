@@ -2,13 +2,27 @@ package POJO;
 
 import org.apache.commons.lang3.builder.*;
 
+import Annotations.Column;
+import Annotations.Entity;
+import Annotations.ID;
+import Annotations.Table;
+
+@Entity (className = "ADRES")
+@Table (tableName = "ADRES")
 public class Adres {
-    
+	
+    @ID
+    @Column
 	private int adres_id;
+    @Column
     private String straatnaam;
+    @Column
     private String postcode;
+    @Column
     private String toevoeging;
+    @Column
     private int huisnummer;
+    @Column
     private String woonplaats;
     
     public Adres() {}
