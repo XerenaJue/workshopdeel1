@@ -201,6 +201,10 @@ public class FacadeDatabaseMenu {
       
        bestellingDAO.deleteBestelling(bestelling);
     }
+    
+    public void updateBestelling(ArtikelBestelling artikelBestelling, int bestel_id) throws SQLException{
+        bestellingDAO.updateBestelling(artikelBestelling, bestel_id);
+    }
      
     private List<ArtikelBestelling> findArtikelen(Bestelling bestelling) {
             
