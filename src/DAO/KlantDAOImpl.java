@@ -352,6 +352,7 @@ public class KlantDAOImpl implements KlantDAO {
 
     @Override
     public void delete(Klant klant){ //throws SQLException {
+       
         String query = "DELETE FROM klant WHERE klant_id = " + klant.getKlantID();        
         try (Connection connection = ConnectionFactory.getMySQLConnection();
                 PreparedStatement stmt = connection.prepareStatement(query);
@@ -362,7 +363,8 @@ public class KlantDAOImpl implements KlantDAO {
             logger.info("Klant verwijderd");
             System.out.println("Klant gegevens zijn succesvol verwijderd");
         } catch (SQLException ex) {
-        	logger.info("gaat iets mis");
+        	logger.info("gaat iets mis in deleteklant" );
+                 ex.printStackTrace();
         }
         /*finally {
             // kijk of er verbinding is en zo ja sluit deze
