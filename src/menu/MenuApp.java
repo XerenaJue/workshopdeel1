@@ -20,9 +20,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class MenuApp extends Application {    
-    
+                private final String user = "hallo";
+                private final String password = "doei";
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = new StackPane();
@@ -70,9 +73,26 @@ public class MenuApp extends Application {
         Scene scene = new Scene(root);
         
         btn.setOnAction(event -> {
-        	primaryStage.close();
-        	Menu.display();
-        	primaryStage.show();
+                if ((userTextField.getText().equals(user)) && (pwBox.getText().equals(password))){
+                    primaryStage.close();
+                    Menu.display();
+                    primaryStage.show();
+                }
+                else if ((userTextField.getText().equals(user)) && (!pwBox.getText().equals(password))){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Verkeerd wachtwoord");
+                    alert.setContentText("U hebt een verkeerd wachtwoord ingevoerd");
+                    alert.showAndWait();
+                    pwBox.clear();
+                }
+                else if (!userTextField.getText().equals(user)){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("User onbekend");
+                    alert.setContentText("User bestaat niet");
+                    alert.showAndWait();
+                    userTextField.clear();
+                }
+                
         });
         primaryStage.setScene(scene);
         primaryStage.setTitle("Menu");
