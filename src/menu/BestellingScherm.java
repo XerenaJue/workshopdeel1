@@ -99,7 +99,12 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnVerwijder = new MenuButton("Verwijder bestelling");
         btnVerwijder.setOnMouseClicked(event -> { System.out.println("click Deletebutton "+nepAppArray[0]); verwijderBestelling();
                 refreshPanes("Bestellingsgegevens");        
-        }); 
+        });
+        btnVerwijderAlles = new MenuButton("Verwijder alle bestellingen");
+        btnVerwijderAlles.setOnMouseClicked(event -> { System.out.println("click Deletebutton "+nepAppArray[0]); verwijderAlleBestellingen();
+                refreshPanes("Bestellingsgegevens");        
+        });
+        
         //blll  
     }
                 
@@ -137,7 +142,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll( btnTerug, btnVoegToe, btnMaak, btnVerwijder);
+        vBox.getChildren().addAll( btnTerug, btnVoegToe, btnMaak, btnVerwijder, btnVerwijderAlles);
        
     }
     @Override
@@ -221,6 +226,15 @@ public class BestellingScherm extends CrudInvoerMenu {
            e.printStackTrace();
            System.out.println("verwijdering niet gelukt");
        }
+    }
+    
+    private void verwijderAlleBestellingen(){
+        try{
+            facade.verwijderAlleBestellingen(klant);
+        }
+        catch(SQLException e){
+        
+        }
     }
     
     private void plaatsBestelling() {
