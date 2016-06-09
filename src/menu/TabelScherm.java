@@ -117,7 +117,8 @@ public class TabelScherm {
                 refreshPanes("Alle bestellingen in de database.");        
         });
         btnArtikelen = new MenuButton("Artikelen");
-        btnArtikelen.setOnMouseClicked(event -> {   clearTables();  refreshPanes("Alle artikelen in de database.");        
+        btnArtikelen.setOnMouseClicked(event -> {   clearTables();  getArtikelen(); setUpForArtikelen(); 
+                refreshPanes("Alle artikelen in de database.");        
         });
         btnCrud = new MenuButton("CRUD");
         btnCrud.setOnMouseClicked(event -> {   openDezeKlantCrud();          
@@ -159,9 +160,7 @@ public class TabelScherm {
             ft.setFromValue(0.0);
             ft.setToValue(1.0);
             ft.play();
-
-
-            
+         
             
         } catch (IOException e) {
 		System.out.println("Kan plaatje niet vinden");
@@ -196,6 +195,15 @@ public class TabelScherm {
         }
     }
     
+    private void getArtikelen() {
+        try {
+            weerTeGevenPOJOs.addAll(facade.findAlleArtikelen() );
+        }
+        catch (SQLException e) {
+            System.out.println("oplossen nog "); 
+        }
+    }
+    
     private void setUpForKlanten() {
         
         List<String> pojoVelden = new ArrayList<>();
@@ -217,6 +225,12 @@ public class TabelScherm {
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
     }
     
+    private void setUpForArtikelen() {
+   
+        List<String> pojoVelden = new ArrayList<>();
+        pojoVelden.addAll(Arrays.asList("artikelID", "artikelNaam", "artikelPrijs" ) );
+        setUpTabel(pojoVelden, weerTeGevenPOJOs);
+    }
     
     private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
         
