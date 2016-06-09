@@ -17,6 +17,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import opdracht2.ConnectionFactory;
+import javafx.stage.WindowEvent;
+import javafx.event.EventHandler;
+
 
 public class Menu extends Parent {
         static FacadeDatabaseMenu deFacade = new FacadeDatabaseMenu();
@@ -27,10 +30,17 @@ public class Menu extends Parent {
         
 	
     public static boolean display() {
+
         Stage window = new Stage();
         Pane layout = new Pane();
         layout.setPrefSize(800, 600);
-        
+                // dit stukje hieronder zorgt ervoor dat het programma ook stopt wanneer je op het rode kruisje drukt.
+                window.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        System.exit(0);
+          }
+      }); 
         Image img;        
         try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
             img = new Image(input);
@@ -97,7 +107,7 @@ public class Menu extends Parent {
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
-
+        
         return terugNaarInlog;
     }   
 }
