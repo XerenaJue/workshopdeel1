@@ -202,8 +202,8 @@ public class BestellingScherm extends CrudInvoerMenu {
         artikelBestelling.setArtikelPojo(artikel);
         artikelBestelling.setArtikelenAantal(Integer.parseInt(artikelAantalTextField.getText()));
         try{
-        facade.updateBestelling(artikelBestelling, Integer.parseInt(bestellingTextField.getText()));
-        System.out.println("aanpassing wel gelukt");
+            facade.updateBestelling(artikelBestelling, Integer.parseInt(bestellingTextField.getText()));
+            System.out.println("aanpassing wel gelukt");
         }
         catch (SQLException e) {
            e.printStackTrace();
@@ -231,6 +231,11 @@ public class BestellingScherm extends CrudInvoerMenu {
     private void verwijderAlleBestellingen(){
         try{
             facade.verwijderAlleBestellingen(klant);
+            
+            facade.zoek(nepAppArray);
+            nepAppArray = facade.getToDisplay();
+            setUpForBestellingen();
+            zoekBestellingen(); 
         }
         catch(SQLException e){
         
