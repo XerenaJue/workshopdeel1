@@ -59,6 +59,7 @@ public class CrudInvoerMenu {
 	MenuButton btnUpdate;
 	MenuButton btnVerwijder;
 	MenuButton btnDelete;
+        MenuButton btnVerwijderAlles;
 
 	TextField klantIDTF;
 	Label klantIdLabel;
