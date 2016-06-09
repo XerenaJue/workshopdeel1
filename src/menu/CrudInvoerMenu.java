@@ -148,7 +148,29 @@ public class CrudInvoerMenu {
 		});
 		btnClear = new MenuButton("Clear");
 		btnClear.setOnMouseClicked(event -> {
-		});
+        klantIDTF.clear();
+
+	klantAchternaamTF.clear();
+
+	klantVoornaamTF.clear();
+
+	tussenvoegselTF.clear();
+
+	 emailTF.clear();
+
+
+	straatnaamTF.clear();
+
+	huisnrTF.clear();
+
+	toevoegingTF.clear();
+
+	postcodeTF.clear();
+
+	woonplaatsTF.clear();
+        getIDfromInputField();
+        //zoekKlant();
+        });
 		btnZoek = new MenuButton("Zoek Klant");
 		btnZoek.setOnMouseClicked(event -> {
 			getIDfromInputField();
