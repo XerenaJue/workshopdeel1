@@ -8,16 +8,16 @@ public class Klant {
 	
 	@ID
 	@Column
-	private int klantID;
+	private int klant_id;
 	@Column
     private String voornaam, achternaam, tussenvoegsel, email;
 
     public int getKlantID() {
-        return klantID;
+        return klant_id;
     }
 
     public void setKlantID(int klantID) {
-        this.klantID = klantID;
+        this.klant_id = klantID;
     }
 
     public String getVoornaam() {
@@ -54,7 +54,7 @@ public class Klant {
 
     @Override
     public String toString() {
-        return "Klant{" + "klantID=" + klantID + ", voornaam=" + voornaam + 
+        return "Klant{" + "klantID=" + klant_id + ", voornaam=" + voornaam + 
                 ", achternaam=" + achternaam + ", tussenvoegsel=" + tussenvoegsel + ", email=" + email + '}';
     }
 }
