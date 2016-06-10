@@ -1,7 +1,15 @@
 package POJO;
 
+import Annotations.*;
+
+@Entity (className = "KLANT")
+@Table (tableName = "KLANT")
 public class Klant {
+	
+	@ID
+	@Column
 	private int klantID;
+	@Column
     private String voornaam, achternaam, tussenvoegsel, email;
 
     public int getKlantID() {
