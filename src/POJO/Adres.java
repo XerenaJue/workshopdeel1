@@ -10,8 +10,8 @@ import Annotations.Table;
 @Entity (className = "ADRES")
 @Table (tableName = "ADRES")
 public class Adres {
-	
-    @ID
+		
+    @ID (name = "adres_id")
     @Column
 	private int adres_id;
     @Column

@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ID {
 	String name() default "";
-	int idLength() default 10;
+	int idLength() default 11;
 
 }
