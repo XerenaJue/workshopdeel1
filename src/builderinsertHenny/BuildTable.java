@@ -65,8 +65,11 @@ public class BuildTable {
 				} 
 				if (field.isAnnotationPresent(ID.class)) {
 					variableToInsert++;
+					if (variableToInsert > 1){
+						sb2.append(", ");
+					}
 					
-					sb2.append(" PRIMARY KEY(" + field.getAnnotation(ID.class).name() + ")");
+					sb2.append("PRIMARY KEY(" + field.getAnnotation(ID.class).name() + ")");
 					
 				}
 				
