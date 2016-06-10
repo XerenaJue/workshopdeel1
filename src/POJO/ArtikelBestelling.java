@@ -25,8 +25,22 @@ public class ArtikelBestelling {
         return aantal_artikelen;
     }
     
+    public int getAantal_artikelen(){
+        return aantal_artikelen;
+    }
+    
     public void setArtikelenAantal(int aantal_artikelen){
         this.aantal_artikelen = aantal_artikelen;
+    }
+    
+    public String getArtikelNaam() {
+        return artikel.getArtikelNaam();
+    }
+    public Integer getArtikelID(){
+        return artikel.getArtikelID();
+    }
+    public Integer getArtikelPrijs(){
+        return artikel.getArtikelPrijs();
     }
     
     @Override

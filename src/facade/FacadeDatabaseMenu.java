@@ -22,6 +22,7 @@ import POJO.ArtikelBestelling;
 import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
+import java.util.logging.Level;
 
 /**
  *
@@ -212,9 +213,27 @@ public class FacadeDatabaseMenu {
         bestellingDAO.addArtikelToBestelling(bestelling, artikelBestelling);
     }
      
-    private List<ArtikelBestelling> findArtikelen(Bestelling bestelling) {
-            
-        return bestelling.getArtikelBestellingList();
+    public void removeFromBestelling(Bestelling bestelling, ArtikelBestelling artikelBestelling) {
+        
+        try {
+            bestellingDAO.deleteArtikelFromBestelling(artikelBestelling, bestelling.getBestelling_id());
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(FacadeDatabaseMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    public List<ArtikelBestelling> findArtikelen(Bestelling bestelling)  {
+        List<ArtikelBestelling> lijstje = null;
+        try {
+        System.out.println("a " + bestelling);
+        System.out.println("b " + bestellingDAO.readArtikelBestelling(bestelling));
+        lijstje = bestellingDAO.readArtikelBestelling(bestelling);
+        }
+        catch (Exception e ) {
+            e.printStackTrace();
+        }
+        return lijstje;
    }
    public void update(int klant_id, Adres adres) throws SQLException {
 	   adresDAO.update(adres);
