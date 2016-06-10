@@ -353,13 +353,17 @@ public class KlantDAOImpl implements KlantDAO {
     @Override
     public void delete(Klant klant){ //throws SQLException {
        
-        String query = "DELETE FROM klant WHERE klant_id = " + klant.getKlantID();        
+        String query = "DELETE FROM klant_has_adres WHERE Klant_klant_id = " + klant.getKlantID(); 
+        String query2 = "DELETE FROM klant WHERE klant_id = " + klant.getKlantID();        
         try (Connection connection = ConnectionFactory.getMySQLConnection();
                 PreparedStatement stmt = connection.prepareStatement(query);
+        		PreparedStatement stmt2 = connection.prepareStatement(query2);
         		){
         	/*connection = ConnectionFactory.getMySQLConnection();
             statement = connection.prepareStatement(query);*/
             stmt.executeUpdate();
+            logger.info("Klant verwijdert uit tussen tabel");
+            stmt2.executeUpdate();
             logger.info("Klant verwijderd");
             System.out.println("Klant gegevens zijn succesvol verwijderd");
         } catch (SQLException ex) {
