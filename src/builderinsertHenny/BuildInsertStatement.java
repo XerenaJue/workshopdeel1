@@ -2,6 +2,7 @@ package builderinsertHenny;
 
 import java.lang.reflect.Field;
 
+import Annotations.*;
 import POJO.Adres;
 import POJO.Klant;
 
@@ -15,8 +16,15 @@ public class BuildInsertStatement {
 		StringBuilder waarde = new StringBuilder();
 		waarde.append(" VALUES (");
 		
-		String className = o.getClass().getSimpleName();
-		sb.append("INSERT INTO " + className + "(");
+		if (o.getClass().isAnnotationPresent(Table.class)) {
+			String tableName = o.getClass().getAnnotation(Table.class).tableName();
+			sb.append("INSERT INTO " + tableName + "(");
+			System.out.println("annotatie gebruikt");
+		} else {
+			String className = o.getClass().getSimpleName();
+			sb.append("INSERT INTO " + className + "(");
+		};
+		
 		
 		Field[] declaredFields = o.getClass().getDeclaredFields();
 				
@@ -29,8 +37,15 @@ public class BuildInsertStatement {
 					if (waardeToevoegen > 1) {
 						sb.append(", ");
 						waarde.append(", ");
-					}					
-					sb.append(declaredFields[i].getName());
+					}
+					/*if (declaredFields[i].isAnnotationPresent(Column.class)) {
+						String columnNaam = declaredFields[i].getAnnotation(Column.class).columnName();
+						System.out.println(columnNaam);
+						sb.append(columnNaam);
+						System.out.println("anotatie gebruikt voor column naam");
+					} else { */
+						sb.append(declaredFields[i].getName());
+					//}
 					if (declaredFields[i].get(o) instanceof String) {
 						waarde.append("\'" + declaredFields[i].get(o) + "\'");
 					} else {
