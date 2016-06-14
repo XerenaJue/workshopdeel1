@@ -14,13 +14,15 @@ import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
 import opdracht2.ConnectionFactory;
+import java.lang.reflect.Field;
+import Interface.BestellingInterface;
 
 
 /**
  *
  * @author jeroen
  */
-public class BestellingDAO {
+public class BestellingDAO implements BestellingInterface {
 
         Connection connection;
         PreparedStatement statement;
@@ -30,6 +32,7 @@ public class BestellingDAO {
         // in facade maak je een arrayList van artikelBestellingen die geupdate moeten worden. 
         //vervolgens werk je met een for each loop om voor elke aan te passen artikelBestelling een
         // updateBestelling te invoken.
+    @Override
         public void updateBestelling(ArtikelBestelling artikelBestelling,int bestel_id ) throws SQLException{
             //artikelBestelling.setArtikelenAantal(4);
             String SQLStatement ="update bestelling_has_artikel set aantal_artikelen = ? where artikel_artikel_id = "+artikelBestelling.getArtikelPojo().getArtikelID()+ " AND bestelling_bestelling_id = "+ bestel_id;
@@ -45,8 +48,22 @@ public class BestellingDAO {
             
         
     }
+    
+    @Override
+    public void buildInsertStatement(Bestelling bestelling){
+            Field[] declaredFields = Bestelling.class.getDeclaredFields();
+            for(Field field: declaredFields){
+                field.setAccessible(true);
+            
+            
+            
+            
+            }
+            
+    }
 
 
+    @Override
     public void addArtikelToBestelling(Bestelling bestelling, ArtikelBestelling artikelBestelling){
            String query ="INSERT INTO bestelling_has_artikel (bestelling_bestelling_id,"+
                "artikel_artikel_id,aantal_artikelen) VALUES ("+bestelling.getBestelling_id()+","+ artikelBestelling.getArtikelPojo().getArtikelID() + ","+artikelBestelling.getArtikelenAantal()+")"; 
@@ -63,6 +80,7 @@ public class BestellingDAO {
            
     }
     
+    @Override
     public List<ArtikelBestelling> readArtikelBestelling(Bestelling bestelling) throws SQLException{
         List<ArtikelBestelling> artikelBestellingen = new ArrayList<>(); // lijst met artikelBestellingPOJO's
         int i = 0;
@@ -120,6 +138,7 @@ public class BestellingDAO {
     
  
     
+    @Override
     public Bestelling createBestelling(Klant klant)throws SQLException {
         
         Bestelling bestelling = new Bestelling();
@@ -140,6 +159,7 @@ public class BestellingDAO {
         return bestelling;
     }
     // idem dito als bij updateBestelling
+    @Override
      public void deleteArtikelFromBestelling(ArtikelBestelling artikelBestelling, int bestel_id) throws SQLException {
      String queryBHA = "delete from bestelling_has_artikel where artikel_artikel_id = " + artikelBestelling.getArtikelPojo().getArtikelID()+" AND bestelling_bestelling_id = "+bestel_id;
          try (Connection connection = ConnectionFactory.getMySQLConnection();
@@ -150,6 +170,7 @@ public class BestellingDAO {
      }   
     
     
+    @Override
     public void deleteBestelling(Bestelling bestelling) throws SQLException {
         
         try (Connection connection = ConnectionFactory.getMySQLConnection();
@@ -164,6 +185,7 @@ public class BestellingDAO {
             logger.info("bestelling gedelete");
     }
     }
+    @Override
         public void deleteBestelling(ArrayList<Bestelling> bestelling) throws SQLException {
         
         try (Connection connection = ConnectionFactory.getMySQLConnection();
@@ -181,6 +203,7 @@ public class BestellingDAO {
     }
     }
     
+    @Override
     public void deleteBestellingen(Klant klant) throws SQLException{
         ArrayList<Bestelling> bestellingen = new ArrayList<>();
         bestellingen = (ArrayList<Bestelling>)findAlleBestellingen(klant);
@@ -188,6 +211,7 @@ public class BestellingDAO {
             logger.info("alle bestellignen van klant gedelete");
     }
     
+    @Override
     public List<Bestelling> findAlleBestellingen() {
              
         List<Bestelling> bestellingen = new ArrayList<>();
@@ -214,6 +238,7 @@ public class BestellingDAO {
         return bestellingen;
     }
 
+    @Override
     public List<Bestelling> findAlleBestellingen(Klant klant) {
              
         List<Bestelling> bestellingen = new ArrayList<>();
@@ -243,6 +268,7 @@ public class BestellingDAO {
     
         
 
+    @Override
     public void createBestelling(Bestelling bestelling)throws SQLException{
         try {
            String SQLStatement = "insert into bestelling (klant_klant_id) VALUES (?)";
@@ -268,6 +294,7 @@ public class BestellingDAO {
                 
     }
     
+    @Override
         public void closeConnectionStatement(){
         {
             // kijk of er verbinding is en zo ja sluit deze
@@ -288,10 +315,12 @@ public class BestellingDAO {
             }   
         }
     }
+    @Override
             public void createCS(String SQLStatement) throws SQLException{
         connection = ConnectionFactory.getMySQLConnection();
         statement = connection.prepareStatement(SQLStatement);
     }
+    @Override
             public void createCSR(String SQLStatement) throws SQLException{ // hetzelfde als createCS alleen dan met resultSet init.
         connection = ConnectionFactory.getMySQLConnection();
         statement = connection.prepareStatement(SQLStatement);
