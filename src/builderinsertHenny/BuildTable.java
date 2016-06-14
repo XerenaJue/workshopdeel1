@@ -31,7 +31,7 @@ public class BuildTable {
 				&& o.getClass().getAnnotation(Table.class).tableName().length() > 0) {
 			tableName = o.getClass().getAnnotation(Table.class).tableName();
 		} else
-			tableName = o.getClass().getSimpleName().toUpperCase();
+			tableName = o.getClass().getSimpleName().toLowerCase();
 
 		sb.append("CREATE TABLE " + tableName + " (");
 

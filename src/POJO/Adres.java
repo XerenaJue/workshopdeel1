@@ -7,8 +7,8 @@ import Annotations.Entity;
 import Annotations.ID;
 import Annotations.Table;
 
-@Entity (className = "ADRES")
-@Table (tableName = "ADRES")
+@Entity (className = "adres")
+@Table (tableName = "adres")
 public class Adres {
 		
     @ID (name = "adres_id")
