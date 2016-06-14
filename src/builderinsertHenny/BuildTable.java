@@ -52,7 +52,7 @@ public class BuildTable {
 					} else {
 						sb.append("" + field.getName());
 					}
-					if (field.getType().isAssignableFrom(Integer.TYPE)) {
+					if (field.getType().isAssignableFrom(Integer.TYPE) || field.getType().isAssignableFrom(Integer.class)) {
 						sb.append(" INT(11) UNSIGNED");
 						if (field.isAnnotationPresent(ID.class)) {
 

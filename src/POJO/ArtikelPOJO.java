@@ -4,16 +4,26 @@
  * and open the template in the editor.
  */
 package POJO;
+import Annotations.Column;
+import Annotations.Entity;
+import Annotations.ID;
+import Annotations.Table;
 import org.apache.commons.lang3.builder.*;
 
 /**
  *
  * @author jeroen
  */
+@Entity (className = "artikel")
+@Table (tableName = "artikel")
 public class ArtikelPOJO {
-    private String artikelNaam;
+    @ID (name = "artikel_id")
+    @Column (columnName = "artikel_id")
     private Integer artikelID = 0;
+    @Column (columnName = "artikel_prijs")
     private Integer artikelPrijs = 0;
+    @Column (columnName = "artikel_naam")
+    private String artikelNaam;
     
     public ArtikelPOJO() {}
     
