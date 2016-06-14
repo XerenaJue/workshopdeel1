@@ -94,6 +94,7 @@ public class CrudInvoerMenu {
 	List<Bestelling> bestellingen; 
 	List<ArtikelPOJO> artikelen;
 	Label lblStatus = new Label();
+        private int adresIndex = 0;
 
 	public CrudInvoerMenu(FacadeDatabaseMenu deFacade) {
 
@@ -202,7 +203,9 @@ public class CrudInvoerMenu {
 			refreshPanes("Klantgegevens");
 		});
                 btnNextAdres = new MenuButton("next adres");
-                btnNextAdres.setOnMouseClicked(event -> { if (((List)nepAppArray[1]).size() > 1 ) adres = ((List<Adres>) nepAppArray[1]).get(1);});
+                btnNextAdres.setOnMouseClicked(event -> { volgendAdres(); 
+                                  zoekAdresVanKlant();
+                });
 
 	}
 
@@ -298,8 +301,7 @@ public class CrudInvoerMenu {
 	public void zoekKlant() {
 
 		try {
-
-			facade.zoek(nepAppArray);
+                        facade.zoek(nepAppArray);
 			nepAppArray = facade.getToDisplay();
 			klant = (Klant) nepAppArray[0];
 			klantIDTF.setText(Integer.toString(klant.getKlantID()));
@@ -307,6 +309,8 @@ public class CrudInvoerMenu {
 			klantAchternaamTF.setText(klant.getAchternaam());
 			tussenvoegselTF.setText(klant.getTussenvoegsel());
 			emailTF.setText(klant.getEmail());
+                        adresIndex = 0;
+                        
 		} catch (SQLException e) {
 			System.out.println("oplossen nog zoekklantcrudinvoermenu ");
                         e.printStackTrace();
@@ -342,14 +346,28 @@ public class CrudInvoerMenu {
 	public void zoekAdresVanKlant() {
 
 		nepAppArray = facade.getToDisplay();
-		adres = ((List<Adres>) nepAppArray[1]).get(0);
+		adres = ((List<Adres>) nepAppArray[1]).get(adresIndex);
 
-		straatnaamTF.setText(adres.getStraatnaam());
-		huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
-		toevoegingTF.setText(adres.getToevoeging());
-		postcodeTF.setText(adres.getPostcode());
-		woonplaatsTF.setText(adres.getWoonplaats());
+		showAdres(adres);
 	}
+        
+        private void showAdres(Adres adres) {
+            
+            straatnaamTF.setText(adres.getStraatnaam());
+            huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
+            toevoegingTF.setText(adres.getToevoeging());
+            postcodeTF.setText(adres.getPostcode());
+            woonplaatsTF.setText(adres.getWoonplaats());
+            
+        }
+        
+        private void volgendAdres() {
+            if (adresIndex < ((List<Adres>) nepAppArray[1]).size() - 1 ) {
+                adresIndex++;
+            }
+            else adresIndex = 0;
+            
+        }
 
 	public void setKlant(Klant bestaandeKlant) {
 
