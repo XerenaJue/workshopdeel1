@@ -22,7 +22,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
@@ -37,6 +36,7 @@ import POJO.Klant;
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
 public class CrudInvoerMenu {
@@ -46,6 +46,7 @@ public class CrudInvoerMenu {
 	BorderPane root;
 	GridPane pane;
 	VBox vBox;
+        HBox hBox;
 	Scene scene;
 
 	MenuButton btnTerug;
@@ -60,6 +61,9 @@ public class CrudInvoerMenu {
 	MenuButton btnVerwijder;
 	MenuButton btnDelete;
         MenuButton btnVerwijderAlles;
+        
+        MenuButton btnNextKlant;
+        MenuButton btnNextAdres;
 
 	TextField klantIDTF;
 	Label klantIdLabel;
@@ -96,7 +100,9 @@ public class CrudInvoerMenu {
 		facade = deFacade;
                 nepAppArray = facade.getToDisplay();
                 klant = (Klant)nepAppArray[0];
-                adres = (Adres)nepAppArray[1];
+                List<Adres> adressen = (List<Adres>) nepAppArray[1];
+                if (adressen.isEmpty()) adressen.add(new Adres());
+                adres = adressen.get(0);
                 bestellingen = (List<Bestelling>)nepAppArray[2];
                 artikelen = (List<ArtikelPOJO> )nepAppArray[3];
         }
@@ -120,7 +126,8 @@ public class CrudInvoerMenu {
 		this.refreshPanes("Klantgegevens");
 		root.setCenter(pane);
 		root.setRight(vBox);
-		root.setBottom(lblStatus);
+                root.setBottom(hBox);
+		//root.setBottom(lblStatus);
 		window.setScene(scene);
 		window.showAndWait();
 
@@ -132,6 +139,7 @@ public class CrudInvoerMenu {
 		root = new BorderPane();
 		pane = new GridPane();
 		vBox = new VBox(15);
+                hBox = new HBox(5);
 		scene = new Scene(root, 800, 600);
 
 	}
@@ -148,29 +156,19 @@ public class CrudInvoerMenu {
 		});
 		btnClear = new MenuButton("Clear");
 		btnClear.setOnMouseClicked(event -> {
-        klantIDTF.clear();
-
-	klantAchternaamTF.clear();
-
-	klantVoornaamTF.clear();
-
-	tussenvoegselTF.clear();
-
-	 emailTF.clear();
-
-
-	straatnaamTF.clear();
-
-	huisnrTF.clear();
-
-	toevoegingTF.clear();
-
-	postcodeTF.clear();
-
-	woonplaatsTF.clear();
-        getIDfromInputField();
-        //zoekKlant();
-        });
+                        klantIDTF.clear();
+                        klantAchternaamTF.clear();
+                        klantVoornaamTF.clear();
+                        tussenvoegselTF.clear();
+                        emailTF.clear();
+                        straatnaamTF.clear();
+                        huisnrTF.clear();
+                        toevoegingTF.clear();
+                        postcodeTF.clear();
+                        woonplaatsTF.clear();
+                        getIDfromInputField();
+                        //zoekKlant();
+                });
 		btnZoek = new MenuButton("Zoek Klant");
 		btnZoek.setOnMouseClicked(event -> {
 			getIDfromInputField();
@@ -203,6 +201,8 @@ public class CrudInvoerMenu {
 			deleteKlant();
 			refreshPanes("Klantgegevens");
 		});
+                btnNextAdres = new MenuButton("next adres");
+                btnNextAdres.setOnMouseClicked(event -> { if (((List)nepAppArray[1]).size() > 1 ) adres = ((List<Adres>) nepAppArray[1]).get(1);});
 
 	}
 
@@ -265,6 +265,11 @@ public class CrudInvoerMenu {
 		pane.add(postcodeLabel, 0, 36, 5, 5);
 		pane.add(woonplaatsTF, 5, 40, 5, 5);
 		pane.add(plaatsnaamLabel, 0, 40, 5, 5);
+                
+                hBox.setAlignment(Pos.CENTER);
+                hBox.getChildren().clear();
+                hBox.setPadding(new Insets(5, 100, 5, 5));
+                hBox.getChildren().addAll(lblStatus, btnNextAdres);
 
 		vBox.setAlignment(Pos.CENTER);
 		vBox.setPadding(new Insets(5, 100, 5, 5));
@@ -337,7 +342,7 @@ public class CrudInvoerMenu {
 	public void zoekAdresVanKlant() {
 
 		nepAppArray = facade.getToDisplay();
-		adres = (Adres) nepAppArray[1];
+		adres = ((List<Adres>) nepAppArray[1]).get(0);
 
 		straatnaamTF.setText(adres.getStraatnaam());
 		huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
@@ -354,7 +359,7 @@ public class CrudInvoerMenu {
 
 	public void setAdres(Adres bestaandAdres) {
 
-		nepAppArray[1] = bestaandAdres;
+		((List<Adres>)nepAppArray[1]).set(0,bestaandAdres);
 
 	}
 

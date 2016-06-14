@@ -51,7 +51,7 @@ public class FacadeDatabaseMenu {
         
         toDisplay = new Object[5];
         toDisplay[0] = new Klant();
-        toDisplay[1] = new Adres();
+        toDisplay[1] = new ArrayList<Adres>();
         toDisplay[2] = bestellingen;
         toDisplay[3] = artikelen;
         toDisplay[4] = klanten;
@@ -67,15 +67,15 @@ public class FacadeDatabaseMenu {
     public void zoek(Object[] watNuOpScherm) throws SQLException {  
                                                                                            
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
-        Adres adres = (Adres)watNuOpScherm[1];
+        List<Adres> adres = (List<Adres>)watNuOpScherm[1];
         bestellingen = (List)watNuOpScherm[2];
         if (findKlant(bestaandeKlant) != null) {       	
         	bestaandeKlant = findKlant(bestaandeKlant);
         	adres = findAdres(bestaandeKlant);
         }
         else { 
-            adres = findAdres(adres);
-            bestaandeKlant = findKlant(adres);
+            adres = findAdres(adres.get(0));
+            bestaandeKlant = findKlant(adres.get(0));
             adres = findAdres(bestaandeKlant); 
         }
         bestellingen = findBestellingen(bestaandeKlant);
@@ -114,21 +114,21 @@ public class FacadeDatabaseMenu {
         this.zoek(toDisplay); // update scherm
     }
     
-    private Adres findAdres(Klant bestaandeKlant) throws SQLException {
+    private List<Adres> findAdres(Klant bestaandeKlant) throws SQLException {
         List<Adres> postbussen = adresDAO.findAdres(bestaandeKlant.getKlantID());
         if (postbussen.isEmpty()) postbussen.add(new Adres());   // om nullpointers en outofbounds te vermijden
         Adres adres = postbussen.get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
-        toDisplay[1] = adres;
+        toDisplay[1] = postbussen;//adres;
         
-        return adres;
+        return postbussen;//adres;
     }
     
-    private Adres findAdres(Adres onvolledigAdres) throws SQLException {
+    private List<Adres> findAdres(Adres onvolledigAdres) throws SQLException {
         List<Adres> adresMetID =  adresDAO.findAdres(onvolledigAdres.getPostcode(), onvolledigAdres.getHuisnummer());
         if (adresMetID.isEmpty()) adresMetID.add(new Adres());
-        toDisplay[1] = adresMetID.get(0);
+        toDisplay[1] = adresMetID; //.get(0);
         
-        return adresMetID.get(0);
+        return adresMetID; //.get(0);
     }
         
     private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
