@@ -203,15 +203,15 @@ public class AdresDaoImpl implements AdresDao {
 
 	@Override
 	public Adres createAdres(int klant_id, Adres adres) throws SQLException {
-		logger.info("Adres toevoegen gestart");
-		String query = "INSERT INTO adres (straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
-				+ " VALUES (?, ?, ?, ?, ?)";
+		logger.info("Adres toevoegen gestart");		
 		ResultSet resultSet;
 
 		try (Connection connection = ConnectionFactory.getMySQLConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(query,
-						Statement.RETURN_GENERATED_KEYS);) {
-
+				) {
+			String query = "INSERT INTO adres (straatnaam, postcode, toevoeging, huisnummer, woonplaats)"
+					+ " VALUES (?, ?, ?, ?, ?)";
+			PreparedStatement preparedStatement = connection.prepareStatement(query,
+					Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setString(1, adres.getStraatnaam());
 			preparedStatement.setString(2, adres.getPostcode());
 			preparedStatement.setString(3, adres.getToevoeging());
@@ -225,8 +225,10 @@ public class AdresDaoImpl implements AdresDao {
 				adres.setAdresID(resultSet.getInt(1));
 			}
 			logger.info("Adres succesvol aangemaakt");
+			
 			try {
 				query = "INSERT INTO klant_has_adres (klant_klant_id, adres_adres_id) VALUES (?, ?)";
+				preparedStatement = connection.prepareStatement(query);
 				preparedStatement.setInt(1, klant_id);
 				preparedStatement.setInt(2, adres.getAdresID());
 				preparedStatement.executeUpdate();
