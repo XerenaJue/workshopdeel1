@@ -1,8 +1,6 @@
 package Interface;
 
-import java.sql.SQLException;
 import java.util.List;
-
 import POJO.Adres;
 import POJO.Klant;
 

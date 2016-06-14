@@ -12,10 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import DAO.AdresDaoImpl;
-import DAO.ArtikelDAO;
+import DAO.ArtikelDAOSQL;
 import DAO.BestellingDAO;
 import DAO.KlantDAOImpl;
 import Interface.AdresDao;
+import Interface.ArtikelDao;
 import Interface.KlantDAO;
 import POJO.Adres;
 import POJO.ArtikelBestelling;
@@ -33,12 +34,12 @@ public class FacadeDatabaseMenu {
     private final KlantDAO klantDAO;
     private final AdresDao adresDAO;
     private final BestellingDAO bestellingDAO;    
-    private final ArtikelDAO artikelDAO;
+    private final ArtikelDao artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
     private List<Klant> klanten;
-    private Object[] toDisplay;
-    private List<ArtikelPOJO> artikelen;  
+    private final Object[] toDisplay;
+    private List<ArtikelBestelling> artikelen;  
     private List<Adres> adressen;
     
     
@@ -46,7 +47,7 @@ public class FacadeDatabaseMenu {
         klantDAO = new KlantDAOImpl();
         adresDAO = new AdresDaoImpl();
         bestellingDAO = new BestellingDAO();
-        artikelDAO = new ArtikelDAO();
+        artikelDAO = new ArtikelDAOSQL();
         
         toDisplay = new Object[5];
         toDisplay[0] = new Klant();
@@ -78,7 +79,7 @@ public class FacadeDatabaseMenu {
             adres = findAdres(bestaandeKlant); 
         }
         bestellingen = findBestellingen(bestaandeKlant);
-      //  artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
+        artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
@@ -226,9 +227,7 @@ public class FacadeDatabaseMenu {
     public List<ArtikelBestelling> findArtikelen(Bestelling bestelling)  {
         List<ArtikelBestelling> lijstje = null;
         try {
-        System.out.println("a " + bestelling);
-        System.out.println("b " + bestellingDAO.readArtikelBestelling(bestelling));
-        lijstje = bestellingDAO.readArtikelBestelling(bestelling);
+            lijstje = bestellingDAO.readArtikelBestelling(bestelling);
         }
         catch (Exception e ) {
             e.printStackTrace();

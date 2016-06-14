@@ -13,15 +13,17 @@ import org.slf4j.LoggerFactory;
 
 import POJO.ArtikelPOJO;
 import opdracht2.ConnectionFactory;
+import Interface.ArtikelDao;
 
 /**
  *
  * @author jeroen
  */
-public class ArtikelDAO {
-    static Logger logger = LoggerFactory.getLogger(ArtikelDAO.class);    
-    public ArtikelDAO(){}
+public class ArtikelDAOSQL implements ArtikelDao {
+    static Logger logger = LoggerFactory.getLogger(ArtikelDAOSQL.class);    
+    public ArtikelDAOSQL(){}
     
+    @Override
     public ArtikelPOJO createArtikel(ArtikelPOJO artikel) {
         logger.trace("creating Artikel in mysql");
         String query = "insert into artikel (artikel_naam, artikel_prijs) values ( ?, ? )";
@@ -52,6 +54,7 @@ public class ArtikelDAO {
         return readArtikel( artikel.getArtikelID());
     }
        
+    @Override
     public ArtikelPOJO readArtikel(int artikelID) {
         logger.trace("reading artikel....");           
         ArtikelPOJO artikel = new ArtikelPOJO();      
@@ -78,6 +81,7 @@ public class ArtikelDAO {
         return artikel;
     }
        
+    @Override
     public void updateArtikel(ArtikelPOJO artikel ) {
         logger.trace("updating artikel....");               
         String query = String.format("update artikel "
@@ -98,7 +102,8 @@ public class ArtikelDAO {
         }
     }
       
-    public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
+    @Override
+    public List<ArtikelPOJO> findAlleArtikelen() {
         logger.trace("entering findAlleArtikelen()....");             
         List<ArtikelPOJO> artikelen = new ArrayList<>();
         ArtikelPOJO artikel;
@@ -124,6 +129,7 @@ public class ArtikelDAO {
         return artikelen;
     }
     
+    @Override
     public void deleteArtikel(ArtikelPOJO artikel){ 
         logger.trace("entering deleteArtikel ");
         String query = "DELETE FROM artikel WHERE artikel_id = " + artikel.getArtikelID();        
