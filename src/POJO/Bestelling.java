@@ -7,13 +7,22 @@ package POJO;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import java.util.*;
+import Annotations.*;
 /**
  *
  * @author maurice
  */
+@Entity
+@Table(tableName = "bestelling")
 public class Bestelling {
-    private int bestelling_id, klant_id;
+    @ID
+    @Column
+    private int bestelling_id;
+    @Column            
+    private int klant_id;
+    @Column
     private List<ArtikelBestelling> artikelList;
+    @Column
     private ArtikelBestelling bestellingArtikel;
     
  
