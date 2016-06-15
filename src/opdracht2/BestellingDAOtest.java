@@ -9,53 +9,74 @@ import java.sql.*;
 import java.util.*;
 
 import DAO.BestellingDAO;
+import DAO.BestellingDAOJson;
 import POJO.ArtikelBestelling;
 import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
+import java.util.Arrays;
 
 /**
  *
  * @author maurice
  */
 public class BestellingDAOtest {
-        BestellingDAO dao = new BestellingDAO();
+        BestellingDAOJson dao = new BestellingDAOJson();
         Bestelling bestelling = new Bestelling();
         ArtikelBestelling artikelBestelling = new ArtikelBestelling();
+        ArtikelBestelling artikelBestelling1 = new ArtikelBestelling();
+        ArtikelBestelling artikelBestelling2 = new ArtikelBestelling();
         ArtikelPOJO artikel = new ArtikelPOJO();
-        ArrayList<ArtikelBestelling> arraylist = new ArrayList<>();
+        List<ArtikelBestelling> arraylist = new ArrayList<>();
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
             BestellingDAOtest daotest = new BestellingDAOtest();
-            daotest.findAlleBestellingenNoArg();
+            daotest.createBestelling();
 
     }
     
     public void createBestelling() throws SQLException{
         
         //test createbestelling **** beide createBestelling overloaded methodes werken naar behoren.
-        Klant klant = new Klant();
-        klant.setKlantID(1);
-        dao.createBestelling(klant);
+        //Klant klant = new Klant();
+        //klant.setKlantID(1);
+        
         Bestelling bestelling = new Bestelling();
-        bestelling.setKlant(1);
-        dao.createBestelling(bestelling);
+        bestelling.setKlant(999);
+        bestelling.setBestellingID(999);
+        artikel.setArtikelID(999);
+        artikel.setArtikelNaam("hallo");
+        artikel.setArtikelPrijs(999);
+        artikelBestelling.setArtikelPojo(artikel);
+        artikelBestelling.setArtikelenAantal(55);
+        artikelBestelling1.setArtikelPojo(artikel);
+        artikelBestelling1.setArtikelenAantal(55);
+        artikelBestelling2.setArtikelPojo(artikel);
+        artikelBestelling2.setArtikelenAantal(55);
+        arraylist.add(artikelBestelling);
+        arraylist.add(artikelBestelling1);
+        arraylist.add(artikelBestelling2);
+        bestelling.setArtikelBestellingList(arraylist);
+        dao.createBestelling(bestelling,999);
+        dao.readArtikelBestelling(bestelling);
+        
     }
     
 
 //werkt naar behoren.  
     public void addArtikelToBestelling(){
-        bestelling.setBestellingID(34);
-        artikel.setArtikelID(4);
+        bestelling.setBestellingID(999);
+        artikel.setArtikelID(999);
         artikelBestelling.setArtikelPojo(artikel);
-        artikelBestelling.setArtikelenAantal(2);
+        artikelBestelling.setArtikelenAantal(999);
         dao.addArtikelToBestelling(bestelling, artikelBestelling);
     }
     //werkt naar behoren.
     public void readArtikelBestelling()  throws SQLException{
-        bestelling.setBestellingID(34);
+        bestelling.setBestellingID(999);
+        bestelling.setKlant(999);
         
         arraylist = (ArrayList<ArtikelBestelling>)(dao.readArtikelBestelling(bestelling));
         for (ArtikelBestelling element: arraylist)
