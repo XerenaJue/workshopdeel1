@@ -60,7 +60,7 @@ public class BestellingDAOtest {
         arraylist.add(artikelBestelling2);
         bestelling.setArtikelBestellingList(arraylist);
         dao.createBestelling(bestelling,999);
-        dao.readArtikelBestelling(bestelling);
+        //dao.readArtikelBestelling(bestelling);
         
     }
     
