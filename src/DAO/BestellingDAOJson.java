@@ -32,6 +32,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 /**
  *
  * @author jeroen
@@ -94,38 +102,75 @@ public class BestellingDAOJson implements BestellingInterface {
            
     }
     
+    
+    //http://www.mkyong.com/java/how-to-convert-java-object-to-from-json-jackson/ <<< voor het beter inlezen..
     @Override
     public List<ArtikelBestelling> readArtikelBestelling(Bestelling bestelling) throws SQLException{
         //create.put("artikellijst", list);
         //create.put("bestelling_id", bestelling.getBestelling_id());
         //create.put("klant_id", bestelling.getKlant_id()); 		
-         List<ArtikelBestelling> artikelBestellingen = new ArrayList<>();      
+         List<ArtikelBestelling> artikelBestellingen = new ArrayList<>();
+         ArtikelBestelling artikelBestelling;
+         ArtikelPOJO artikelpojo;
         
                         JSONParser jsonParser = new JSONParser();
                         String jsonFilePath = "C:\\Users\\maurice\\Desktop\\Workshoptest.json";
 		try {
+                        JsonFactory jfactory = new JsonFactory();
+                        JsonParser jParser = jfactory.createJsonParser(new File("C:\\Users\\maurice\\Desktop\\Workshoptest.json"));
+                        while (jParser.nextToken() != JsonToken.END_OBJECT) {
+                            String fieldname = jParser.getCurrentName();
+                            
+                            if ("klantID".equals(fieldname)) {
+                                    jParser.nextToken();
+                                    if (jParser.getIntValue() == bestelling.getKlant_id()){
+                                        while (jParser.nextToken() != JsonToken.END_OBJECT){
+                                            fieldname = jParser.getCurrentName();
+                                            if ("bestelID".equals(fieldname)){
+                                                jParser.nextToken();
+                                                if (jParser.getIntValue() == bestelling.getBestelling_id()){
+                                                    jParser.nextToken();
+                                                     while (jParser.nextToken() != JsonToken.END_ARRAY) {
+                                                            while (jParser.nextToken() != JsonToken.END_OBJECT){
+                                                                fieldname = jParser.getCurrentName();
+                                                                if ("artikelID".equals(fieldname)){
+                                                                    artikelBestelling = new ArtikelBestelling();
+                                                                    jParser.nextToken();
+                                                                    artikelpojo = new ArtikelPOJO();
+                                                                    artikelpojo.setArtikelID(jParser.getIntValue());
+                                                                    artikelBestelling.setArtikelPojo(artikelpojo);
+                                                                    jParser.nextValue();
+                                                                    artikelBestelling.setArtikelenAantal(jParser.getIntValue());
+                                                                    artikelBestellingen.add(artikelBestelling);
+                                                                    
+                                                                    
+                                                                }
+                                                            }
+                                                     }
+                                                }
+                                            }
+                                        }
+                                    }
+                            }            
+                            
 
-			FileReader fileReader = new FileReader(jsonFilePath);
+                        }
+                            jParser.close();                        
+                }
+                 catch (JsonGenerationException e) {
 
-			JSONObject jsonObject = (JSONObject)jsonParser.parse(fileReader);
+                    e.printStackTrace();
 
-			JSONArray artikellijst = (JSONArray) jsonObject.get("artikellijst" + bestelling.getBestelling_id() + "_" + 
-                                bestelling.getKlant_id());
+                } catch (JsonMappingException e) {
 
+                     e.printStackTrace();
 
-			Iterator i = artikellijst.iterator();
+                 } catch (IOException e) {
 
-			while (i.hasNext()) {
-                                artikelBestellingen.add((ArtikelBestelling)i.next());
-			}
+                e.printStackTrace();
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+                }
+                
         return artikelBestellingen;
     }    
     
@@ -264,26 +309,46 @@ public class BestellingDAOJson implements BestellingInterface {
 
 
     public void createBestelling(Bestelling bestelling, int klant_id)throws SQLException{
+     try {
+
+	JsonFactory jfactory = new JsonFactory();
+
+	/*** write to file ***/
         
-        JSONObject create = new JSONObject();
-        JSONArray list = new JSONArray();
-        bestelling.setKlant(klant_id);
-        for (ArtikelBestelling artikel: (ArrayList<ArtikelBestelling>)bestelling.getArtikelBestellingList())
-            list.add(artikel);
-            
+	JsonGenerator jGenerator = jfactory.createJsonGenerator(new File("C:\\Users\\maurice\\Desktop\\Workshoptest.json"), JsonEncoding.UTF8);    
         
-        create.put("artikellijst" + bestelling.getBestelling_id() + "_" + bestelling.getKlant_id(), list);
+        jGenerator.writeStartObject();
+        jGenerator.writeNumberField("klantID", bestelling.getKlant_id());        
+        jGenerator.writeNumberField("bestelID", bestelling.getBestelling_id());
+        jGenerator.writeFieldName("ArtikelBestellingArray");        
+        jGenerator.writeStartArray();
+             for (ArtikelBestelling artikel: (ArrayList<ArtikelBestelling>)bestelling.getArtikelBestellingList()){
+                    
+                 jGenerator.writeStartObject();
+                    jGenerator.writeNumberField("artikelID",artikel.getArtikelPojo().getArtikelID());
+                    jGenerator.writeNumberField("artikelAantal", artikel.getAantal_artikelen());
+                    jGenerator.writeEndObject();                    
+            }
+        jGenerator.writeEndArray();
+        jGenerator.writeEndObject();
+        jGenerator.close();
+     }
+     catch (JsonGenerationException e) {
 
-	try {
+	e.printStackTrace();
 
-		FileWriter file = new FileWriter("C:\\Users\\maurice\\Desktop\\Workshoptest.json",true);
-		file.write(create.toJSONString());
-                file.flush();
-		file.close();
+     } catch (JsonMappingException e) {
 
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+	e.printStackTrace();
+
+     } catch (IOException e) {
+
+	e.printStackTrace();
+
+     }
+                    
+        
+      
     }
     
     @Override
