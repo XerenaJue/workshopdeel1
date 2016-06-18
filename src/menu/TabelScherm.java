@@ -26,16 +26,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import opdracht2.*;
 import facade.*;
 import java.sql.*;
 import java.util.*;
 
 import POJO.Adres;
+import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
 import javafx.animation.FadeTransition;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class TabelScherm {
     
@@ -55,7 +58,12 @@ public class TabelScherm {
     private MenuButton btnArtikelen;
     private MenuButton btnBestellingen;
     private MenuButton btnCrud;
- 
+    private MenuButton btnVoegToe;
+    private MenuButton btnRemove;
+    private TextField artikelNaam;
+    private TextField artikelPrijs;
+    private final HBox hBox ; 
+    private final HBox hBox2 ; 
     
  public TabelScherm(FacadeDatabaseMenu deFacade) {
      
@@ -64,6 +72,8 @@ public class TabelScherm {
     root = new BorderPane();
     pane = new GridPane();
     vBox = new VBox(15);
+    hBox = new HBox(5);
+    hBox2 = new HBox(1);
     scene = new Scene(root, 800, 500);
     pojoTabel = new TableView<>();
     weerTeGevenPOJOs = FXCollections.observableArrayList();
@@ -86,6 +96,8 @@ public class TabelScherm {
         
         root.setCenter(pane);
         root.setRight(vBox);
+        root.setBottom(hBox);
+        root.setTop(hBox2);
     
         window.setScene(scene);
         window.showAndWait();
@@ -98,8 +110,8 @@ public class TabelScherm {
         	window.close();        	
         });       
         btnStop = new MenuButton("Afsluiten");
-        btnStop.setOnMouseClicked(event -> {  
-            System.exit(0);
+        btnStop.setOnMouseClicked(event -> {
+              System.exit(0);
         }); 
         btnClear = new MenuButton("Clear");
         btnClear.setOnMouseClicked(event -> { clearTables();  refreshPanes("lege tabel");        
@@ -123,7 +135,15 @@ public class TabelScherm {
         btnCrud = new MenuButton("CRUD");
         btnCrud.setOnMouseClicked(event -> {   openDezeKlantCrud();          
         });
-       // pojoTabel.setOnMouseClicked(event -> {   openDezeKlantCrud(); } );
+              
+       btnVoegToe = new MenuButton("Voeg Toe");
+        btnVoegToe.setOnMouseClicked(event -> {  voegArtikelToe(); clearTables(); getArtikelen();  
+        setUpForArtikelen(); });
+        btnRemove = new MenuButton("Verwijder Artikel");
+        btnRemove.setOnMouseClicked(event -> {  verwijderArtikel(); clearTables(); getArtikelen();  
+        setUpForArtikelen(); }); 
+       artikelNaam = new TextField();
+       artikelPrijs = new TextField();
         
     }
     
@@ -228,8 +248,12 @@ public class TabelScherm {
     private void setUpForArtikelen() {
    
         List<String> pojoVelden = new ArrayList<>();
-        pojoVelden.addAll(Arrays.asList("artikelID", "artikelNaam", "artikelPrijs" ) );
+        pojoVelden.addAll(Arrays.asList( "artikelNaam", "artikelPrijs", "artikelID" ) );
         setUpTabel(pojoVelden, weerTeGevenPOJOs);
+        
+        hBox.getChildren().addAll(artikelNaam, artikelPrijs, btnVoegToe);
+        hBox2.getChildren().addAll(btnRemove );
+        
     }
     
     private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
@@ -256,12 +280,14 @@ public class TabelScherm {
         pojoTabel.getColumns().clear();
         pojoTabel.getColumns().addAll(hoofdKolom);
       
-        
+        hBox.getChildren().clear(); // tekstvelden enkel voor artikeltabel (wellicht elders zetten)
+        hBox2.getChildren().clear();
     }
     
 
     private void clearTables() {
-        
+        artikelNaam.clear(); 
+        artikelPrijs.clear();
         weerTeGevenPOJOs.clear(); 
         setUpTabel(Collections.EMPTY_LIST, weerTeGevenPOJOs );
     }
@@ -299,6 +325,23 @@ public class TabelScherm {
             klantCrud.zoekAdresVanKlant(); 
             klantCrud.showMenu();
         }
+    }
+    
+    private void voegArtikelToe() {
+        if (!artikelNaam.getText().isEmpty() && NumberUtils.isNumber(artikelPrijs.getText()) ) { 
+            ArtikelPOJO artikel = new ArtikelPOJO();
+            artikel.setArtikelNaam(artikelNaam.getText());
+            artikel.setArtikelPrijs(Integer.parseInt(artikelPrijs.getText()));
+            facade.createArtikel(artikel);
+        }
+    }
+    
+    private void verwijderArtikel() {
+        
+        ArtikelPOJO artikel = (ArtikelPOJO)pojoTabel.getSelectionModel().getSelectedItem();
+        
+        facade.deleteArtikel(artikel);
+        
     }
     
 }

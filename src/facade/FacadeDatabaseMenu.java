@@ -39,7 +39,7 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> alleBestellingen;
     private List<Klant> klanten;
     private final Object[] toDisplay;
-    private List<ArtikelBestelling> artikelen;  
+    private List<ArtikelBestelling> besteldeArtikelen;  
     private List<Adres> adressen;
     
     
@@ -53,7 +53,7 @@ public class FacadeDatabaseMenu {
         toDisplay[0] = new Klant();
         toDisplay[1] = new ArrayList<Adres>();
         toDisplay[2] = bestellingen;
-        toDisplay[3] = artikelen;
+        toDisplay[3] = besteldeArtikelen;
         toDisplay[4] = klanten;
  //       ConnectionFactory.useFirebird();  
             ConnectionFactory.useMySQL();
@@ -79,12 +79,12 @@ public class FacadeDatabaseMenu {
             adres = findAdres(bestaandeKlant); 
         }
         bestellingen = findBestellingen(bestaandeKlant);
-        artikelen = findArtikelen(bestellingen.get(0)); // zoekt artikelen van eerste bestelling in lijst
+        besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adres;
         toDisplay[2] = bestellingen;
-        toDisplay[3] = artikelen;
+        toDisplay[3] = besteldeArtikelen;
                
     }
     
@@ -163,7 +163,17 @@ public class FacadeDatabaseMenu {
     	
         return artikelDAO.findAlleArtikelen();
     } 
+     
+    public ArtikelPOJO createArtikel(ArtikelPOJO artikel) {
         
+        return artikelDAO.createArtikel(artikel);
+    } 
+     
+    public void deleteArtikel(ArtikelPOJO artikel) {
+        
+       artikelDAO.deleteArtikel(artikel);
+    } 
+    
     private Klant findKlant(Adres klantAdres) throws SQLException{   
         List<Klant> bewoners = klantDAO.findKlant(klantAdres);
         if (bewoners.isEmpty()) bewoners.add(new Klant()); // om arrayoutofbounds en nullpinters te vermijden
