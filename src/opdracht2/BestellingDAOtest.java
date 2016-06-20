@@ -10,6 +10,7 @@ import java.util.*;
 
 import DAO.BestellingDAO;
 import DAO.BestellingDAOJson;
+import DAO.ArtikelDAOJson1;
 import POJO.ArtikelBestelling;
 import POJO.ArtikelPOJO;
 import POJO.Bestelling;
@@ -42,9 +43,9 @@ public class BestellingDAOtest {
         //test createbestelling **** beide createBestelling overloaded methodes werken naar behoren.
         //Klant klant = new Klant();
         //klant.setKlantID(1);
-        
+        ArtikelDAOJson1 artikeldao = new ArtikelDAOJson1();
         Bestelling bestelling = new Bestelling();
-        bestelling.setKlant(999);
+        bestelling.setKlant(123);
         bestelling.setBestellingID(999);
         artikel.setArtikelID(999);
         artikel.setArtikelNaam("hallo");
@@ -58,8 +59,12 @@ public class BestellingDAOtest {
         arraylist.add(artikelBestelling);
         arraylist.add(artikelBestelling1);
         arraylist.add(artikelBestelling2);
-        bestelling.setArtikelBestellingList(arraylist);
-        dao.createBestelling(bestelling,999);
+        HashMap<Integer,List<ArtikelBestelling>> hashmap = new HashMap<>();
+        hashmap.put(0, arraylist);
+        bestelling.setArtikelBestellingListJSON(hashmap);
+        dao.createBestelling(bestelling);
+        //artikeldao.createArtikel(artikel);
+        
         //dao.readArtikelBestelling(bestelling);
         
     }
