@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package DAO;
+import static DAO.ArtikelDAOJson.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;
@@ -31,6 +32,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -39,18 +42,27 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import opdracht2.BestellingDAOtest;
 
 /**
  *
  * @author jeroen
  */
+
+
 public class BestellingDAOJson implements BestellingInterface {
 
         Connection connection;
         PreparedStatement statement;
         ResultSet resultSet;
         Logger logger = LoggerFactory.getLogger(BestellingDAOJson.class);
-        
+        //Type artikelType = new TypeToken<ArtikelBestelling>() {}.getType();
+        //Type artikelTypeArray = new TypeToken<Bestelling>() {}.getType();
+        Type artikelType = new TypeToken<HashMap<Integer, Bestelling>>() {}.getType();
+            Gson gson = new Gson();
         // in facade maak je een arrayList van artikelBestellingen die geupdate moeten worden. 
         //vervolgens werk je met een for each loop om voor elke aan te passen artikelBestelling een
         // updateBestelling te invoken.
@@ -112,50 +124,34 @@ public class BestellingDAOJson implements BestellingInterface {
          List<ArtikelBestelling> artikelBestellingen = new ArrayList<>();
          ArtikelBestelling artikelBestelling;
          ArtikelPOJO artikelpojo;
+         HashMap<Integer, Bestelling> catalogus = new HashMap<>();
+            //catalogus = bestelling;
+         try (FileReader read = new FileReader("C:\\Users\\maurice\\Desktop\\Workshoptest.json");) {
+                  
+            catalogus = gson.fromJson(read, artikelType);
+ 
+
+                  //je hoeft de arraylist Artikelbestelling niet in een hashmap te stoppen (waarvan de integer dan zou corresponderen
+                  // met de bestelling ID) omdat de bestelling ID standaard al in het bestelling object opgeslagen wordt..
+                  // dus je kunt met een hasNext for each loop alle elementen van catalogus doorlopen en met een if statement bekijken of
+                  // het overeenkomt. Ik bedenk me net dat de key telkens uniek hoort te zijn, je zou dus niet meerdere keren dezelfde klantID
+                  // als key kunnen opgeven... Je zult een unieke key moeten maken van zowel de klantID plus het bestellingID erachter geplakt.
+                  // en een "_" ertussen. Zo kun je ook zeer gemakkelijk de juist bestelling vinden.
+            catalogus = gson.fromJson(read, artikelType);
+            bestelling = catalogus.get(bestelling.getKlant_id());
+        } 
+        catch (IOException ex) {
+            logger.error("read input/output " +  ex);
+        }
         
                         JSONParser jsonParser = new JSONParser();
                         String jsonFilePath = "C:\\Users\\maurice\\Desktop\\Workshoptest.json";
 		try {
                         JsonFactory jfactory = new JsonFactory();
                         JsonParser jParser = jfactory.createJsonParser(new File("C:\\Users\\maurice\\Desktop\\Workshoptest.json"));
-                        while (jParser.nextToken() != JsonToken.END_OBJECT) {
-                            String fieldname = jParser.getCurrentName();
-                            
-                            if ("klantID".equals(fieldname)) {
-                                    jParser.nextToken();
-                                    if (jParser.getIntValue() == bestelling.getKlant_id()){
-                                        while (jParser.nextToken() != JsonToken.END_OBJECT){
-                                            fieldname = jParser.getCurrentName();
-                                            if ("bestelID".equals(fieldname)){
-                                                jParser.nextToken();
-                                                if (jParser.getIntValue() == bestelling.getBestelling_id()){
-                                                    jParser.nextToken();
-                                                     while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                                                            while (jParser.nextToken() != JsonToken.END_OBJECT){
-                                                                fieldname = jParser.getCurrentName();
-                                                                if ("artikelID".equals(fieldname)){
-                                                                    artikelBestelling = new ArtikelBestelling();
-                                                                    jParser.nextToken();
-                                                                    artikelpojo = new ArtikelPOJO();
-                                                                    artikelpojo.setArtikelID(jParser.getIntValue());
-                                                                    artikelBestelling.setArtikelPojo(artikelpojo);
-                                                                    jParser.nextValue();
-                                                                    artikelBestelling.setArtikelenAantal(jParser.getIntValue());
-                                                                    artikelBestellingen.add(artikelBestelling);
-                                                                    
-                                                                    
-                                                                }
-                                                            }
-                                                     }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }            
-                            
-
-                        }
-                            jParser.close();                        
+                        //ObjectMapper mapper = new ObjectMapper();
+                        //ObjectNode node = (ObjectNode) mapper.readTree(jParser);
+                        //node.get(jsonFilePath)
                 }
                  catch (JsonGenerationException e) {
 
@@ -304,7 +300,33 @@ public class BestellingDAOJson implements BestellingInterface {
     }
     
        @Override
-    public void createBestelling(Bestelling bestelling){} 
+    public void createBestelling(Bestelling bestelling){
+            //Bestelling catalogus;
+            HashMap<String, Bestelling> catalogus = new HashMap<>();
+            //catalogus = bestelling;
+            try (FileReader read = new FileReader("C:\\Users\\maurice\\Desktop\\Workshoptest.json");) {
+                  
+            catalogus = gson.fromJson(read, artikelType);
+            int nieuweID = catalogus.size() + 1;
+            if (bestelling.getBestelling_id()== 0) {
+                bestelling.setBestellingID(4);                  //(nieuweID);
+            }
+                    }
+                             catch (IOException ex) {
+            logger.error("create input/output " +  ex);
+        }
+            try (FileWriter file = new FileWriter("C:\\Users\\maurice\\Desktop\\Workshoptest.json",true)) {
+               catalogus.put(bestelling.getKlant_id() + "_" + bestelling.getBestelling_id(), bestelling);  
+		file.write(gson.toJson(catalogus, artikelType));  
+                logger.trace("artikel toegeveogd aan catalogus ");
+            }
+         catch (IOException ex) {
+            logger.error("create input/output " +  ex);
+        }
+        
+    }
+    
+     
         
 
 
