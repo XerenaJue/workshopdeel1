@@ -25,6 +25,8 @@ public class Bestelling {
     @Column
     private ArtikelBestelling bestellingArtikel;
     
+    private HashMap<Integer,List<ArtikelBestelling>> hashmap;
+    
  
 
     public int getBestelling_id(){
@@ -45,6 +47,14 @@ public class Bestelling {
     
     public void setArtikelBestellingList(List<ArtikelBestelling> artikelList){
         this.artikelList = artikelList;
+    }
+    
+    public void setArtikelBestellingListJSON(HashMap<Integer,List<ArtikelBestelling>> hashmap){
+        this.hashmap = hashmap;
+    }
+    
+    public HashMap<Integer,List<ArtikelBestelling>> getArtikelBestellingListJSON(){
+        return this.hashmap;
     }
     
     public List<ArtikelBestelling> getArtikelBestellingList(){
