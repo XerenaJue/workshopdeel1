@@ -35,7 +35,9 @@ import POJO.ArtikelPOJO;
 import POJO.Bestelling;
 import POJO.Klant;
 import javafx.animation.FadeTransition;
+import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -57,7 +59,7 @@ public class TabelScherm {
     private MenuButton btnAdressen;
     private MenuButton btnArtikelen;
     private MenuButton btnBestellingen;
-    private MenuButton btnCrud;
+    private MenuButton btnCrud = new MenuButton("CRUD");;
     private MenuButton btnVoegToe;
     private MenuButton btnRemove;
     private TextField artikelNaam;
@@ -132,9 +134,9 @@ public class TabelScherm {
         btnArtikelen.setOnMouseClicked(event -> {   clearTables();  getArtikelen(); setUpForArtikelen(); 
                 refreshPanes("Alle artikelen in de database.");        
         });
-        btnCrud = new MenuButton("CRUD");
-        btnCrud.setOnMouseClicked(event -> {   openDezeKlantCrud();          
-        });
+      //  btnCrud = new MenuButton("CRUD");
+      //  btnCrud.setOnMouseClicked(event -> {  // openDezeKlantCrud();          
+      //  });
               
        btnVoegToe = new MenuButton("Voeg Toe");
         btnVoegToe.setOnMouseClicked(event -> {  voegArtikelToe(); clearTables(); getArtikelen();  
@@ -291,42 +293,7 @@ public class TabelScherm {
         weerTeGevenPOJOs.clear(); 
         setUpTabel(Collections.EMPTY_LIST, weerTeGevenPOJOs );
     }
-    private void openDezeKlantCrud() {
-        // aleen gebruiken bij klant
-        if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Klant ) {
-        
-            Klant person = (Klant)pojoTabel.getSelectionModel().getSelectedItem();
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
-            klantCrud.prepareMenu();
-            klantCrud.setKlant(person);
-            klantCrud.zoekKlant();
-            klantCrud.zoekAdresVanKlant(); 
-            klantCrud.showMenu();
-        }
-        else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Adres ) {
-        
-            Adres adres = (Adres)pojoTabel.getSelectionModel().getSelectedItem();
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
-            klantCrud.prepareMenu();
-            klantCrud.setAdres(adres);
-            klantCrud.zoekKlant();
-            klantCrud.zoekAdresVanKlant(); 
-            klantCrud.showMenu();
-        }
-        else if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Bestelling ) {
-        
-            Bestelling bestelling = (Bestelling)pojoTabel.getSelectionModel().getSelectedItem();
-            Klant klant = new Klant();
-            klant.setKlantID(bestelling.getKlant_id());
-            CrudInvoerMenu klantCrud = new CrudInvoerMenu(facade);
-            klantCrud.prepareMenu();
-            klantCrud.setKlant(klant);
-            klantCrud.zoekKlant();
-            klantCrud.zoekAdresVanKlant(); 
-            klantCrud.showMenu();
-        }
-    }
-    
+  
     private void voegArtikelToe() {
         if (!artikelNaam.getText().isEmpty() && NumberUtils.isNumber(artikelPrijs.getText()) ) { 
             ArtikelPOJO artikel = new ArtikelPOJO();
@@ -339,8 +306,19 @@ public class TabelScherm {
     private void verwijderArtikel() {
         
         ArtikelPOJO artikel = (ArtikelPOJO)pojoTabel.getSelectionModel().getSelectedItem();
-        
         facade.deleteArtikel(artikel);
+        
+    }
+    
+    public Object getSelectedItem() {
+        
+        return pojoTabel.getSelectionModel().getSelectedItem();
+        
+    }
+    
+    public void addListenerToCrud(EventHandler event) {
+        
+        btnCrud.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
         
     }
     

@@ -1,5 +1,6 @@
 package menu;
 //jjj
+import facade.Controller;
 import facade.FacadeDatabaseMenu;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +23,16 @@ import javafx.event.EventHandler;
 
 
 public class Menu extends Parent {
-        static FacadeDatabaseMenu deFacade = new FacadeDatabaseMenu();
+        FacadeDatabaseMenu deFacade = new FacadeDatabaseMenu();
 	static boolean terugNaarInlog;
-        static CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu(deFacade);
-        static TabelScherm tabelScherm = new TabelScherm(deFacade);
-        static DatasourceScherm datasourceScherm;
+        CrudInvoerMenu crudInvoerMenu = new CrudInvoerMenu();//new CrudInvoerMenu(deFacade);
+        TabelScherm tabelScherm = new TabelScherm(deFacade);
+        DatasourceScherm datasourceScherm;
+        BestellingScherm bestellingScherm;
         
+        Controller controller = new Controller(deFacade, crudInvoerMenu, bestellingScherm, tabelScherm);
 	
-    public static boolean display() {
+    public boolean display() {
 
         Stage window = new Stage();
         Pane layout = new Pane();

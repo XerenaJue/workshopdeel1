@@ -5,17 +5,14 @@
  */
 package menu;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import POJO.ArtikelPOJO;
 import POJO.Bestelling;
-import POJO.Klant;
 import POJO.ArtikelBestelling;
-import facade.FacadeDatabaseMenu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -33,36 +31,33 @@ import javafx.scene.text.Text;
  * @author jeroen
  */
 public class BestellingScherm extends CrudInvoerMenu {
-    
-    
-    private MenuButton btnVerwijderArtikel, btnVoegToe ;
+       
+    private MenuButton btnVerwijderArtikel = new MenuButton("Verwijder artikel");
+    private MenuButton  btnVoegToe = new MenuButton("Artikelen Toevoegen");
     private final TableView pojoTabel;
     private final TableView inhoudBestellingTabel;
     private final ObservableList weerTeGevenPOJOs;
     private final ObservableList weerTeGevenInhoud;
-    private final Klant dezeKlant;
-    private Bestelling dezeBestelling;
     
+    MenuButton btnMaak = new MenuButton("Nieuwe bestelling ");
+   
     private Label lbl1a, lbl1b, lbl2a , lbl2b;
    
-        Label artikelLabel;
-        TextField artikelTextField;
-        Label artikelAantalLabel;
-        TextField artikelAantalTextField;
+    private Label artikelLabel;
+    private    TextField artikelTextField;
+    private    Label artikelAantalLabel;
+    private   TextField artikelAantalTextField;
     
     
     
-    BestellingScherm(FacadeDatabaseMenu deFacade) {
-         
-        super(deFacade);
-        dezeKlant = klant;
-        dezeBestelling = new Bestelling();
+    public BestellingScherm() {
+        
         pojoTabel = new TableView<>();
         inhoudBestellingTabel =  new TableView<>();
         weerTeGevenPOJOs = FXCollections.observableArrayList();
-        weerTeGevenInhoud =   FXCollections.observableArrayList();     
-    }
-    
+        weerTeGevenInhoud =   FXCollections.observableArrayList();  
+    }    
+   
     @Override
     public void startMenu() {
        
@@ -77,8 +72,7 @@ public class BestellingScherm extends CrudInvoerMenu {
              
         setUpForBestellingen();
         setUpInhoudBestellingen();
-        zoekBestellingen();
-               
+                  
         this.refreshPanes("Bestelgegevens");
         window.setScene(scene);
         window.showAndWait();
@@ -91,28 +85,7 @@ public class BestellingScherm extends CrudInvoerMenu {
         btnTerug.setOnMouseClicked(event -> { 
         	window.close();        	
         });
-        btnVoegToe = new MenuButton("Artikelen Toevoegen");
-        btnVoegToe.setOnMouseClicked(event -> {   
-            voegArtikelToe();  
-            zoekInDezeBestelling();
-                         
-        });
-        btnMaak = new MenuButton("Nieuwe bestelling ");
-        btnMaak.setOnMouseClicked(event -> { plaatsBestelling();
-        });
-        btnVerwijder = new MenuButton("Verwijder bestelling");
-        btnVerwijder.setOnMouseClicked(event -> { verwijderBestelling(); zoekInDezeBestelling();
-               
-        });
-        btnVerwijderAlles = new MenuButton("Verwijder alle bestellingen");
-        btnVerwijderAlles.setOnMouseClicked(event -> {  verwijderAlleBestellingen(); zoekInDezeBestelling();
-        });
-        btnVerwijderArtikel = new MenuButton("Verwijder artikel");
-        btnVerwijderArtikel.setOnMouseClicked(event -> { verwijderArtikel(); zoekInDezeBestelling();
-        });
-        
-        pojoTabel.setOnMousePressed(e -> {zoekInDezeBestelling(); });
-        
+   
     }
                 
     @Override
@@ -148,33 +121,39 @@ public class BestellingScherm extends CrudInvoerMenu {
        
     }
     @Override
-    protected void setLabels() {
+    public void setLabels() {
         
         lbl1a= new Label("Klant ID:");
-        lbl1b = new Label(Integer.toString(klant.getKlantID()));
         lbl2a = new Label("Achternaam klant:");
-        lbl2b = new Label(klant.getAchternaam());
+                
+    }
+    public void setLabels(String id, String naam) {
+           
+        lbl1b = new Label(id);
+        lbl2b = new Label(naam);
             
     }
+    
+    
      private void setUpForBestellingen() {
    
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
-        setUpTabel(pojoVelden, weerTeGevenPOJOs);
+        setUpTabel(pojoVelden);
     }
     
     
-    private void setUpTabel(List<String> pojoVelden, ObservableList pojos ) {
+    public void setUpTabel(List<String> pojoVelden) {
         
-        pojoTabel.setItems(pojos);
+        pojoTabel.setItems(weerTeGevenPOJOs);
         pojoTabel.setMaxSize(300, 1000);
         pojoTabel.setMinSize(250, 300);
         
         int aantalKolommen = pojoVelden.size();
         String pojoNaam = "KlantBestellingen";
         
-        if (!pojos.isEmpty()) {
-            pojoNaam = pojos.get(0).getClass().getSimpleName();
+        if (!weerTeGevenPOJOs.isEmpty()) {
+            pojoNaam = weerTeGevenPOJOs.get(0).getClass().getSimpleName();
         }
         TableColumn hoofdKolom = new TableColumn(pojoNaam);
         
@@ -195,20 +174,20 @@ public class BestellingScherm extends CrudInvoerMenu {
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("artikelNaam", "artikelID", "artikelPrijs", "aantal_artikelen" ) );
         
-        setUpBestellingTabel(pojoVelden, weerTeGevenInhoud);
+        setUpBestellingTabel(pojoVelden);
     }
     
-    private void setUpBestellingTabel(List<String> pojoVelden, ObservableList inhoud ) {
+    public void setUpBestellingTabel(List<String> pojoVelden ) {
         
-        inhoudBestellingTabel.setItems(inhoud);
+        inhoudBestellingTabel.setItems(weerTeGevenInhoud);
         inhoudBestellingTabel.setMaxSize(300, 1000);
         inhoudBestellingTabel.setMinSize(250, 300);
         
         int aantalKolommen = pojoVelden.size();
         String pojoNaam = "Inhoud Bestelling";
         
-        if (!inhoud.isEmpty()) {
-            pojoNaam = inhoud.get(0).getClass().getSimpleName();
+        if (!weerTeGevenInhoud.isEmpty()) {
+            pojoNaam = weerTeGevenInhoud.get(0).getClass().getSimpleName();
         }
         TableColumn hoofdKolom = new TableColumn(pojoNaam);
         
@@ -223,98 +202,74 @@ public class BestellingScherm extends CrudInvoerMenu {
         inhoudBestellingTabel.getColumns().addAll(hoofdKolom);
           
     }
-    
-    private void zoekBestellingen() {
+       
+    public void showBestellingen(List pojos) {
         weerTeGevenPOJOs.clear();   
-        weerTeGevenPOJOs.addAll( (List)nepAppArray[2]);
+        weerTeGevenPOJOs.addAll( pojos);
     }
     
-    private void zoekInDezeBestelling() {
+    public void clearArtikelLijst() {
+        weerTeGevenInhoud.clear();
+    }
+    public int getArtikelID() {
         
-        if (pojoTabel.getSelectionModel().getSelectedItem() instanceof Bestelling ) {
-            
-            dezeBestelling =  (Bestelling)pojoTabel.getSelectionModel().getSelectedItem();
-            List indezak = facade.findArtikelen(dezeBestelling);
-            weerTeGevenInhoud.clear();
-            weerTeGevenInhoud.addAll(indezak);
-            setUpInhoudBestellingen();
-        }
-        else weerTeGevenInhoud.clear();
+        return Integer.parseInt(artikelTextField.getText());
     }
     
-    
-    private void voegArtikelToe(){
-        ArtikelBestelling artikelBestelling = new ArtikelBestelling();
-        ArtikelPOJO artikel = new ArtikelPOJO();
-        artikel.setArtikelID(Integer.parseInt(artikelTextField.getText()));
-        artikelBestelling.setArtikelPojo(artikel);
-        artikelBestelling.setArtikelenAantal(Integer.parseInt(artikelAantalTextField.getText()));
-        try{
-            facade.updateBestelling(artikelBestelling, dezeBestelling.getBestelling_id());
-            System.out.println("aanpassing wel gelukt");
-        }
-        catch (SQLException e) {
-           e.printStackTrace();
-           System.out.println("aanpassing niet gelukt");
-        }
-    }
-    
-    private void verwijderArtikel() {
-        if ( inhoudBestellingTabel.getSelectionModel().getSelectedItem() instanceof ArtikelBestelling    ) {
-            ArtikelBestelling artikelBestelling = (ArtikelBestelling)inhoudBestellingTabel.getSelectionModel().getSelectedItem();
-            facade.removeFromBestelling(dezeBestelling, artikelBestelling);
-        }
-    }
-    
-    private void verwijderBestelling(){
-        try {           
-            facade.deleteBestelling((Bestelling)pojoTabel.getSelectionModel().getSelectedItem()); // dit komt uit TabelScherm.java
-            facade.zoek(nepAppArray);
-            nepAppArray = facade.getToDisplay();
-            setUpForBestellingen();
-            zoekBestellingen();
-            System.out.println("verwijdering gelukt1111");
-        }
+     public int getArtikelAantal() {
         
-           catch (SQLException e) {
-           e.printStackTrace();
-           System.out.println("verwijdering niet gelukt");
-       }
+        return Integer.parseInt(artikelAantalTextField.getText());
     }
-    
-    private void verwijderAlleBestellingen(){
-        try{
-            facade.verwijderAlleBestellingen(klant);
-            
-            facade.zoek(nepAppArray);
-            nepAppArray = facade.getToDisplay();
-            setUpForBestellingen();
-            zoekBestellingen(); 
-        }
-        catch(SQLException e){
-        
-        }
-    }
-    
-    private void plaatsBestelling() {
-       try {
-            facade.zoek(nepAppArray);
-            facade.createBestelling();
-            nepAppArray = facade.getToDisplay();
-            facade.zoek(nepAppArray);
-            nepAppArray = facade.getToDisplay();
-           
-            setUpForBestellingen();
-            zoekBestellingen(); 
-         
-       }
-       catch (SQLException e) {
-           e.printStackTrace();
-           System.out.println("wordt nu wel ver gegooid deze SQL exc in Bestellingscherm.plaatsbestelling");
-       }
-    }
-           
 
+    public ArtikelBestelling getSelectedArtikel() {
+        ArtikelBestelling artikelBestelling = (ArtikelBestelling)inhoudBestellingTabel.getSelectionModel().getSelectedItem();
+        return artikelBestelling;
+    }
     
+    public void verversWinkelwagen(List indezak) {
+        
+        weerTeGevenInhoud.clear();
+        weerTeGevenInhoud.addAll(indezak);
+        
+    }
+    
+    public Bestelling getSelectedBestelling() {
+        
+        return (Bestelling)pojoTabel.getSelectionModel().getSelectedItem();
+        
+    }
+    public void addListenerToMaak(EventHandler event) {
+        
+        System.out.println("adding listenmer maak");
+        btnMaak.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
+    
+    public void addListenerToVerwijder(EventHandler event) {
+        
+        btnVerwijder.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
+           
+    public void addListenerToTabel(EventHandler event) {
+        
+        pojoTabel.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
+    public void addListenerToVerwijderAlle(EventHandler event) {
+        
+        btnVerwijderAlles.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
+    public void addListenerToVerwijderArtikel(EventHandler event) {
+        
+        btnVerwijderArtikel.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
+    public void addListenerToVoegToe(EventHandler event) {
+        
+        btnVoegToe.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        
+    }
 }
 

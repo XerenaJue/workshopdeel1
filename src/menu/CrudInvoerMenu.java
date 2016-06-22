@@ -23,21 +23,21 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import facade.*;
-import java.sql.*;
 import java.util.*;
 
 
-import org.apache.commons.validator.routines.EmailValidator;
 
 import POJO.Adres;
 import POJO.ArtikelPOJO;
 import POJO.Bestelling;
-import POJO.Klant;
 import javafx.animation.FadeTransition;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class CrudInvoerMenu {
 
@@ -50,22 +50,22 @@ public class CrudInvoerMenu {
 	Scene scene;
 
 	MenuButton btnTerug;
-	MenuButton btnStop;
+	MenuButton btnStop = new MenuButton("Afsluiten");
 	MenuButton btnClear;
-	MenuButton btnZoek;
+	MenuButton btnZoek =  new MenuButton("Zoek Klant");
 	MenuButton btnAdressen;
 	MenuButton btnArtikelen;
-	MenuButton btnBestellingen;
-	MenuButton btnMaak;
-	MenuButton btnUpdate;
-	MenuButton btnVerwijder;
-	MenuButton btnDelete;
-        MenuButton btnVerwijderAlles;
+	MenuButton btnBestellingen  = new MenuButton("Bestellingen");;
+	MenuButton btnMaak = new MenuButton("Maak Klant");
+	MenuButton btnUpdate = new MenuButton("Pas Klant aan");
+	MenuButton btnVerwijder = new MenuButton("Verwijder Bestelling");;
+	MenuButton btnDelete = new MenuButton("Verwijder Klant");;;
+        MenuButton btnVerwijderAlles = new MenuButton("Verwijder alle bestellingen");
+        MenuButton btnNextAdres = new MenuButton("next adres");
         
         MenuButton btnNextKlant;
-        MenuButton btnNextAdres;
-
-	TextField klantIDTF;
+       
+        TextField klantIDTF = new TextField();
 	Label klantIdLabel;
 	TextField klantAchternaamTF;
 	Label klantAchternaamLabel;
@@ -87,27 +87,19 @@ public class CrudInvoerMenu {
 	TextField woonplaatsTF;
 	Label plaatsnaamLabel;
 
-	Object[] nepAppArray;
-	Klant klant ;
+//	Object[] nepAppArray;
+	//Klant klant ;
 	Adres adres ;
 	Bestelling bestelling;
 	List<Bestelling> bestellingen; 
 	List<ArtikelPOJO> artikelen;
 	Label lblStatus = new Label();
         private int adresIndex = 0;
-
-	public CrudInvoerMenu(FacadeDatabaseMenu deFacade) {
-
-		facade = deFacade;
-                nepAppArray = facade.getToDisplay();
-                klant = (Klant)nepAppArray[0];
-                List<Adres> adressen = (List<Adres>) nepAppArray[1];
-                if (adressen.isEmpty()) adressen.add(new Adres());
-                adres = adressen.get(0);
-                bestellingen = (List<Bestelling>)nepAppArray[2];
-                artikelen = (List<ArtikelPOJO> )nepAppArray[3];
+        
+        public CrudInvoerMenu() {
+            
         }
-                
+    
 	public void startMenu() {
 
 		prepareMenu();
@@ -122,7 +114,7 @@ public class CrudInvoerMenu {
 		this.setBackground();
 	}
 
-	protected void showMenu() {
+	public void showMenu() {
 
 		this.refreshPanes("Klantgegevens");
 		root.setCenter(pane);
@@ -148,14 +140,14 @@ public class CrudInvoerMenu {
 	protected void initializeButtons() {
 
 		btnTerug = new MenuButton("Terug");
-		btnTerug.setOnMouseClicked(event -> {
+		btnTerug.setOnMouseClicked(event -> {  klantIDTF.clear(); postcodeTF.clear();  huisnrTF.clear(); // zodat als je terugkomt nieuwe klant wordt gezocht
 			window.close();
 		});
-		btnStop = new MenuButton("Afsluiten");
+	
 		btnStop.setOnMouseClicked(event -> {
 			System.exit(0);
 		});
-		btnClear = new MenuButton("Clear");
+                btnClear = new MenuButton("Clear");
 		btnClear.setOnMouseClicked(event -> {
                         klantIDTF.clear();
                         klantAchternaamTF.clear();
@@ -167,51 +159,15 @@ public class CrudInvoerMenu {
                         toevoegingTF.clear();
                         postcodeTF.clear();
                         woonplaatsTF.clear();
-                        getIDfromInputField();
+                   //     getIDfromInputField();
                         //zoekKlant();
-                });
-		btnZoek = new MenuButton("Zoek Klant");
-		btnZoek.setOnMouseClicked(event -> {
-			getIDfromInputField();
-			zoekKlant();
-			zoekAdresVanKlant();
-			refreshPanes("Klantgegevens");
-		});
-		btnMaak = new MenuButton("Maak Klant");
-		btnMaak.setOnMouseClicked(event -> {
-			maakKlant();
-			zoekKlant();
-			refreshPanes("Klantgegevens");
-		});
-		btnBestellingen = new MenuButton("Bestellingen");
-		btnBestellingen.setOnMouseClicked(event -> {
-                        BestellingScherm besteld = new BestellingScherm(facade);
-			besteld.startMenu();
-			besteld.refreshPanes("Bestellingsgegevens");
-		});
-		btnUpdate = new MenuButton("Pas Klant Aan");
-		btnUpdate.setOnMouseClicked(event -> {
-			getIDfromInputField();
-			updateKlant();
-			updateAdres();
-			refreshPanes("Klantgegevens");
-		});
-		btnDelete = new MenuButton("Verwijder Klant");
-		btnDelete.setOnMouseClicked(event -> {
-			getIDfromInputField();
-			deleteKlant();
-			refreshPanes("Klantgegevens");
-		});
-                btnNextAdres = new MenuButton("next adres");
-                btnNextAdres.setOnMouseClicked(event -> { volgendAdres(); 
-                                  zoekAdresVanKlant();
                 });
 
 	}
 
-	protected void setLabels() {
+	public void setLabels() {
 
-		klantIDTF = new TextField();
+		//klantIDTF = new TextField();
 		klantIdLabel = new Label("Klant ID:");
 		klantAchternaamTF = new TextField();
 		klantAchternaamLabel = new Label("Achternaam:");
@@ -298,104 +254,14 @@ public class CrudInvoerMenu {
 
 	}
 
-	public void zoekKlant() {
 
-		try {
-                        facade.zoek(nepAppArray);
-			nepAppArray = facade.getToDisplay();
-			klant = (Klant) nepAppArray[0];
-			klantIDTF.setText(Integer.toString(klant.getKlantID()));
-			klantVoornaamTF.setText(klant.getVoornaam());
-			klantAchternaamTF.setText(klant.getAchternaam());
-			tussenvoegselTF.setText(klant.getTussenvoegsel());
-			emailTF.setText(klant.getEmail());
-                        adresIndex = 0;
-                        
-		} catch (SQLException e) {
-			System.out.println("oplossen nog zoekklantcrudinvoermenu ");
-                        e.printStackTrace();
-		}
-	}
-
-	public void maakKlant() {
-		try {
-			if (klantIDTF.getText().isEmpty()) {
-				klant.setKlantID(0); // zodat er geen bestaande klant opnieuw
-										// aangemaakt wordt, bij maak op
-										// bestaanID komt SQLexception
-			}
-			klant.setAchternaam(klantAchternaamTF.getText());
-
-			if (!emailCheck(emailTF.getText())) {
-				return;
-			}
-			klant.setEmail(emailTF.getText());
-			klant.setVoornaam(klantVoornaamTF.getText());
-			klant.setTussenvoegsel(tussenvoegselTF.getText());
-
-			klant = facade.createKlant(klant);
-			nepAppArray = facade.getToDisplay(); // nepapparray[0] is nu kopie
-													// van klant niet klant
-													// zelf!
-
-		} catch (SQLException e) {
-			System.out.println("oplossen nog ");
-		}
-	}
-
-	public void zoekAdresVanKlant() {
-
-		nepAppArray = facade.getToDisplay();
-		adres = ((List<Adres>) nepAppArray[1]).get(adresIndex);
-
-		showAdres(adres);
-	}
         
-        private void showAdres(Adres adres) {
-            
-            straatnaamTF.setText(adres.getStraatnaam());
-            huisnrTF.setText(Integer.toString(adres.getHuisnummer()));
-            toevoegingTF.setText(adres.getToevoeging());
-            postcodeTF.setText(adres.getPostcode());
-            woonplaatsTF.setText(adres.getWoonplaats());
-            
+        public void falseEmail() {
+            lblStatus.setTextFill(Color.ORANGERED);
+            lblStatus.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
+            lblStatus.setText("Ongeldig email adres");
         }
-        
-        private void volgendAdres() {
-            if (adresIndex < ((List<Adres>) nepAppArray[1]).size() - 1 ) {
-                adresIndex++;
-            }
-            else adresIndex = 0;
-            
-        }
-
-	public void setKlant(Klant bestaandeKlant) {
-
-		nepAppArray[0] = bestaandeKlant;
-
-	}
-
-	public void setAdres(Adres bestaandAdres) {
-
-		((List<Adres>)nepAppArray[1]).set(0,bestaandAdres);
-
-	}
-
-
-                
-
-
-	public boolean emailCheck(String email) {
-		EmailValidator emailVal = EmailValidator.getInstance();
-		if (!emailVal.isValid(email)) {
-			lblStatus.setTextFill(Color.ORANGERED);
-			lblStatus.setFont(Font.font("Verdana", FontWeight.BOLD, 15));
-			lblStatus.setText("Ongeldig email adres");
-			return false;
-		}
-		return true;
-	}
-
+/*
 	public void getIDfromInputField() {
 
 		int input;
@@ -413,50 +279,98 @@ public class CrudInvoerMenu {
 		klant.setEmail(emailTF.getText());
 		
 	}
-
-	public void updateKlant() {
-		try {
-			klant.setAchternaam(klantAchternaamTF.getText());
-
-			if (!emailCheck(emailTF.getText())) {
-				return;
-			}
-			klant.setEmail(emailTF.getText());
-			klant.setVoornaam(klantVoornaamTF.getText());
-			klant.setTussenvoegsel(tussenvoegselTF.getText());
-			facade.updateKlant(klant);
-			nepAppArray = facade.getToDisplay();
-
-		} catch (SQLException ex) {
-			System.out.println("Nog op te lossen");
-		}
-	}
-
-	public void updateAdres() {
-
-		try {
-			adres.setStraatnaam(straatnaamTF.getText());
-			adres.setHuisnummer(Integer.parseInt(huisnrTF.getText()));
-			adres.setToevoeging(toevoegingTF.getText());
-			adres.setPostcode(postcodeTF.getText());
-			adres.setWoonplaats(woonplaatsTF.getText());
-			facade.update(klant.getKlantID(), adres);
-			nepAppArray = facade.getToDisplay();
-
-		} catch (SQLException e) {
-			System.out.println("Nog op te lossen");
-		}
-
-	}
-
-	public void deleteKlant() {
-		try {
-			klant.setKlantID(Integer.parseInt(klantIDTF.getText()));
-			facade.deleteKlant();
-			nepAppArray = facade.getToDisplay();
-		} catch (SQLException ex) {
-			System.out.println("Nog op te lossen");
-		}
-	}
-
+*/
+        public int getKlantID() {
+            if ( NumberUtils.isNumber(klantIDTF.getText())) {
+                return Integer.parseInt(klantIDTF.getText());
+            } 
+            return 0;
+        }
+        public String getKlantVoornaam() {
+            return klantVoornaamTF.getText();
+        }
+        public String getKlantAchternaam() {
+            return klantAchternaamTF.getText();
+        }
+        public String getTussenvoegsel() {
+            return tussenvoegselTF.getText();
+        }
+        public String getEmail() {
+            return emailTF.getText();
+        }
+        public String getStraatnaam() {
+            return straatnaamTF.getText();
+        }
+        public int getHuisnummer() {
+            if (NumberUtils.isNumber(huisnrTF.getText())) {
+                return Integer.parseInt(huisnrTF.getText());
+            } 
+            return 0;
+        }
+        public String getToevoeging() {
+            return toevoegingTF.getText();
+        }
+        public String getPostcode() {
+            return postcodeTF.getText();
+        }
+        public String getPlaatsnaam() {
+            return woonplaatsTF.getText();
+        }
+        
+        public void setKlantID(int klantID) {
+            klantIDTF.setText(Integer.toString(klantID)); 
+        }
+        public void setKlantVoornaam(String voornaam) {
+             klantVoornaamTF.setText(voornaam);
+        }
+        public void setKlantAchternaam(String achternaam) {
+            klantAchternaamTF.setText(achternaam);
+        }
+        public void setTussenvoegsel(String tussen) {
+            tussenvoegselTF.setText(tussen);
+        }
+        public void setEmail(String email) {
+            emailTF.setText(email);
+        }
+        public void setStraatnaam(String straat) {
+            straatnaamTF.setText(straat );
+        }
+        public void setHuisnummer(int huisnr) {
+            huisnrTF.setText(Integer.toString(huisnr));
+        }
+        public void setToevoeging(String toe) {
+            toevoegingTF.setText(toe);
+        }
+        public void setPostcode(String postcode) {
+            postcodeTF.setText(postcode);
+        }
+        public void setPlaatsnaam(String plaats) {
+            woonplaatsTF.setText(plaats);
+        }
+        
+        public void addHandlerToButtonZoek(EventHandler event) {
+           
+             btnZoek.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        public void addHandlerToButtonMaak(EventHandler event) {
+          
+             btnMaak.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        public void addHandlerToButtonUpdate(EventHandler event) {
+          
+             btnUpdate.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        public void addHandlerToButtonVerwijder(EventHandler event) {
+            
+             btnDelete.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        public void addHandlerToButtonBestellingen(EventHandler event) {
+           
+             btnBestellingen.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        public void addHandlerToButtonVolgendAdres(EventHandler event) {
+           
+             btnNextAdres.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
+        
 }

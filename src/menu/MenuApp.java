@@ -30,6 +30,7 @@ public class MenuApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         Pane root = new StackPane();
         root.setPrefSize(800, 600);
+        Menu menu = new Menu();
         
         Image img;
         try (InputStream input = Files.newInputStream(Paths.get("res/images/Groene-achtergrond.jpg"))) {
@@ -75,7 +76,7 @@ public class MenuApp extends Application {
         btn.setOnAction(event -> {
                 if ((userTextField.getText().equals(user)) && (pwBox.getText().equals(password))){
                     primaryStage.close();
-                    Menu.display();
+                    menu.display();//Menu.display();
                     primaryStage.show();
                 }
                 else if ((userTextField.getText().equals(user)) && (!pwBox.getText().equals(password))){
