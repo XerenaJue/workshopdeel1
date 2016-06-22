@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_91" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="POJO.Klant">
+    <void property="achternaam">
+     <string>Bouwer</string>
+    </void>
+    <void property="klantID">
+     <int>1</int>
+    </void>
+    <void property="tussenvoegsel">
+     <string>de</string>
+    </void>
+    <void property="voornaam">
+     <string>Bob</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="POJO.Klant">
+    <void property="achternaam">
+     <string>Jansen</string>
+    </void>
+    <void property="klantID">
+     <int>2</int>
+    </void>
+    <void property="voornaam">
+     <string>Jan</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="POJO.Klant">
+    <void property="achternaam">
+     <string>visser</string>
+    </void>
+    <void property="klantID">
+     <int>3</int>
+    </void>
+    <void property="tussenvoegsel">
+     <string>pier</string>
+    </void>
+    <void property="voornaam">
+     <string>Grute</string>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

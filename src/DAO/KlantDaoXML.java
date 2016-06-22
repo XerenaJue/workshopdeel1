@@ -195,8 +195,7 @@ public class KlantDaoXML implements KlantDAO {
 	}
 	
 
-	
-	
+		
 	///----------------------------------- nog te implementeren---------------------------------///
 	
 	@Override
