@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import POJO.Klant;
 public class AdresDaoXml implements AdresDao {
 	static Logger logger = LoggerFactory.getLogger(AdresDaoXml.class);
 	File fileName = new File("res/files/adres.xml");
-	List<Adres> adressenLijst = new ArrayList<>();
+	HashMap<Integer, Adres>adressenLijst = new HashMap<>();
 	Adres adres;
 
 	@SuppressWarnings("unchecked")
@@ -30,21 +31,19 @@ public class AdresDaoXml implements AdresDao {
 	public Adres createAdres(int klant_id, Adres adres) throws SQLException {
 		int id = 0;
 
-		try {
-			XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));
-			adressenLijst = (ArrayList<Adres>) xmlDecoder.readObject();
-			xmlDecoder.close();
+		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName))){
+			
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();
 
-			for (Adres adresTemp : adressenLijst) {
-				if (adresTemp.getAdresID() > id) {
-					id = adresTemp.getAdresID();
-				}
-			}
+			id = adressenLijst.size() + 1;
+            if (adres.getAdresID() == 0) {
+                adres.setAdresID(id);
+            }
 			adres.setAdresID(++id);
-			XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(fileName));
-			adressenLijst.add(adres);
-			xmlEncoder.writeObject(adressenLijst);
-			xmlEncoder.close();
+			try (XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(fileName))){
+				adressenLijst.put(adres.getAdresID(), adres);
+				xmlEncoder.writeObject(adressenLijst);
+			}
 		} catch (IOException ex) {
 			logger.error("Fout in create Adres met XML");
 		}
@@ -62,20 +61,12 @@ public class AdresDaoXml implements AdresDao {
 		adres.setHuisnummer(huisnummer);
 		adres.setToevoeging(toevoeging);
 		adres.setWoonplaats(woonplaats);
-		List<Adres> adresRetourLijst = new ArrayList<>();
 		int id = 0;
 
 		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));) {
-			adressenLijst = (List<Adres>) xmlDecoder.readObject();
-
-			for (Adres a : adressenLijst) {
-				if (a.getStraatnaam() == adres.getStraatnaam() && a.getPostcode() == adres.getPostcode()
-						&& a.getHuisnummer() == adres.getHuisnummer() && a.getToevoeging() == adres.getToevoeging()
-						&& a.getWoonplaats() == adres.getWoonplaats()) {
-					adresRetourLijst.add(a);
-					id = a.getAdresID();
-				}
-			}
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();
+			adressenLijst.get(adres);
+			id = adres.getAdresID();
 
 		} catch (IOException ex) {
 			logger.error("Fout bij vinden van Adres met XML");
@@ -86,41 +77,41 @@ public class AdresDaoXml implements AdresDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Adres> findAdres(String straatnaam) throws SQLException {
-		List<Adres> adresRetourLijst = new ArrayList<>();
+		Adres adres = new Adres();
+		adres.setStraatnaam(straatnaam);
+		List<Adres> adresLijst = new ArrayList<>();
+		HashMap<Integer, Adres> adressenLijst = new HashMap<>();
 
 		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));) {
-			adressenLijst = (List<Adres>) xmlDecoder.readObject();
-
-			for (Adres a : adressenLijst) {
-				if (a.getStraatnaam() == adres.getStraatnaam()) {
-					adresRetourLijst.add(a);
-				}
-			}
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();
+			adres = adressenLijst.get(adres.getStraatnaam());
+			adresLijst.add(adres);
 
 		} catch (IOException ex) {
 			logger.error("Fout bij vinden van Adres met XML");
 		}
-		return adresRetourLijst;
+		return adresLijst;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Adres> findAdres(String postcode, int huisnummer) throws SQLException {
-		List<Adres> adresRetourLijst = new ArrayList<>();
+		Adres adres = new Adres();
+		adres.setPostcode(postcode);
+		adres.setHuisnummer(huisnummer);
+		List<Adres> adresLijst = new ArrayList<>();
+		HashMap<Integer, Adres> adressenLijst = new HashMap<>();
 
 		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));) {
-			adressenLijst = (List<Adres>) xmlDecoder.readObject();
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();
 
-			for (Adres a : adressenLijst) {
-				if (a.getPostcode() == adres.getPostcode() && a.getHuisnummer() == adres.getHuisnummer()) {
-					adresRetourLijst.add(a);
-				}
-			}
+			adres = adressenLijst.get(adres.getPostcode());
+			adresLijst.add(adres);
 
 		} catch (IOException ex) {
 			logger.error("Fout bij vinden van Adres met XML");
 		}
-		return adresRetourLijst;
+		return adresLijst;
 	}
 	//Nog te implementeren, nog geen File voor tussentabel gemaakt
 	@Override
@@ -132,22 +123,14 @@ public class AdresDaoXml implements AdresDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Adres adres) throws SQLException {
-		try {
-			XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));
-			adressenLijst = (ArrayList<Adres>) xmlDecoder.readObject();
-			xmlDecoder.close();
-			for (Adres adresTemp : adressenLijst) {
-				if (adresTemp.getAdresID() == adres.getAdresID()) {
-					adresTemp.setStraatnaam(adres.getStraatnaam());
-					adresTemp.setPostcode(adres.getPostcode());
-					adresTemp.setToevoeging(adres.getToevoeging());
-					adresTemp.setHuisnummer(adres.getHuisnummer());
-					adresTemp.setWoonplaats(adres.getWoonplaats());
-				}
-			}
-			XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(fileName));
+		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName))){
+		
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();
+			adressenLijst.replace(adres.getAdresID(), adres);
+			
+			try (XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(fileName))) {
 			xmlEncoder.writeObject(adressenLijst);
-			xmlEncoder.close();
+			}
 		} catch (IOException ex) {
 			logger.error("Fout in het updaten van Adres met XML");
 			ex.printStackTrace();
@@ -157,42 +140,36 @@ public class AdresDaoXml implements AdresDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Adres> findAll() throws SQLException {
-		List<Adres> tempAdresLijst = new ArrayList<>();
+		HashMap<Integer, Adres> adresMap = new HashMap<>();
+		List<Adres> adresLijst = new ArrayList<>();
 
-		try {
-			XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));
-			adressenLijst = (List<Adres>) xmlDecoder.readObject();
-			xmlDecoder.close();
-
-			for (Adres tempAdres : adressenLijst) {
-				tempAdresLijst.add(tempAdres);
-			}
+		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName))){			
+			adresMap = (HashMap<Integer, Adres>) xmlDecoder.readObject();
+			adresLijst = new ArrayList<>(adresMap.values());
 		} catch (IOException ex) {
 			logger.error("Fout bij het vinden van alle adressen met XML");
 			ex.printStackTrace();
 		}
-		return tempAdresLijst;
+		return adresLijst;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteAdres(Klant klant, Adres adres) throws SQLException {
+		HashMap<Integer, Adres> adressenLijst;
+		Adres adresReplace = new Adres();
+		adresReplace = null;
 		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(fileName));) {
-			adressenLijst = (List<Adres>) xmlDecoder.readObject();
-
-			for (Adres a : adressenLijst) {
-				if (a.getAdresID() == adres.getAdresID()) {
-					adressenLijst.remove(a);
-				}
-			}
+			
+			adressenLijst = (HashMap<Integer, Adres>) xmlDecoder.readObject();			
+			adressenLijst.replace(adres.getAdresID(),adresReplace);
+			
 			try (XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(fileName));) {
 				xmlEncoder.writeObject(adressenLijst);
 			}
-		} catch (FileNotFoundException e) {
+		}catch (FileNotFoundException e) {
 			logger.error("Fout bij het wissen van het adres met XML");
 			e.printStackTrace();
 		}
-
 	}
-
 }

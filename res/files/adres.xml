@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="1.8.0_73" class="java.beans.XMLDecoder">
- <object class="java.util.ArrayList">
-  <void method="add">
+ <object class="java.util.HashMap">
+  <void method="put">
+   <int>2</int>
    <object class="POJO.Adres">
     <void property="adresID">
-     <int>1</int>
+     <int>2</int>
     </void>
     <void property="huisnummer">
-     <int>754</int>
+     <int>22</int>
     </void>
     <void property="postcode">
-     <string>2457LK</string>
+     <string>2566GJ</string>
     </void>
     <void property="straatnaam">
-     <string>Socorro</string>
-    </void>
-    <void property="toevoeging">
-     <string></string>
+     <string>Corellia</string>
     </void>
     <void property="woonplaats">
-     <string>Cloud City</string>
+     <string>Galaxy Far Far Away</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>3</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>3</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>4111RT</string>
+    </void>
+    <void property="straatnaam">
+     <string>Winterfell</string>
+    </void>
+    <void property="woonplaats">
+     <string>The North</string>
     </void>
    </object>
   </void>

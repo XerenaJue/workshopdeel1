@@ -65,7 +65,7 @@ public class AdresDaoJson implements AdresDao {
 		try (FileReader fileRead = new FileReader(fileName)) {
 			adressenLijst = gson.fromJson(fileRead, adresType);
 			adressenLijst.get(adres);
-			id = adres.getHuisnummer();
+			id = adres.getAdresID();
 			
 		} catch (IOException e) {
 			logger.error("Fout bij vinden van adresID met Json");
