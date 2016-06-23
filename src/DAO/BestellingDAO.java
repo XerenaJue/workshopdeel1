@@ -142,7 +142,7 @@ public class BestellingDAO implements BestellingInterface {
     public Bestelling createBestelling(Klant klant)throws SQLException {
         
         Bestelling bestelling = new Bestelling();
-        bestelling.setKlant(klant.getKlantID());
+        bestelling.setKlant_id(klant.getKlantID());
         
         String query = "insert into bestelling (klant_klant_id) values (" + klant.getKlantID() + ")";
         try (Connection connection = ConnectionFactory.getMySQLConnection(); 
@@ -151,7 +151,7 @@ public class BestellingDAO implements BestellingInterface {
             try (ResultSet resultSet = stmt.getGeneratedKeys();) {
                 if (resultSet.isBeforeFirst()) {
                     resultSet.next();
-                    bestelling.setBestellingID(resultSet.getInt(1));
+                    bestelling.setBestelling_id(resultSet.getInt(1));
                 }
             }
         }
@@ -224,8 +224,8 @@ public class BestellingDAO implements BestellingInterface {
                        
             while (resultSet.next()) {
                Bestelling bestelling = new Bestelling();      
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
+               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
                bestellingen.add(bestelling);
             }
         }
@@ -251,8 +251,8 @@ public class BestellingDAO implements BestellingInterface {
                        
             while (resultSet.next()) {
                Bestelling bestelling = new Bestelling();      
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
+               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
                bestellingen.add(bestelling);
             }
         }
@@ -279,7 +279,7 @@ public class BestellingDAO implements BestellingInterface {
             resultSet = statement.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
-                bestelling.setBestellingID(resultSet.getInt(1));
+                bestelling.setBestelling_id(resultSet.getInt(1));
             }
             SQLStatement = "insert into bestelling_has_artikel (bestelling_bestelling_id) VALUES (?)";
             statement = connection.prepareStatement(SQLStatement);
