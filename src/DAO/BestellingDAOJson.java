@@ -176,7 +176,7 @@ public class BestellingDAOJson implements BestellingInterface {
     public Bestelling createBestelling(Klant klant)throws SQLException {
         
         Bestelling bestelling = new Bestelling();
-        bestelling.setKlant(klant.getKlantID());
+        bestelling.setKlant_id(klant.getKlantID());
         
         String query = "insert into bestelling (klant_klant_id) values (" + klant.getKlantID() + ")";
         try (Connection connection = ConnectionFactory.getMySQLConnection(); 
@@ -185,7 +185,7 @@ public class BestellingDAOJson implements BestellingInterface {
             try (ResultSet resultSet = stmt.getGeneratedKeys();) {
                 if (resultSet.isBeforeFirst()) {
                     resultSet.next();
-                    bestelling.setBestellingID(resultSet.getInt(1));
+                    bestelling.setBestelling_id(resultSet.getInt(1));
                 }
             }
         }
@@ -258,8 +258,8 @@ public class BestellingDAOJson implements BestellingInterface {
                        
             while (resultSet.next()) {
                Bestelling bestelling = new Bestelling();      
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
+               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
                bestellingen.add(bestelling);
             }
         }
@@ -285,8 +285,8 @@ public class BestellingDAOJson implements BestellingInterface {
                        
             while (resultSet.next()) {
                Bestelling bestelling = new Bestelling();      
-               bestelling.setBestellingID(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant(resultSet.getInt("klant_klant_id"));  
+               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
+               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
                bestellingen.add(bestelling);
             }
         }
@@ -309,7 +309,7 @@ public class BestellingDAOJson implements BestellingInterface {
             catalogus = gson.fromJson(read, artikelType);
             int nieuweID = catalogus.size() + 1;
             if (bestelling.getBestelling_id()== 0) {
-                bestelling.setBestellingID(4);                  //(nieuweID);
+                bestelling.setBestelling_id(4);                  //(nieuweID);
             }
                     }
                              catch (IOException ex) {
