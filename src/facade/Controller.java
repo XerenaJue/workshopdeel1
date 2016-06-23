@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import menu.BestellingScherm;
@@ -73,6 +71,7 @@ public class Controller {
         this.view1.addHandlerToButtonVerwijder(new VerwijderKlant());
         this.view1.addHandlerToButtonBestellingen(new Bestellingen());
         this.view1.addHandlerToButtonVolgendAdres(new VolgendAdres());
+        this.view1.addHandlerToButtonNextKlant(new VolgendeBewoner());
         
     }
     private void addListenersToView2() {
@@ -195,6 +194,16 @@ public class Controller {
             zoekAdresVanKlant();
         }
     }
+    class VolgendeBewoner implements EventHandler {
+        @Override
+        public void handle(Event event) {
+            logger.debug("volgende bewoner handler");
+            volgendeBewoner();
+           
+        }
+    }
+    
+    
     class OpenCrud implements EventHandler {
         @Override
         public void handle(Event event) {
@@ -213,13 +222,7 @@ public class Controller {
             if (view1.getKlantID() != 0) klant.setKlantID(view1.getKlantID());
             model.zoek(nepAppArray);
             nepAppArray = model.getToDisplay();
-            klant = (Klant) nepAppArray[0];
-            System.out.println("klantadres "  + (List<Adres>)nepAppArray[1]);
-            view1.setKlantID(klant.getKlantID());
-            view1.setKlantVoornaam(klant.getVoornaam());
-            view1.setKlantAchternaam(klant.getAchternaam());
-            view1.setTussenvoegsel(klant.getTussenvoegsel());
-            view1.setEmail(klant.getEmail());
+            showKlant();
             adresIndex = 0;
                 
         } catch (SQLException ex) {
@@ -248,6 +251,25 @@ public class Controller {
             logger.error("oplossen nog maaklant " + e);
         }
     }
+    private void showKlant() {
+        
+        klant = (Klant) nepAppArray[0];
+        logger.debug("showKlant(): " + klant);   
+        view1.setKlantID(klant.getKlantID());
+        view1.setKlantVoornaam(klant.getVoornaam());
+        view1.setKlantAchternaam(klant.getAchternaam());
+        view1.setTussenvoegsel(klant.getTussenvoegsel());
+        view1.setEmail(klant.getEmail());
+        
+    }
+      
+    private void volgendeBewoner() {
+        
+        model.volgendeBewoner();
+        nepAppArray = model.getToDisplay();
+        showKlant();
+        
+    }
     private void volgendAdres() {
         logger.debug("volgendAdres()");
             if (adresIndex < ((List<Adres>) nepAppArray[1]).size() - 1 ) {
@@ -259,7 +281,7 @@ public class Controller {
     
     public void zoekAdresVanKlant() {
         logger.debug("zoekAdresVanKlant()");
-        nepAppArray = model.getToDisplay();
+     //   nepAppArray = model.getToDisplay();
         adres = ((List<Adres>) nepAppArray[1]).get(adresIndex);
 
         showAdres(adres);
@@ -468,5 +490,6 @@ public class Controller {
         view1.showMenu();
         
     }
+    
     
 }

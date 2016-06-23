@@ -61,9 +61,9 @@ public class CrudInvoerMenu {
 	MenuButton btnVerwijder = new MenuButton("Verwijder Bestelling");;
 	MenuButton btnDelete = new MenuButton("Verwijder Klant");;;
         MenuButton btnVerwijderAlles = new MenuButton("Verwijder alle bestellingen");
-        MenuButton btnNextAdres = new MenuButton("next adres");
+        MenuButton btnNextAdres = new MenuButton("volgend adres");
         
-        MenuButton btnNextKlant;
+        MenuButton btnNextKlant = new MenuButton("volgende bewoner");;
        
         TextField klantIDTF = new TextField();
 	Label klantIdLabel;
@@ -228,7 +228,7 @@ public class CrudInvoerMenu {
                 hBox.setAlignment(Pos.CENTER);
                 hBox.getChildren().clear();
                 hBox.setPadding(new Insets(5, 100, 5, 5));
-                hBox.getChildren().addAll(lblStatus, btnNextAdres);
+                hBox.getChildren().addAll(lblStatus, btnNextAdres, btnNextKlant );
 
 		vBox.setAlignment(Pos.CENTER);
 		vBox.setPadding(new Insets(5, 100, 5, 5));
@@ -372,5 +372,8 @@ public class CrudInvoerMenu {
            
              btnNextAdres.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
         }
-        
+        public void addHandlerToButtonNextKlant(EventHandler event) {
+           
+             btnNextKlant.addEventHandler(MouseEvent.MOUSE_CLICKED, event);
+        }
 }

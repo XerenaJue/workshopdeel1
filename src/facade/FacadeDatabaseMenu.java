@@ -37,7 +37,8 @@ public class FacadeDatabaseMenu {
     private final ArtikelDao artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
-    private List<Klant> klanten;
+    private List<Klant> alleKlanten;
+    private List<Klant> klantenMetZelfdeAdres;
     private final Object[] toDisplay;
     private List<ArtikelBestelling> besteldeArtikelen;  
     private List<Adres> adressen;
@@ -49,14 +50,15 @@ public class FacadeDatabaseMenu {
         bestellingDAO = new BestellingDAO();
         artikelDAO = new ArtikelDAOSQL();
         
-        toDisplay = new Object[5];
+        toDisplay = new Object[6];
         toDisplay[0] = new Klant();
         toDisplay[1] = new ArrayList<Adres>();
         toDisplay[2] = bestellingen;
         toDisplay[3] = besteldeArtikelen;
-        toDisplay[4] = klanten;
+        toDisplay[4] = alleKlanten;
+        toDisplay[5] = klantenMetZelfdeAdres;
  //       ConnectionFactory.useFirebird();  
-            ConnectionFactory.useMySQL();
+        ConnectionFactory.useMySQL();
     }
     
     public Object[] getToDisplay() {
@@ -67,24 +69,29 @@ public class FacadeDatabaseMenu {
     public void zoek(Object[] watNuOpScherm) throws SQLException {  
                                                                                            
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
-        List<Adres> adres = (List<Adres>)watNuOpScherm[1];
+        List<Adres> adressenVanKlant = (List<Adres>)watNuOpScherm[1];
+        
         bestellingen = (List)watNuOpScherm[2];
         if (findKlant(bestaandeKlant) != null) {       	
         	bestaandeKlant = findKlant(bestaandeKlant);
-        	adres = findAdres(bestaandeKlant);
+        	            
         }
         else { 
-            adres = findAdres(adres.get(0));
-            bestaandeKlant = findKlant(adres.get(0));
-            adres = findAdres(bestaandeKlant); 
+            adressenVanKlant = findAdres(adressenVanKlant.get(0));
+            bestaandeKlant = klantenMetZelfdeAdres.get(0);
+            
         }
+        adressenVanKlant = findAdres(bestaandeKlant); 
+        klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
+      //  bestaandeKlant = klantenMetZelfdeAdres.get(0);
         bestellingen = findBestellingen(bestaandeKlant);
         besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
-        toDisplay[1] = adres;
+        toDisplay[1] = adressenVanKlant;
         toDisplay[2] = bestellingen;
         toDisplay[3] = besteldeArtikelen;
+        toDisplay[5] = klantenMetZelfdeAdres;
                
     }
     
@@ -141,10 +148,10 @@ public class FacadeDatabaseMenu {
     
     public List<Klant> findKlanten() throws SQLException{
         
-        klanten = klantDAO.findAll();
-        toDisplay[4] = klanten;
-        logger.info("alle klanten: " + klanten);
-        return klanten;
+        alleKlanten = klantDAO.findAll();
+        toDisplay[4] = alleKlanten;
+        logger.info("alle klanten: " + alleKlanten);
+        return alleKlanten;
     }
 
     public List<Adres> findAlleAdressen() throws SQLException {
@@ -174,13 +181,13 @@ public class FacadeDatabaseMenu {
        artikelDAO.deleteArtikel(artikel);
     } 
     
-    private Klant findKlant(Adres klantAdres) throws SQLException{   
+    private List<Klant> findBewoners(Adres klantAdres) throws SQLException{   
         List<Klant> bewoners = klantDAO.findKlant(klantAdres);
         if (bewoners.isEmpty()) bewoners.add(new Klant()); // om arrayoutofbounds en nullpinters te vermijden
-        Klant ingelezenKlant = bewoners.get(0);
-        toDisplay[0] = ingelezenKlant;
+     //   Klant ingelezenKlant = bewoners.get(0);
+      //  toDisplay[5] = bewoners;
         
-        return ingelezenKlant;
+        return bewoners;//ingelezenKlant;
     }
      
     public void updateKlant() throws SQLException {
@@ -262,6 +269,28 @@ public class FacadeDatabaseMenu {
            ConnectionFactory.useFirebird();
        }
        
+   }
+   
+   public Klant volgendeBewoner() {
+        
+       if (klantenMetZelfdeAdres.size() == 1) {
+           return klantenMetZelfdeAdres.get(0);
+       } 
+       
+       List<Klant> rouleerLijst = new ArrayList<>();
+       for (int i = 1; i < klantenMetZelfdeAdres.size(); i++) {
+           rouleerLijst.add(klantenMetZelfdeAdres.get(i));
+       }
+       rouleerLijst.add(klantenMetZelfdeAdres.get(0));
+       klantenMetZelfdeAdres = rouleerLijst;
+       Klant nuEerste = klantenMetZelfdeAdres.get(0);
+       
+       if (((Klant)toDisplay[0]).getKlantID() == (nuEerste.getKlantID()) ) {  // equals van Klant pojo niet overridden
+           logger.debug("zelfde huidige bewoner als volgende, recur");
+           return volgendeBewoner();
+       }
+       toDisplay[0] = nuEerste;
+       return nuEerste;
    }
 
 }
