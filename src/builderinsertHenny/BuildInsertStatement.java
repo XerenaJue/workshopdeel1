@@ -2,11 +2,13 @@ package builderinsertHenny;
 
 import java.lang.reflect.Field;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import Annotations.*;
-import POJO.Adres;
-import POJO.Klant;
 
 public class BuildInsertStatement {
+	private final static Logger LOGGER = LoggerFactory.getLogger(BuildInsertStatement.class);
 	
 	public String buildInsertString(Object o) {
 		String query = "";
@@ -19,7 +21,7 @@ public class BuildInsertStatement {
 		if (o.getClass().isAnnotationPresent(Table.class)) {
 			String tableName = o.getClass().getAnnotation(Table.class).tableName();
 			sb.append("INSERT INTO " + tableName + "(");
-			System.out.println("annotatie gebruikt");
+			LOGGER.info("annotatie gebruikt");
 		} else {
 			String className = o.getClass().getSimpleName();
 			sb.append("INSERT INTO " + className + "(");
@@ -42,7 +44,7 @@ public class BuildInsertStatement {
 						String columnNaam = declaredFields[i].getAnnotation(Column.class).columnName();
 						System.out.println(columnNaam);
 						sb.append(columnNaam);
-						System.out.println("anotatie gebruikt voor column naam");
+						LOGGER.info("anotatie gebruikt voor column naam");
 					} else { */
 						sb.append(declaredFields[i].getName());
 					//}
@@ -53,8 +55,7 @@ public class BuildInsertStatement {
 					}										
 				}
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.info("Oeps gaat mis " + e);				
 			}
 
 		}
@@ -87,20 +88,5 @@ public class BuildInsertStatement {
 			}
 		}
 		return isPrimitiveZero;
-	}
-	
-	public static void main(String[] args) { // tijdelijke main methode om werking van de code te bekijken
-		BuildInsertStatement bis = new BuildInsertStatement();
-		Klant klant1 = new Klant();
-		klant1.setVoornaam("Bob");
-		klant1.setAchternaam("Bouwer");
-		klant1.setTussenvoegsel("de");
-		//bis.buildInsertString(klant1);
-		System.out.println(bis.buildInsertString(klant1));
-		
-		Adres adres1 = new Adres();
-		adres1.setHuisnummer(12);
-		adres1.setStraatnaam("hoofdstraat");
-		System.out.println(bis.buildInsertString(adres1));
 	}
 }
