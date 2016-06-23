@@ -21,6 +21,8 @@ import java.beans.XMLDecoder;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.File;
+ 
 /**
  *
  * @author maurice
@@ -51,13 +53,37 @@ public class bestellingDAOXML implements BestellingInterface {
     public void createBestelling(Bestelling bestelling) throws SQLException {
 		FileOutputStream fos;
 		BufferedOutputStream bos;
+		FileInputStream fis = null;
+                Bestelling bestelling1 = new Bestelling();
+                List<Bestelling> list = new ArrayList<Bestelling>();
+                boolean stop = false;
+                File file = new File("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+    if (file.length() !=0){            
         try {
-            fos = new FileOutputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml",true);
+            fis = new FileInputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+            BufferedInputStream bis = new BufferedInputStream(fis);       
+            XMLDecoder xmlDecoder = new XMLDecoder(bis);
+            do{
+                try{
+                    list = (ArrayList<Bestelling>)xmlDecoder.readObject();
+                }
+                catch(ArrayIndexOutOfBoundsException e){
+                    stop = true;
+                }
+            }while(!stop);
+                    } catch (FileNotFoundException ex) {
+            Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+                
+            list.add(bestelling);    
+        try {
+            fos = new FileOutputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
             bos = new BufferedOutputStream(fos);
 
 
                     try (XMLEncoder xmlEncoder = new XMLEncoder(bos)) {
-                        xmlEncoder.writeObject(bestelling);
+                        xmlEncoder.writeObject(list);
                     }
 
         } catch (FileNotFoundException ex) {
@@ -83,7 +109,52 @@ public class bestellingDAOXML implements BestellingInterface {
 
     @Override
     public void deleteBestelling(Bestelling bestelling) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		FileOutputStream fos;
+		BufferedOutputStream bos;
+		FileInputStream fis = null;
+                Bestelling bestelling1 = new Bestelling();
+                List<Bestelling> list = new ArrayList<>();
+                boolean stop = false;
+                File file = new File("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+    if (file.length() !=0){            
+        try {
+            fis = new FileInputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+            BufferedInputStream bis = new BufferedInputStream(fis);       
+            XMLDecoder xmlDecoder = new XMLDecoder(bis);
+
+                try{
+                    list = (ArrayList<Bestelling>)xmlDecoder.readObject();
+                }
+                catch(ArrayIndexOutOfBoundsException e){
+
+                }
+
+                    } catch (FileNotFoundException ex) {
+            Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+        for (Bestelling element: list){
+            if (element.getBestelling_id() == bestelling.getBestelling_id()
+                    && element.getKlant_id() == bestelling.getKlant_id()){
+                        list.remove(element);
+                        break;
+            }
+        }
+        try {
+            fos = new FileOutputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+            bos = new BufferedOutputStream(fos);
+
+
+                    try (XMLEncoder xmlEncoder = new XMLEncoder(bos)) {
+                        xmlEncoder.writeObject(list);
+                    }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
+    else System.out.println("Er valt niets te deleten brah...");
+    
     }
 
     @Override
@@ -109,14 +180,16 @@ public class bestellingDAOXML implements BestellingInterface {
     @Override
     public List<ArtikelBestelling> readArtikelBestelling(Bestelling bestelling) throws SQLException {
 		FileInputStream fis = null;
-                Bestelling bestelling1 = new Bestelling();
-                List<ArtikelBestelling> hoi = new ArrayList<ArtikelBestelling>();
+                List<Bestelling> bestellingList = new ArrayList<Bestelling>();
+                List<ArtikelBestelling> list = new ArrayList<ArtikelBestelling>();
+                boolean stop = false;
         try {
             fis = new FileInputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
             BufferedInputStream bis = new BufferedInputStream(fis);       
             XMLDecoder xmlDecoder = new XMLDecoder(bis);
-            bestelling1 = (Bestelling) xmlDecoder.readObject();
-            System.out.println(bestelling1);
+              
+                    bestellingList = (ArrayList<Bestelling>)xmlDecoder.readObject();
+
                     } catch (FileNotFoundException ex) {
             Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -126,12 +199,67 @@ public class bestellingDAOXML implements BestellingInterface {
                 Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    return hoi;
+        for (Bestelling element: bestellingList){
+            if (element.getBestelling_id() == bestelling.getBestelling_id()
+                    && element.getKlant_id() == bestelling.getKlant_id()){
+                        list = element.getArtikelBestellingList();
+                        break;
+            }
+        }
+        return(list);
     }
 
     @Override
     public void updateBestelling(ArtikelBestelling artikelBestelling, int bestel_id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    public void updateBestelling(Bestelling bestelling) throws SQLException {    
+		FileOutputStream fos;
+		BufferedOutputStream bos;
+		FileInputStream fis = null;
+                Bestelling bestelling1 = new Bestelling();
+                List<Bestelling> list = new ArrayList<>();
+                boolean stop = false;
+                File file = new File("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+    if (file.length() !=0){            
+        try {
+            fis = new FileInputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+            BufferedInputStream bis = new BufferedInputStream(fis);       
+            XMLDecoder xmlDecoder = new XMLDecoder(bis);
+
+                try{
+                    list = (ArrayList<Bestelling>)xmlDecoder.readObject();
+                }
+                catch(ArrayIndexOutOfBoundsException e){
+
+                }
+
+                    } catch (FileNotFoundException ex) {
+            Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     
+        for (Bestelling element: list){
+            if (element.getBestelling_id() == bestelling.getBestelling_id()
+                    && element.getKlant_id() == bestelling.getKlant_id()){
+                        element.setArtikelBestellingList(bestelling.getArtikelBestellingList());
+                        
+                        break;
+            }
+        }
+        try {
+            fos = new FileOutputStream("C:\\Users\\maurice\\Desktop\\Workshoptest1.xml");
+            bos = new BufferedOutputStream(fos);
+
+
+                    try (XMLEncoder xmlEncoder = new XMLEncoder(bos)) {
+                        xmlEncoder.writeObject(list);
+                    }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(bestellingDAOXML.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+    }
+    else System.out.println("Er valt niets te deleten brah...");
+    
+}
 }
