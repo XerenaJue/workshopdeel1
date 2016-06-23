@@ -33,7 +33,7 @@ public class Bestelling {
         return bestelling_id;
     }
     
-    public void setBestellingID(int bestelling_id){
+    public void setBestelling_id(int bestelling_id){
         this.bestelling_id = bestelling_id;
     }
     
@@ -41,7 +41,7 @@ public class Bestelling {
         return klant_id;
     }
     
-    public void setKlant(int klant_id){
+    public void setKlant_id(int klant_id){
         this.klant_id = klant_id;
     }
     
