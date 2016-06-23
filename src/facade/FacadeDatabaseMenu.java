@@ -227,7 +227,7 @@ public class FacadeDatabaseMenu {
     
     public void updateBestelling(ArtikelBestelling artikelBestelling, int bestel_id) throws SQLException{
         Bestelling bestelling = new Bestelling();
-        bestelling.setBestellingID(bestel_id);
+        bestelling.setBestelling_id(bestel_id);
         bestellingDAO.addArtikelToBestelling(bestelling, artikelBestelling);
     }
      
