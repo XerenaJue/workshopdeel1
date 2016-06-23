@@ -41,5 +41,125 @@
     </void>
    </object>
   </void>
+  <void method="put">
+   <int>4</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>4</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>2566GJ</string>
+    </void>
+    <void property="straatnaam">
+     <string>Corellia</string>
+    </void>
+    <void property="woonplaats">
+     <string>Galaxy Far Far Away</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>5</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>5</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>2566GJ</string>
+    </void>
+    <void property="straatnaam">
+     <string>Corellia</string>
+    </void>
+    <void property="woonplaats">
+     <string>Galaxy Far Far Away</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>6</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>6</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>2566GJ</string>
+    </void>
+    <void property="straatnaam">
+     <string>Corellia</string>
+    </void>
+    <void property="woonplaats">
+     <string>Galaxy Far Far Away</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>7</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>7</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>4111RT</string>
+    </void>
+    <void property="straatnaam">
+     <string>Winterfell</string>
+    </void>
+    <void property="woonplaats">
+     <string>The North</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>8</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>8</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>2566GJ</string>
+    </void>
+    <void property="straatnaam">
+     <string>Corellia</string>
+    </void>
+    <void property="woonplaats">
+     <string>Galaxy Far Far Away</string>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <int>9</int>
+   <object class="POJO.Adres">
+    <void property="adresID">
+     <int>9</int>
+    </void>
+    <void property="huisnummer">
+     <int>22</int>
+    </void>
+    <void property="postcode">
+     <string>4111RT</string>
+    </void>
+    <void property="straatnaam">
+     <string>Winterfell</string>
+    </void>
+    <void property="woonplaats">
+     <string>The North</string>
+    </void>
+   </object>
+  </void>
  </object>
 </java>

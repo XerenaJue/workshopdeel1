@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import Interface.AdresDao;
 import POJO.Adres;
 import POJO.Klant;
+import POJO.KlantAdres;
 
 public class AdresDaoXml implements AdresDao {
 	static Logger logger = LoggerFactory.getLogger(AdresDaoXml.class);
@@ -47,7 +50,31 @@ public class AdresDaoXml implements AdresDao {
 		} catch (IOException ex) {
 			logger.error("Fout in create Adres met XML");
 		}
-		return null;
+		createKlant_Has_Adres(klant_id, adres.getAdresID());
+		return adres;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void createKlant_Has_Adres(int klant_id, int adres_id) {
+		HashMap<Integer, KlantAdres> klantAdresLijst;
+		String klantFile = "res/files/klant_has_adres.xml";
+		KlantAdres klantAdres = new KlantAdres();
+		klantAdres.setKlantID(klant_id);
+		klantAdres.setAdresID(adres_id);
+		
+		try (XMLDecoder xmlDecoder = new XMLDecoder(new FileInputStream(klantFile))) {
+			klantAdresLijst = (HashMap<Integer, KlantAdres>) xmlDecoder.readObject();
+			int newID = klantAdresLijst.size() + 1;
+			
+			klantAdresLijst.put(newID, klantAdres);
+
+			try (XMLEncoder xmlEncoder = new XMLEncoder(new FileOutputStream(klantFile))) {
+				xmlEncoder.writeObject(klantAdresLijst);
+			}
+		} catch (IOException e) {
+			logger.error("Fout bij het wegschrijven naar de tussentabel");
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
