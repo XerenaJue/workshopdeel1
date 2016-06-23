@@ -12,12 +12,10 @@ import opdracht2.ConnectionFactory;
 
 public class KlantDAOImpl implements KlantDAO {
 	static Logger logger = LoggerFactory.getLogger(KlantDAOImpl.class);
-    /*Connection connection;
-    ResultSet resultSet;
-    PreparedStatement statement;*/
+   
     
     @Override
-    public Klant findKlant(Klant bestaandeKlant) {//throws SQLException {        
+    public Klant findKlant(Klant bestaandeKlant) {       
         int klantID = bestaandeKlant.getKlantID();
         String klantVoornaam = bestaandeKlant.getVoornaam();
         String klantAchternaam = bestaandeKlant.getAchternaam();
@@ -44,7 +42,7 @@ public class KlantDAOImpl implements KlantDAO {
     } 
     
     @Override
-    public List<Klant> findKlant(Adres klantAdres) {//throws SQLException {
+    public List<Klant> findKlant(Adres klantAdres) {
     	List<Klant> klanten = new ArrayList<>();
         Klant klant = new Klant();
     	int adresId = klantAdres.getAdresID();
@@ -65,42 +63,15 @@ public class KlantDAOImpl implements KlantDAO {
     	return klanten;
     }
     
-    /* oude findklant met adres methode
     @Override
-    public Klant findKlant(Adres klantAdres) throws SQLException {
-        Klant klant = new Klant();
-        String postcode = klantAdres.getPostcode();
-        int huisnr = klantAdres.getHuisnummer();
-        String toevoeging = klantAdres.getToevoeging();
-        String query = String.format("SELECT * FROM klant WHERE postcode = '%s'"
-                    +  "AND huisnummer = %d AND toevoeging = '%s'", postcode, huisnr, toevoeging);
-        
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(query);
-				ResultSet resultSet = preparedStatement.executeQuery();) {
-            if (resultSet.next()) {
-                    
-                klant.setKlantID(resultSet.getInt("klant_ID"));
-                klant.setVoornaam(resultSet.getString("voornaam"));
-                klant.setAchternaam(resultSet.getString("achternaam"));
-                klant.setTussenvoegsel(resultSet.getString("tussenvoegsel"));
-                klant.setEmail(resultSet.getString("email"));
-            }
-        }
-        return klant;
-    }*/
-    
-    @Override
-    public List<Klant> findAll() {//throws SQLException {
+    public List<Klant> findAll() {
         List<Klant> klanten = new ArrayList<>();
         Klant klant;
         String query = "SELECT * FROM klant";
         try (Connection connection = ConnectionFactory.getMySQLConnection();
         		PreparedStatement stmt = connection.prepareStatement(query);
         		ResultSet resultset = stmt.executeQuery();){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(SQL_QUERY);
-            resultSet = statement.executeQuery();*/
+        	
 
             while(resultset.next()) {
                 //stop klant object in klanten List
@@ -114,41 +85,20 @@ public class KlantDAOImpl implements KlantDAO {
             } 
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
-        }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        }*/
+        }     
         logger.info("Klanten gevonden");
         return klanten;
     }
 
     @Override
-    public Klant findByID(int klantID) {//throws SQLException {
+    public Klant findByID(int klantID) {
         String query = "SELECT * FROM klant WHERE klant_id = " + klantID;
         Klant klant = new Klant();
         try (Connection connection = ConnectionFactory.getMySQLConnection();
         		PreparedStatement stmt = connection.prepareStatement(query);
         		ResultSet resultset = stmt.executeQuery();){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();*/
-            ///crieer klant en set de gegevens er in
-            //klant = new Klant();
+        	
+            ///crieer klant en set de gegevens er in            
             if (resultset.next()) {                
                 klant.setKlantID(resultset.getInt("klant_ID"));
                 klant.setVoornaam(resultset.getString("voornaam"));
@@ -159,40 +109,19 @@ public class KlantDAOImpl implements KlantDAO {
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
         }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        } */
         logger.info("Klant gevonden");
         return klant;
     }
 
     @Override
-    public Klant findByName(String voornaam, String achternaam) {//throws SQLException {
+    public Klant findByName(String voornaam, String achternaam) {
         String query = "SELECT * FROM klant WHERE voornaam = '" + voornaam + "' AND achternaam = '" + achternaam + "'";
         Klant klant = new Klant();
         try (Connection connection = ConnectionFactory.getMySQLConnection();
         		PreparedStatement stmt = connection.prepareStatement(query);
         		ResultSet resultset = stmt.executeQuery();){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();*/
-            ///crieer klant en set de gegevens er in
-            //klant = new Klant();
+        
+            ///crieer klant en set de gegevens er in           
             if (resultset.next()) {
                 klant.setKlantID(resultset.getInt("klant_ID"));
                 klant.setVoornaam(resultset.getString("voornaam"));
@@ -203,40 +132,19 @@ public class KlantDAOImpl implements KlantDAO {
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
         }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        } */
         logger.info("Klant gevonden");
         return klant;
     }
 
     @Override
-    public Klant FindByName(String voornaam) {//throws SQLException {
+    public Klant FindByName(String voornaam) {
         String query = "SELECT * FROM klant WHERE voornaam = '" + voornaam + "'";
         Klant klant = new Klant();
         try (Connection connection = ConnectionFactory.getMySQLConnection();
         		PreparedStatement stmt = connection.prepareStatement(query);
         		ResultSet resultset = stmt.executeQuery();){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery(); */
+        
             ///crieer klant en set de gegevens er in
-            //klant = new Klant();
             if (resultset.next()) {
                 klant.setKlantID(resultset.getInt("klant_ID"));
                 klant.setVoornaam(resultset.getString("voornaam"));
@@ -247,111 +155,55 @@ public class KlantDAOImpl implements KlantDAO {
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
         }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        } */
         logger.info("Klant gevonden");
         return klant;        
     } 
     
     @Override
-    public void create(Klant klant) {//throws SQLException {
+    public void create(Klant klant) {
         String query = "INSERT INTO klant(voornaam, achternaam, tussenvoegsel, email) VALUES (?, ? ,?, ?)";
         ResultSet resultSet;
         try (Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);*/
+
             stmt.setString(1, klant.getVoornaam());
             stmt.setString(2, klant.getAchternaam());
             stmt.setString(3, klant.getTussenvoegsel());
             stmt.setString(4, klant.getEmail());
-            stmt.executeUpdate(); 
+            stmt.executeUpdate();
+            
             //wijs door database gegenereerde id toe aan klant
             resultSet = stmt.getGeneratedKeys();
             if (resultSet.isBeforeFirst()) {
                 resultSet.next();
                 klant.setKlantID(resultSet.getInt(1));
             }            
-            logger.info("Klant is aangemaakt");
-            //System.out.println("Klant is succesvol aangemaakt");
+            logger.info("Klant is aangemaakt");            
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
-        }
-        /*finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }            
-        } */       
+        }      
     }
 
     @Override
-    public void update(Klant klant) {//throws SQLException {
+    public void update(Klant klant) {
         String query = "UPDATE klant SET voornaam = ?, achternaam = ?, tussenvoegsel = ?, email = ? WHERE klant_id = ?";
         try (Connection connection = ConnectionFactory.getMySQLConnection();
             PreparedStatement stmt = connection.prepareStatement(query);){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query); */
+
             stmt.setString(1, klant.getVoornaam());
             stmt.setString(2, klant.getAchternaam());
             stmt.setString(3, klant.getTussenvoegsel());
             stmt.setString(4, klant.getEmail());
             stmt.setInt(5, klant.getKlantID());            
             stmt.executeUpdate();
-            logger.info("Gegevens zijn succesvol gewijzigd");
-            //System.out.println("Gegevens zijn succesvol gewijzigd");
+            logger.info("Gegevens zijn succesvol gewijzigd");            
         } catch (SQLException ex) {
         	logger.info("gaat iets mis");
-        }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        } */       
+        }     
     }
 
     @Override
-    public void delete(Klant klant){ //throws SQLException {
+    public void delete(Klant klant){
        
         String query = "DELETE FROM klant_has_adres WHERE Klant_klant_id = " + klant.getKlantID(); 
         String query2 = "DELETE FROM klant WHERE klant_id = " + klant.getKlantID();        
@@ -359,8 +211,7 @@ public class KlantDAOImpl implements KlantDAO {
                 PreparedStatement stmt = connection.prepareStatement(query);
         		PreparedStatement stmt2 = connection.prepareStatement(query2);
         		){
-        	/*connection = ConnectionFactory.getMySQLConnection();
-            statement = connection.prepareStatement(query);*/
+        	
             stmt.executeUpdate();
             logger.info("Klant verwijdert uit tussen tabel");
             stmt2.executeUpdate();
@@ -369,24 +220,6 @@ public class KlantDAOImpl implements KlantDAO {
         } catch (SQLException ex) {
         	logger.info("gaat iets mis in deleteklant" );
                  ex.printStackTrace();
-        }
-        /*finally {
-            // kijk of er verbinding is en zo ja sluit deze
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {}
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {}
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
-            }   
-        }  */      
+        }   
     }    
 }
