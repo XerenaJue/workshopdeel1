@@ -254,7 +254,9 @@ public class CrudInvoerMenu {
 
 	}
 
-
+		public void clearStatusText() {
+			lblStatus.setText("");
+		}
         
         public void falseEmail() {
             lblStatus.setTextFill(Color.ORANGERED);

@@ -233,6 +233,7 @@ public class Controller {
     public void maakKlant() {
         logger.debug("maakkKlant()");
         EmailValidator emailVal = EmailValidator.getInstance();
+        view1.clearStatusText();
 	try {
             if (!emailVal.isValid(view1.getEmail())) {
                 view1.falseEmail();
@@ -311,6 +312,7 @@ public class Controller {
     public void updateKlant() {
          logger.debug("updateKlant() ") ;
         EmailValidator emailVal = EmailValidator.getInstance();
+        view1.clearStatusText();
 	try {
             if (!emailVal.isValid(view1.getEmail())) {
                 view1.falseEmail();
