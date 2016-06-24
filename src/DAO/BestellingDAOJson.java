@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package DAO;
-import static DAO.ArtikelDAOJson.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;
@@ -18,34 +17,24 @@ import opdracht2.ConnectionFactory;
 import java.lang.reflect.Field;
 import Interface.BestellingInterface;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import java.io.FileWriter;
-import java.io.IOException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonMappingException;
+//import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.FileOutputStream;
 import java.lang.reflect.Type;
-import opdracht2.BestellingDAOtest;
 
 /**
  *
@@ -157,11 +146,7 @@ public class BestellingDAOJson implements BestellingInterface {
 
                     e.printStackTrace();
 
-                } catch (JsonMappingException e) {
-
-                     e.printStackTrace();
-
-                 } catch (IOException e) {
+                }catch (IOException e) {
 
                 e.printStackTrace();
 
@@ -277,25 +262,6 @@ public class BestellingDAOJson implements BestellingInterface {
              
         List<Bestelling> bestellingen = new ArrayList<>();
         
-        String query = "select * from bestelling where klant_klant_id = " +klant.getKlantID();
-        
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery();  ){
-                       
-            while (resultSet.next()) {
-               Bestelling bestelling = new Bestelling();      
-               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
-               bestellingen.add(bestelling);
-            }
-        }
-        catch (SQLException ex) {
-            logger.error("gaat iets fout in readAlleBestellingen" );
-            ex.printStackTrace();
-        }
-        if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
-                    logger.info("alle bestellingen van klant weergegeven");
         return bestellingen;
     }
     
@@ -337,7 +303,7 @@ public class BestellingDAOJson implements BestellingInterface {
 
 	/*** write to file ***/
         
-	JsonGenerator jGenerator = jfactory.createJsonGenerator(new File("C:\\Users\\maurice\\Desktop\\Workshoptest.json"), JsonEncoding.UTF8);    
+	JsonGenerator jGenerator = jfactory.createJsonGenerator(new FileOutputStream("C:\\Users\\maurice\\Desktop\\Workshoptest.json"), JsonEncoding.UTF8);    
         
         jGenerator.writeStartObject();
         jGenerator.writeNumberField("klantID", bestelling.getKlant_id());        
@@ -359,11 +325,7 @@ public class BestellingDAOJson implements BestellingInterface {
 
 	e.printStackTrace();
 
-     } catch (JsonMappingException e) {
-
-	e.printStackTrace();
-
-     } catch (IOException e) {
+     }  catch (IOException e) {
 
 	e.printStackTrace();
 

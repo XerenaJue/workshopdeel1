@@ -5,7 +5,9 @@
  */
 package opdracht2;
 
+import POJO.Adres;
 import POJO.ArtikelPOJO;
+import POJO.Klant;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.beans.XMLEncoder;
@@ -13,13 +15,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -27,7 +33,8 @@ import org.slf4j.LoggerFactory;
  * @author jeroenO
  */
 public class FileTabellen {
-    static org.slf4j.Logger logger = LoggerFactory.getLogger(FileTabellen.class);
+    final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(FileTabellen.class);
+   
     
     public static void createEmptyXMLArtikelTabel(String filename) {
        
@@ -39,7 +46,7 @@ public class FileTabellen {
              encoder.writeObject(catalogus);
         } 
         catch (FileNotFoundException ex) {
-             logger.error("file om catalogus in te zetten ontbreekt " +  ex);
+             LOGGER.error("file om catalogus in te zetten ontbreekt " +  ex);
         }
     }
     
@@ -53,7 +60,7 @@ public class FileTabellen {
              fileWriter.write(gson.toJson(catalogus, artikelType));
         } 
         catch (IOException ex) {
-            logger.error("kan catalogus niet wegschrijven " +  ex);
+            LOGGER.error("kan catalogus niet wegschrijven " +  ex);
         }
     }
     
@@ -75,7 +82,7 @@ public class FileTabellen {
             }   
             file.write(gson.toJson(catalogus, artikelType));
         } catch (IOException ex) {
-            logger.error("kan Jsoncatalogus niet vullen " +  ex);
+            LOGGER.error("kan Jsoncatalogus niet vullen " +  ex);
         } 
     } 
     public static void createBigXMLArtikelTabel(String filename, int entries) {
@@ -95,10 +102,125 @@ public class FileTabellen {
             encoder.writeObject(catalogus);
         } 
         catch (IOException ex) {
-            logger.error("kan XMLcatalogus niet vullen " +  ex);
+            LOGGER.error("kan XMLcatalogus niet vullen " +  ex);
         } 
     } 
     
+    public static void createEmptyJsonAdresTabel(String filename) {
+       
+        Gson gson = new Gson();
+        Type artikelType = new TypeToken<AdresDubbelHashMap>() {}.getType();
+        
+        try (FileWriter fileWriter = new FileWriter(filename)) {
+             AdresDubbelHashMap alleAdressen = new AdresDubbelHashMap();
+             fileWriter.write(gson.toJson(alleAdressen, artikelType));
+        } 
+        catch (IOException ex) {
+            LOGGER.error("kan alleAdressen niet wegschrijven " +  ex);
+        }
+    }
+    
+    public static void createEmptyJsonKlantAdresTussenTabel(String filename) {
+       
+        Gson gson = new Gson();
+        Type artikelType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
+        
+        try (FileWriter fileWriter = new FileWriter(filename)) {
+             KlantAdresDubbelHashMap tussen = new KlantAdresDubbelHashMap();
+             fileWriter.write(gson.toJson(tussen, artikelType));
+        } 
+        catch (IOException ex) {
+            LOGGER.error("kan tussenTabel niet wegschrijven " +  ex);
+        }
+    }
+    
+    public static void createBigJsonKlantAdresTussenTabel(String filename, int entries) {
+       
+        Gson gson = new Gson();
+        Type artikelType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
+        
+        try (FileWriter fileWriter = new FileWriter(filename)) {
+             KlantAdresDubbelHashMap tussen = new KlantAdresDubbelHashMap();
+             for (int i = 1 ; i <= entries; i++  ) {
+                 tussen.add(i, i);
+                 
+             }
+             
+             fileWriter.write(gson.toJson(tussen, artikelType));
+        } 
+        catch (IOException ex) {
+            LOGGER.error("kan tussenTabel niet wegschrijven " +  ex);
+        }
+    }
+    
+    
+    public static void createBigJsonAdresTabel(String filename, int entries) {
+            
+        try (FileWriter fileWriter = new FileWriter(filename); ) {
+            Gson gson = new Gson();
+        Type artikelType = new TypeToken<AdresDubbelHashMap>() {}.getType();
+            
+            AdresDubbelHashMap alleAdressen = new AdresDubbelHashMap();
+            Adres adres ;
+            for (int i = 0; i < entries ;i++) {
+                adres = new Adres();
+                Random rng = new Random();
+                adres.setAdresID(i);
+                adres.setStraatnaam(FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 10));
+                adres.setPostcode(FillBatchDatabase.generateString(rng , "ABCD123456789", 6));
+                alleAdressen.add(adres);
+            }   
+            fileWriter.write(gson.toJson(alleAdressen, artikelType));
+        } catch (IOException ex) {
+            LOGGER.error("kan JsonAdresTabel niet vullen " +  ex);
+        } 
+    } 
+    
+    public static void createBigJsonKlantTabel(int entries) {
+        
+         
+	
+        JSONArray klanttabel;
+        //JSONParser parser = new JSONParser(); 
+       String bestand = "res/files/klantTabel.json";
+	
+		klanttabel = new JSONArray();
+		
+		JSONObject deKlant = new JSONObject();		
+		for (int i = 0 ; i < entries; i++ ) {
+                    deKlant = new JSONObject();	
+                    Random rng = new Random();   
+                    deKlant.put("Klant_id", i+1);			
+                    deKlant.put("Voornaam", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 10));
+                    deKlant.put("Achternaam", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 7));
+                    deKlant.put("Tussenvoegsel", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 2));
+                    deKlant.put("Email", FillBatchDatabase.generateString(rng , "MooieNamenStrinG",5));
+			
+                    klanttabel.add(deKlant);
+                }
+		try (FileWriter file = new FileWriter(bestand)) {
+			file.write(klanttabel.toJSONString());
+			LOGGER.info("create big klanttabel gelukt");
+		} catch (IOException e) {
+			LOGGER.info("create big klant mislukt " + e);			
+		}	
+	}
+    public static void createEmptyJsonKlantTabel() {
+        
+         
+	
+        JSONArray klanttabel = new JSONArray();
+        
+        String bestand = "res/files/klantTabel.json";
+		
+	
+		try (FileWriter file = new FileWriter(bestand)) {
+			file.write(klanttabel.toJSONString());
+			LOGGER.info("create empty klanttabel gelukt");
+		} catch (IOException e) {
+			LOGGER.info("create klanttabel mislukt " + e);			
+		}	
+	}
     
     
 }

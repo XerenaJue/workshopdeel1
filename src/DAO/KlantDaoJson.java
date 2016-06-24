@@ -18,17 +18,22 @@ import org.slf4j.LoggerFactory;
 import Interface.KlantDAO;
 import POJO.Adres;
 import POJO.Klant;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import opdracht2.KlantAdresDubbelHashMap;
 
 public class KlantDaoJson implements KlantDAO{
 	private final static Logger LOGGER = LoggerFactory.getLogger(KlantDaoJson.class);
 	JSONObject deKlant;
 	JSONArray klanttabel;
 	JSONParser parser;
-	String bestand = "res/files/jasonfile.txt";	
-	
+	String bestand = "res/files/klantTabel.json";	
+	@Override
 	public void create(Klant klant) {
 		klanttabel = getData();
 		int newID = generateId() + 1;
+                klant.setKlantID(newID);
 		if (klanttabel == null || klanttabel.isEmpty() || klanttabel.size() == 0) {
 			klanttabel = new JSONArray();
 		}
@@ -100,7 +105,31 @@ public class KlantDaoJson implements KlantDAO{
         	return null;
         }
 	}
-		
+	@Override
+        public List<Klant> findKlant(Adres klantAdres) {
+    
+            List<Klant> klanten = new ArrayList<>();
+            List<Integer> klantIDs;
+            Gson gson = new Gson();
+            Type tussenType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
+            String fileNameTussen = "res/files/adresKlantTussenTabel.json"; 
+            KlantAdresDubbelHashMap adressenKlantenBoek;
+        
+            try (FileReader read = new FileReader(fileNameTussen);) {
+                  
+                adressenKlantenBoek = gson.fromJson(read, tussenType);
+                klantIDs = adressenKlantenBoek.getKlantIDs(klantAdres.getAdresID());
+                for (Integer i: klantIDs) {
+                    klanten.add(this.findByID(i));
+                }  
+            } 
+            catch (IOException ex) {
+                LOGGER.error("find adres input/output " +  ex);
+            }
+            return klanten;
+        }
+
+        
 	@Override
 	public Klant findByID(int klantId) {
 	
@@ -141,20 +170,21 @@ public class KlantDaoJson implements KlantDAO{
 			deKlant = (JSONObject)iterator.next();
 			String huidigeVoornaam = (String)deKlant.get("Voornaam");
 			String huidigeAchternaam = (String)deKlant.get("Achternaam");
-			if (huidigeVoornaam.equalsIgnoreCase(voornaam) && huidigeAchternaam.equalsIgnoreCase(achternaam)) {
+			if ( huidigeVoornaam != null && huidigeAchternaam != null && huidigeVoornaam.equalsIgnoreCase(voornaam) && huidigeAchternaam.equalsIgnoreCase(achternaam)) {
 				gevonden = true;
 				LOGGER.info("klant gevonden op bassis van voornaam en achternaam");
 			}
 		}
+                if (gevonden) {
 		//set de long van JSON om naar een int om in de klant te passen.
-		Long deKlant_id = (Long)deKlant.get("Klant_id");
-		klant.setKlantID(deKlant_id.intValue());
+                    Long deKlant_id = (Long)deKlant.get("Klant_id");
+                    klant.setKlantID(deKlant_id.intValue());
 		
-		klant.setVoornaam(voornaam);
-		klant.setAchternaam(achternaam);
-		klant.setTussenvoegsel((String)deKlant.get("Tussenvoegsel"));
-		klant.setEmail((String)deKlant.get("Email"));
-		
+                    klant.setVoornaam(voornaam);
+                    klant.setAchternaam(achternaam);
+                    klant.setTussenvoegsel((String)deKlant.get("Tussenvoegsel"));
+                    klant.setEmail((String)deKlant.get("Email"));
+                }
 		return klant;
 	}
 	
@@ -245,6 +275,7 @@ public class KlantDaoJson implements KlantDAO{
 			klanttabel.remove(deKlant);
 			try (FileWriter file = new FileWriter(bestand)) {
 				file.write(klanttabel.toJSONString());
+                                deleteFromTussenTabel(teverwijderen);
 				LOGGER.info("delete klant gelukt");
 			} catch (IOException e) {
 				LOGGER.info("delete klant mislukt " + e);				
@@ -255,6 +286,32 @@ public class KlantDaoJson implements KlantDAO{
 		}
 		
 	}
+        private void deleteFromTussenTabel(Integer klantID) {
+            
+            List<Integer> AdresIDs;
+            Gson gson = new Gson();
+            Type tussenType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
+            String fileNameTussen = "res/files/adresKlantTussenTabel.json"; 
+            KlantAdresDubbelHashMap adressenKlantenBoek;
+        
+            try (FileReader read = new FileReader(fileNameTussen);) {
+                  
+                adressenKlantenBoek = gson.fromJson(read, tussenType);
+                AdresIDs = adressenKlantenBoek.getAdresIDs(klantID);
+                for (Integer adresje: AdresIDs) {
+                    adressenKlantenBoek.removeKlantOpAdres(klantID, adresje); // wellicht niet optimaal maar klant heeft max enkele adressen
+                }  
+                try (FileWriter file = new FileWriter(fileNameTussen)) {
+                  
+                    file.write(gson.toJson(adressenKlantenBoek, tussenType));  
+                    LOGGER.info("klant en zijn adressen verwijderd uit tussenTabel ");
+                }
+            } 
+            catch (IOException ex) {
+                LOGGER.error("find adres input/output " +  ex);
+            }
+                  
+        }
 	
 	private JSONArray getData() {
 		parser = new JSONParser();
@@ -288,19 +345,6 @@ public class KlantDaoJson implements KlantDAO{
 		return hoogsteId;
 	}
 	
-	
-
-
-
-
-///----------------------------------------- nog te implemneteren ----------------------------------------------/////
-
-	@Override
-	public List<Klant> findKlant(Adres klantAdres) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 
 

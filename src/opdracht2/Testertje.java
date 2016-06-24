@@ -5,14 +5,16 @@
  */
 package opdracht2;
 
-import DAO.ArtikelDAOJson;
-import DAO.ArtikelDAOXML;
-import Interface.ArtikelDao;
-import POJO.ArtikelPOJO;
+import DAO.AdresDaoJsonNieuw;
+import DAO.KlantDaoJson;
+import POJO.Adres;
+import POJO.Klant;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
+import static opdracht2.FileTabellen.createBigJsonKlantAdresTussenTabel;
+import static opdracht2.FileTabellen.createEmptyJsonKlantAdresTussenTabel;
 
 /**
  *
@@ -28,7 +30,7 @@ public class Testertje {
        //  FillBatchDatabase.clearDatabase("MySQL");
        // FillBatchDatabase.fillBatchDatabase();
         //ConnectionFactory.closeConnectionPool();
-   
+   /*
        ArtikelPOJO artikel = new ArtikelPOJO();
    
         
@@ -78,9 +80,63 @@ public class Testertje {
         System.out.println("catalogus: " + xmlDao.findAlleArtikelen());
         duur = stop - start;
         System.out.println( "dit duurde bij Json " + duur + " ms" );
+        */
+   int aantal = 100000;
+  //  FileTabellen.createEmptyJsonAdresTabel("res/files/adresTabel.json");
+   FileTabellen.createBigJsonAdresTabel("res/files/adresTabel.json", aantal);
+      Adres adres = new Adres();
+         AdresDaoJsonNieuw adresDao = new AdresDaoJsonNieuw();
+    
+          Klant klant = new Klant();
+          klant.setKlantID(10);
+    
+          
+         
+        adres.setAdresID(98);
+          adres.setWoonplaats("Mokum");
+          adres.setPostcode("1234AQ");
+          adres.setHuisnummer(12);
+          
+         long start = new Date().getTime();  
+         System.out.println("adres: " + adresDao.findAdres("1234AQ" , 12));
+       long stop = new Date().getTime();
+       
         
-      
-      
+        
+        long duur = stop - start;
+         System.out.println("dit duurde bij adres zoeken op postcode   " + duur + " ms");
+          
+         klant.setVoornaam("Mooiman");
+        klant.setAchternaam("Mooiman");
+         klant.setKlantID(888);
+         KlantDaoJson klantDao = new KlantDaoJson();
+        // klantDao.findByID(1);
+        
+        FileTabellen.createEmptyJsonKlantTabel();
+         FileTabellen.createBigJsonKlantTabel(aantal); 
+       //  createEmptyJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json");
+         createBigJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json", aantal);
+         
+         start = new Date().getTime();
+        System.out.println("klant " + klantDao.findByName("wiedann", "niemand"));
+        // System.out.println("klantje  "+  klantDao.findByID(1));
+         stop = new Date().getTime();
+          duur = stop - start;
+         System.out.println("dit duurde bij zoeken op naam  " + duur + " ms");
+       //  System.out.println("klantje  "+  klantDao.update(klant));
+       
+       klant = new Klant();
+       klant.setAchternaam("Meddina");
+       adres.setAdresID(0);
+       klantDao.create(klant);
+       adresDao.createAdres(klant.getKlantID(), adres);
+       System.out.println("klantje  "+  klantDao.findByID(klant.getKlantID()));
+               
+      start = new Date().getTime();
+      System.out.println("adres van klant :  " + adresDao.findAdres(klant.getKlantID()));
+      stop = new Date().getTime();
+      duur = stop - start;
+      System.out.println("dit duurde bij adres zoeken op klantID  " + duur + " ms");
     }
     
     

@@ -11,12 +11,10 @@ import java.sql.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import DAO.AdresDaoImpl;
-import DAO.ArtikelDAOSQL;
-import DAO.BestellingDAO;
-import DAO.KlantDAOImpl;
+import DAO.DaoFactory;
 import Interface.AdresDao;
 import Interface.ArtikelDao;
+import Interface.BestellingInterface;
 import Interface.KlantDAO;
 import POJO.Adres;
 import POJO.ArtikelBestelling;
@@ -31,10 +29,10 @@ import java.util.logging.Level;
  */
 public class FacadeDatabaseMenu {
     static Logger logger = LoggerFactory.getLogger(FacadeDatabaseMenu.class); 
-    private final KlantDAO klantDAO;
-    private final AdresDao adresDAO;
-    private final BestellingDAO bestellingDAO;    
-    private final ArtikelDao artikelDAO;
+    private  KlantDAO klantDAO;
+    private  AdresDao adresDAO;
+    private  BestellingInterface bestellingDAO;    
+    private  ArtikelDao artikelDAO;
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
     private List<Klant> alleKlanten;
@@ -42,13 +40,16 @@ public class FacadeDatabaseMenu {
     private final Object[] toDisplay;
     private List<ArtikelBestelling> besteldeArtikelen;  
     private List<Adres> adressen;
+    private final DaoFactory daoFactory;
     
     
     public FacadeDatabaseMenu() {
-        klantDAO = new KlantDAOImpl();
-        adresDAO = new AdresDaoImpl();
-        bestellingDAO = new BestellingDAO();
-        artikelDAO = new ArtikelDAOSQL();
+        
+        daoFactory = new DaoFactory();
+        klantDAO = daoFactory.makeKlantDao(); //new KlantDAOImpl();
+        adresDAO = daoFactory.makeAdresDao(); // new AdresDaoImpl();
+        bestellingDAO = daoFactory.makeBestellingDao(); // new BestellingDAO();
+        artikelDAO = daoFactory.makeArtikelDao(); //new ArtikelDAOSQL();
         
         toDisplay = new Object[6];
         toDisplay[0] = new Klant();
@@ -73,19 +74,16 @@ public class FacadeDatabaseMenu {
         
         bestellingen = (List)watNuOpScherm[2];
         if (findKlant(bestaandeKlant) != null) {       	
-        	bestaandeKlant = findKlant(bestaandeKlant);
-        	            
+            bestaandeKlant = findKlant(bestaandeKlant);
         }
         else { 
-            adressenVanKlant = findAdres(adressenVanKlant.get(0));
             bestaandeKlant = klantenMetZelfdeAdres.get(0);
-            
         }
         adressenVanKlant = findAdres(bestaandeKlant); 
         klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
-      //  bestaandeKlant = klantenMetZelfdeAdres.get(0);
+      
         bestellingen = findBestellingen(bestaandeKlant);
-        besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
+        if (!bestellingen.isEmpty() )besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
         
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adressenVanKlant;
@@ -124,18 +122,18 @@ public class FacadeDatabaseMenu {
     private List<Adres> findAdres(Klant bestaandeKlant) throws SQLException {
         List<Adres> postbussen = adresDAO.findAdres(bestaandeKlant.getKlantID());
         if (postbussen.isEmpty()) postbussen.add(new Adres());   // om nullpointers en outofbounds te vermijden
-        Adres adres = postbussen.get(0); // pakt nu enkel 1e in lijst moet anders en crudmenu aanpassne
-        toDisplay[1] = postbussen;//adres;
         
-        return postbussen;//adres;
+        toDisplay[1] = postbussen;
+        
+        return postbussen;
     }
     
     private List<Adres> findAdres(Adres onvolledigAdres) throws SQLException {
         List<Adres> adresMetID =  adresDAO.findAdres(onvolledigAdres.getPostcode(), onvolledigAdres.getHuisnummer());
         if (adresMetID.isEmpty()) adresMetID.add(new Adres());
-        toDisplay[1] = adresMetID; //.get(0);
+        toDisplay[1] = adresMetID; 
         
-        return adresMetID; //.get(0);
+        return adresMetID; 
     }
         
     private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
@@ -201,8 +199,8 @@ public class FacadeDatabaseMenu {
     
     private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
-        bestellingen = bestellingDAO.findAlleBestellingen(bestaandeKlant);          // Deze methode werk nog niet in bestellingDAO!!
-    //  toDisplay[2] = bestellingen;           ff kijken of handig nu update of apart       //  dit asap fixen    nu Dummy gemaakt  
+        bestellingen = bestellingDAO.findAlleBestellingen(bestaandeKlant);         
+    //  toDisplay[2] = bestellingen;           ff kijken of handig nu update of apart      
                                                                                     
         return bestellingen;
     } 
@@ -268,7 +266,26 @@ public class FacadeDatabaseMenu {
        else if (naamDatabase.equals("Firebird")) {
            ConnectionFactory.useFirebird();
        }
+       if (!daoFactory.getSoort().equals("SQL") )  {
+           changeDaoSoort();
+       }
+   }
+   
+   public void changeToJson() {
+       if  (!"Json".equals(daoFactory.getSoort())) {
+           changeDaoSoort(); // tussenoplossing 
+           logger.info("facade is changing to Json");
+       }
+   }
+   
+   public void changeDaoSoort() {
+       daoFactory.switchSoort();
        
+       klantDAO = daoFactory.makeKlantDao(); 
+       adresDAO = daoFactory.makeAdresDao(); 
+       bestellingDAO = daoFactory.makeBestellingDao(); 
+       artikelDAO = daoFactory.makeArtikelDao();
+         
    }
    
    public Klant volgendeBewoner() {

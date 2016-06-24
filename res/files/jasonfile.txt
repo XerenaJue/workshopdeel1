@@ -1,1 +1,0 @@
-[{"Email":null,"Voornaam":"Woezel","Achternaam":"Pip","Tussenvoegsel":null,"Klant_id":1},{"Email":null,"Voornaam":"Bob","Achternaam":"Bouwer","Tussenvoegsel":null,"Klant_id":2},{"Email":null,"Voornaam":"Hans","Achternaam":"kazan","Tussenvoegsel":null,"Klant_id":3},{"Email":null,"Klant_id":4,"Voornaam":"Woezel","Achternaam":"Pip","Tussenvoegsel":null}]

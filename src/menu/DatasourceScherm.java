@@ -50,7 +50,7 @@ public class DatasourceScherm {
     private MenuButton btnMySQL;
     private MenuButton btnFirebird;
     private MenuButton btnChangeConnectionPool;
-    
+    private MenuButton btnJson;
     
     public DatasourceScherm(FacadeDatabaseMenu activeFacade) {
      
@@ -96,6 +96,11 @@ public class DatasourceScherm {
         btnChangeConnectionPool = new MenuButton("change connection pool");
         btnChangeConnectionPool.setOnMouseClicked(event -> {  facade.changeConnectionPool();        
         });
+        btnJson = new MenuButton("use Json");
+        btnJson.setOnMouseClicked(event -> {  facade.changeToJson();        
+        }); 
+        
+        
     }
     
     private void refreshPanes(String header) {
@@ -113,7 +118,7 @@ public class DatasourceScherm {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(5, 100, 5, 5));
         vBox.getChildren().clear();
-        vBox.getChildren().addAll(btnMySQL, btnFirebird, btnChangeConnectionPool, btnTerug);
+        vBox.getChildren().addAll(btnJson, btnMySQL, btnFirebird, btnChangeConnectionPool, btnTerug);
         
     }
       
