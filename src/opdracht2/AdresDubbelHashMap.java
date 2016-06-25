@@ -41,6 +41,7 @@ public class AdresDubbelHashMap {
     
     public List<Adres> get(List<Integer> adresIDs) {
         List adressen = new ArrayList<>();
+        if (adresIDs == null ) return adressen;
         for (Integer i : adresIDs) {
             adressen.add(this.get(i));
         }
@@ -50,7 +51,6 @@ public class AdresDubbelHashMap {
     public Adres get(int adresID) {
         
         Adres adres = idAlsKey.get(adresID);
-        
         return adres;
     }
     
@@ -58,7 +58,6 @@ public class AdresDubbelHashMap {
     public Adres get(String postcodeHuisnr) {
         
         Adres adres = postcodeAlsKey.get(postcodeHuisnr);
-        
         return adres;
     }
     
@@ -68,10 +67,8 @@ public class AdresDubbelHashMap {
         String postcode = adres.getPostcode();
         postcode += adres.getHuisnummer();
        // postcode += adres.getToevoeging();
-        
         postcodeAlsKey.put(postcode, null);
         idAlsKey.put(adresID, null);
-        
     }
     
     public void remove(String  postcodeHuisnr) {
@@ -80,7 +77,6 @@ public class AdresDubbelHashMap {
         Integer adresID = adres.getAdresID();
         postcodeAlsKey.put(postcodeHuisnr, null);
         idAlsKey.put(adresID, null);
-        
     }
     
     public void update(Adres adresNieuw) {
@@ -89,8 +85,6 @@ public class AdresDubbelHashMap {
         String postcode = adresNieuw.getPostcode();
         postcode += adresNieuw.getHuisnummer();
         postcodeAlsKey.put(postcode, adresNieuw);
-        
-        
     }
     
     public List<Adres> getValues() {

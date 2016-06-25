@@ -81,7 +81,7 @@ public class Testertje {
         duur = stop - start;
         System.out.println( "dit duurde bij Json " + duur + " ms" );
         */
-   int aantal = 100000;
+   int aantal = 1000;
   //  FileTabellen.createEmptyJsonAdresTabel("res/files/adresTabel.json");
    FileTabellen.createBigJsonAdresTabel("res/files/adresTabel.json", aantal);
       Adres adres = new Adres();
@@ -112,7 +112,7 @@ public class Testertje {
          KlantDaoJson klantDao = new KlantDaoJson();
         // klantDao.findByID(1);
         
-        FileTabellen.createEmptyJsonKlantTabel();
+      //  FileTabellen.createEmptyJsonKlantTabel();
          FileTabellen.createBigJsonKlantTabel(aantal); 
        //  createEmptyJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json");
          createBigJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json", aantal);
@@ -128,8 +128,8 @@ public class Testertje {
        klant = new Klant();
        klant.setAchternaam("Meddina");
        adres.setAdresID(0);
-       klantDao.create(klant);
-       adresDao.createAdres(klant.getKlantID(), adres);
+  //     klantDao.create(klant);
+//       adresDao.createAdres(klant.getKlantID(), adres);
        System.out.println("klantje  "+  klantDao.findByID(klant.getKlantID()));
                
       start = new Date().getTime();

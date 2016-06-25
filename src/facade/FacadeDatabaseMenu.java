@@ -36,7 +36,7 @@ public class FacadeDatabaseMenu {
     private List<Bestelling> bestellingen;
     private List<Bestelling> alleBestellingen;
     private List<Klant> alleKlanten;
-    private List<Klant> klantenMetZelfdeAdres;
+    private List<Klant> klantenMetZelfdeAdres = new ArrayList<>();
     private final Object[] toDisplay;
     private List<ArtikelBestelling> besteldeArtikelen;  
     private List<Adres> adressen;
@@ -71,17 +71,17 @@ public class FacadeDatabaseMenu {
                                                                                            
         Klant bestaandeKlant = (Klant)watNuOpScherm[0];
         List<Adres> adressenVanKlant = (List<Adres>)watNuOpScherm[1];
-        
         bestellingen = (List)watNuOpScherm[2];
         if (findKlant(bestaandeKlant) != null) {       	
             bestaandeKlant = findKlant(bestaandeKlant);
+             klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
         }
         else { 
+            Adres gevondenAdres = findAdres(adressenVanKlant.get(0)).get(0); 
+            klantenMetZelfdeAdres = findBewoners(gevondenAdres);
             bestaandeKlant = klantenMetZelfdeAdres.get(0);
         }
         adressenVanKlant = findAdres(bestaandeKlant); 
-        klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
-      
         bestellingen = findBestellingen(bestaandeKlant);
         if (!bestellingen.isEmpty() )besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
         
@@ -90,7 +90,6 @@ public class FacadeDatabaseMenu {
         toDisplay[2] = bestellingen;
         toDisplay[3] = besteldeArtikelen;
         toDisplay[5] = klantenMetZelfdeAdres;
-               
     }
     
     public Klant createKlant(Klant klantNuOpScherm) throws SQLException {
@@ -107,7 +106,40 @@ public class FacadeDatabaseMenu {
         zoek(toDisplay);  //update rest van toDisplay
         return verseKlant; // is kopie van die op display staat
     }
+       
+    private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
+        
+        Klant ingelezenKlant = klantDAO.findKlant(bestaandeKlant);
+        toDisplay[0] = ingelezenKlant;
+        
+        return ingelezenKlant;
+    }
     
+    public List<Klant> findKlanten() throws SQLException{
+        
+        alleKlanten = klantDAO.findAll();
+        toDisplay[4] = alleKlanten;
+        logger.info("alle klanten: " + alleKlanten);
+        return alleKlanten;
+    }
+    
+    private List<Klant> findBewoners(Adres klantAdres) throws SQLException{  
+        
+        List<Klant> bewoners = klantDAO.findKlant(klantAdres);
+        if (bewoners.isEmpty()) bewoners.add(new Klant()); // om arrayoutofbounds en nullpinters te vermijden
+            
+        return bewoners;
+    }
+     
+    public void updateKlant() throws SQLException {
+        updateKlant((Klant)toDisplay[0]);
+    }
+    
+    public void updateKlant(Klant bestaandeKlant) throws SQLException {
+        
+        klantDAO.update(bestaandeKlant);
+    } 
+     
     public void deleteKlant() throws SQLException {
         deleteKlant((Klant)toDisplay[0]);
     
@@ -116,7 +148,7 @@ public class FacadeDatabaseMenu {
     private void deleteKlant(Klant overbodigeKlant) throws SQLException {
         bestellingDAO.deleteBestellingen(overbodigeKlant);
         klantDAO.delete(overbodigeKlant);
-        this.zoek(toDisplay); // update scherm
+        this.zoek(toDisplay); // updateAdres scherm
     }
     
     private List<Adres> findAdres(Klant bestaandeKlant) throws SQLException {
@@ -135,22 +167,24 @@ public class FacadeDatabaseMenu {
         
         return adresMetID; 
     }
-        
-    private Klant findKlant(Klant bestaandeKlant) throws SQLException{   
-        
-        Klant ingelezenKlant = klantDAO.findKlant(bestaandeKlant);
-        toDisplay[0] = ingelezenKlant;
-        
-        return ingelezenKlant;
-    }
     
-    public List<Klant> findKlanten() throws SQLException{
+    public void updateAdres(Klant bestaande, Adres adres) throws SQLException {
         
-        alleKlanten = klantDAO.findAll();
-        toDisplay[4] = alleKlanten;
-        logger.info("alle klanten: " + alleKlanten);
-        return alleKlanten;
-    }
+        adresDAO.deleteAdres(bestaande, adres);
+        adresDAO.createAdres(bestaande.getKlantID(), adres);
+	   
+   }
+   
+   public void geefAdres(Klant klant, Adres adres) {
+       
+        try {
+            adresDAO.createAdres(klant.getKlantID(), adres);
+        } catch (SQLException ex) {
+            logger.error("facade create adres" + ex);
+        }
+   }
+        
+
 
     public List<Adres> findAlleAdressen() throws SQLException {
     	adressen = adresDAO.findAll();
@@ -164,43 +198,11 @@ public class FacadeDatabaseMenu {
     	return alleBestellingen;
     }
      
-     public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
-    	
-        return artikelDAO.findAlleArtikelen();
-    } 
-     
-    public ArtikelPOJO createArtikel(ArtikelPOJO artikel) {
-        
-        return artikelDAO.createArtikel(artikel);
-    } 
-     
-    public void deleteArtikel(ArtikelPOJO artikel) {
-        
-       artikelDAO.deleteArtikel(artikel);
-    } 
-    
-    private List<Klant> findBewoners(Adres klantAdres) throws SQLException{   
-        List<Klant> bewoners = klantDAO.findKlant(klantAdres);
-        if (bewoners.isEmpty()) bewoners.add(new Klant()); // om arrayoutofbounds en nullpinters te vermijden
-     //   Klant ingelezenKlant = bewoners.get(0);
-      //  toDisplay[5] = bewoners;
-        
-        return bewoners;//ingelezenKlant;
-    }
-     
-    public void updateKlant() throws SQLException {
-        updateKlant((Klant)toDisplay[0]);
-    }
-    
-    public void updateKlant(Klant bestaandeKlant) throws SQLException {
-        
-        klantDAO.update(bestaandeKlant);
-    }
     
     private List<Bestelling> findBestellingen(Klant bestaandeKlant) throws SQLException {  
         
         bestellingen = bestellingDAO.findAlleBestellingen(bestaandeKlant);         
-    //  toDisplay[2] = bestellingen;           ff kijken of handig nu update of apart      
+    //  toDisplay[2] = bestellingen;           ff kijken of handig nu updateAdres of apart      
                                                                                     
         return bestellingen;
     } 
@@ -237,8 +239,21 @@ public class FacadeDatabaseMenu {
             java.util.logging.Logger.getLogger(FacadeDatabaseMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+    public List<ArtikelPOJO> findAlleArtikelen() throws SQLException {
+    	
+        return artikelDAO.findAlleArtikelen();
+    } 
+     
+    public ArtikelPOJO createArtikel(ArtikelPOJO artikel) {
+        
+        return artikelDAO.createArtikel(artikel);
+    } 
+     
+    public void deleteArtikel(ArtikelPOJO artikel) {
+        
+       artikelDAO.deleteArtikel(artikel);
+    } 
+        
     public List<ArtikelBestelling> findArtikelen(Bestelling bestelling)  {
         List<ArtikelBestelling> lijstje = null;
         try {
@@ -249,10 +264,7 @@ public class FacadeDatabaseMenu {
         }
         return lijstje;
    }
-   public void update(int klant_id, Adres adres) throws SQLException {
-	   adresDAO.update(adres);
-	   
-   }
+
    
    public void changeConnectionPool() {
        ConnectionFactory.changeConnectionPool();

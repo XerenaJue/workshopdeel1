@@ -27,14 +27,13 @@ import org.slf4j.LoggerFactory;
  * @author jeroenO
  */
 public class Controller {
-    static org.slf4j.Logger logger = LoggerFactory.getLogger(Controller.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Controller.class);
     Object[] nepAppArray;
     Klant klant ;
     Adres adres ;
     Bestelling bestelling;
     List<Bestelling> bestellingen; 
     List<ArtikelPOJO> artikelen;
-   
     private int adresIndex = 0;
     
     private FacadeDatabaseMenu model;
@@ -51,9 +50,7 @@ public class Controller {
         
        addListenersToView1();
        addListenersToView3();
-        
-        
-      
+             
         nepAppArray = model.getToDisplay();
         klant = (Klant)nepAppArray[0];
         List<Adres> adressen = (List<Adres>) nepAppArray[1];
@@ -61,7 +58,6 @@ public class Controller {
         adres = adressen.get(0);
         bestellingen = (List<Bestelling>)nepAppArray[2];
         artikelen = (List<ArtikelPOJO> )nepAppArray[3];
-        
     }
     private void addListenersToView1() {
         
@@ -103,6 +99,7 @@ public class Controller {
         public void handle(Event event) {
             System.out.println("events are happening");
             maakKlant();
+            geefAdres();
             zoekKlant();
         }
     }
@@ -111,7 +108,7 @@ public class Controller {
         public void handle(Event event) {
             System.out.println("events are happening");
             updateKlant();
-            updateAdres();
+            updateAdres();// moet enkel van deze klant
             
         }
     }
@@ -126,7 +123,7 @@ public class Controller {
     class Bestellingen implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("view2, bestellingscherm wordt aangemaakt");
+            LOGGER.debug("view2, bestellingscherm wordt aangemaakt");
             view2 = new BestellingScherm();
             view2.setLabels(Integer.toString(klant.getKlantID()), klant.getAchternaam());
             addListenersToView2();
@@ -134,18 +131,17 @@ public class Controller {
             view2.startMenu();
         }
     }
-    
     class MaakBestelling implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("maakbestelling handler");
+            LOGGER.debug("maakbestelling handler");
             plaatsBestelling();
         }
     }
     class VerwijderBestelling implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("verwijderbestelling handler");
+            LOGGER.debug("verwijderbestelling handler");
             verwijderSelectedBestelling();
             showBestellingen();
             zoekInDezeBestelling();
@@ -154,7 +150,7 @@ public class Controller {
     class VerwijderAlleBestellingen implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("verwijder alle bestellingen handler");
+            LOGGER.debug("verwijder alle bestellingen handler");
             verwijderAlleBestellingen();
             showBestellingen();
             zoekInDezeBestelling();
@@ -164,14 +160,14 @@ public class Controller {
     class SelectTabelRow implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("select tablerow bestellingscherm handler");
+            LOGGER.debug("select tablerow bestellingscherm handler");
             zoekInDezeBestelling();
         }
     }
     class VerwijderArtikel implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("verwijder artikel handler");
+            LOGGER.debug("verwijder artikel handler");
             verwijderArtikel();
             zoekInDezeBestelling();
                  
@@ -180,7 +176,7 @@ public class Controller {
     class VoegArtikelToe implements EventHandler {
         @Override
         public void handle(Event event) {
-           logger.debug("voegartikeltoe  handler");
+           LOGGER.debug("voegartikeltoe  handler");
             voegArtikelToe();
             zoekInDezeBestelling();
                  
@@ -189,7 +185,7 @@ public class Controller {
     class VolgendAdres implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("volgend adres handler");
+            LOGGER.debug("volgend adres handler");
             volgendAdres();
             zoekAdresVanKlant();
         }
@@ -197,41 +193,39 @@ public class Controller {
     class VolgendeBewoner implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("volgende bewoner handler");
+            LOGGER.debug("volgende bewoner handler");
             volgendeBewoner();
            
         }
     }
-    
-    
     class OpenCrud implements EventHandler {
         @Override
         public void handle(Event event) {
-            logger.debug("ga naar crudmenu handler");
+            LOGGER.debug("ga naar crudmenu handler");
             openDezeCrud();
         }
     }
-    
-    
-    
-    
+       
     private void zoekKlant() {
-        logger.debug("zoekKlant()");
+        LOGGER.debug("zoekKlant()");
         try {
             nepAppArray[0] = klant;
-            if (view1.getKlantID() != 0) klant.setKlantID(view1.getKlantID());
+             klant.setKlantID(view1.getKlantID());
+              leesSchermKlant();
+              leesAdresVanScherm();
+              
             model.zoek(nepAppArray);
             nepAppArray = model.getToDisplay();
             showKlant();
             adresIndex = 0;
                 
         } catch (SQLException ex) {
-            logger.error("zoek in controller sql", ex);
+            LOGGER.error("zoek in controller sql", ex);
         }
         
     }
     public void maakKlant() {
-        logger.debug("maakkKlant()");
+        LOGGER.debug("maakkKlant()");
         EmailValidator emailVal = EmailValidator.getInstance();
         view1.clearStatusText();
 	try {
@@ -249,18 +243,38 @@ public class Controller {
 						// van klant niet klant
             						// zelf!
         } catch (SQLException e) {
-            logger.error("oplossen nog maaklant " + e);
+            LOGGER.error("oplossen nog maaklant " + e);
         }
     }
     private void showKlant() {
         
         klant = (Klant) nepAppArray[0];
-        logger.debug("showKlant(): " + klant);   
+        LOGGER.debug("showKlant(): " + klant);   
         view1.setKlantID(klant.getKlantID());
         view1.setKlantVoornaam(klant.getVoornaam());
         view1.setKlantAchternaam(klant.getAchternaam());
         view1.setTussenvoegsel(klant.getTussenvoegsel());
         view1.setEmail(klant.getEmail());
+    }
+    
+    private void geefAdres(){
+        
+        leesAdresVanScherm();
+        model.geefAdres(klant, adres);
+    }
+    
+    private void leesAdresVanScherm() {
+        
+        adres = new Adres();
+        adres.setPostcode(view1.getPostcode());
+        adres.setStraatnaam(view1.getStraatnaam());
+        adres.setToevoeging(view1.getToevoeging());
+        adres.setHuisnummer(view1.getHuisnummer());
+        adres.setWoonplaats(view1.getPlaatsnaam());
+        
+        List<Adres> adressen = new ArrayList<>();
+        nepAppArray[1] = adressen;
+        adressen.add(adres);
         
     }
       
@@ -272,7 +286,7 @@ public class Controller {
         
     }
     private void volgendAdres() {
-        logger.debug("volgendAdres()");
+        LOGGER.debug("volgendAdres()");
             if (adresIndex < ((List<Adres>) nepAppArray[1]).size() - 1 ) {
                 adresIndex++;
             }
@@ -281,7 +295,7 @@ public class Controller {
         }
     
     public void zoekAdresVanKlant() {
-        logger.debug("zoekAdresVanKlant()");
+        LOGGER.debug("zoekAdresVanKlant()");
      //   nepAppArray = model.getToDisplay();
         adres = ((List<Adres>) nepAppArray[1]).get(adresIndex);
 
@@ -289,7 +303,7 @@ public class Controller {
     }
     
     private void showAdres(Adres adres) {
-        logger.debug("showAdres(Adres adres) " + adres);    
+        LOGGER.debug("showAdres(Adres adres) " + adres);    
         view1.setStraatnaam(adres.getStraatnaam());
         view1.setHuisnummer(adres.getHuisnummer());
         view1.setToevoeging(adres.getToevoeging());
@@ -299,18 +313,18 @@ public class Controller {
     
    
     public void setKlant(Klant bestaandeKlant) {
-        logger.debug("setKlant(Klant bestaandeKlant) " + bestaandeKlant);
+        LOGGER.debug("setKlant(Klant bestaandeKlant) " + bestaandeKlant);
 	nepAppArray[0] = bestaandeKlant;
 
     }
     public void setAdres(Adres bestaandAdres) {
-        logger.debug("setAdres(Adres bestaandAdres) " + bestaandAdres);
+        LOGGER.debug("setAdres(Adres bestaandAdres) " + bestaandAdres);
 	((List<Adres>)nepAppArray[1]).set(0,bestaandAdres);
 
     }
     
     public void updateKlant() {
-         logger.debug("updateKlant() ") ;
+         LOGGER.debug("updateKlant() ") ;
         EmailValidator emailVal = EmailValidator.getInstance();
         view1.clearStatusText();
 	try {
@@ -318,11 +332,7 @@ public class Controller {
                 view1.falseEmail();
 		return;
             }
-            klant.setKlantID(view1.getKlantID());
-            klant.setEmail(view1.getEmail());
-            klant.setAchternaam(view1.getKlantAchternaam());
-            klant.setVoornaam(view1.getKlantVoornaam());
-            klant.setTussenvoegsel(view1.getTussenvoegsel());
+           leesSchermKlant();
             model.updateKlant(klant);
             nepAppArray = model.getToDisplay();
 
@@ -331,8 +341,18 @@ public class Controller {
 	}
     }
     
+    private void leesSchermKlant() {
+        
+        klant.setKlantID(view1.getKlantID());
+            klant.setEmail(view1.getEmail());
+            klant.setAchternaam(view1.getKlantAchternaam());
+            klant.setVoornaam(view1.getKlantVoornaam());
+            klant.setTussenvoegsel(view1.getTussenvoegsel());
+        
+    }
+    
     public void deleteKlant() {
-        logger.debug("deleteKlant() ") ;
+        LOGGER.debug("deleteKlant() ") ;
 	try {
             klant.setKlantID(view1.getKlantID());
             model.deleteKlant();
@@ -342,14 +362,14 @@ public class Controller {
 	}
     }
     private void updateAdres() {
-        logger.debug("updateAdres() ") ;
+        LOGGER.debug("updateAdres() ") ;
 	try {
             adres.setStraatnaam(view1.getStraatnaam());
             adres.setHuisnummer(view1.getHuisnummer());
             adres.setToevoeging(view1.getToevoeging());
             adres.setPostcode(view1.getPostcode());
             adres.setWoonplaats(view1.getPlaatsnaam());
-            model.update(klant.getKlantID(), adres);
+            model.updateAdres(klant, adres);
             nepAppArray = model.getToDisplay();
 
 	} catch (SQLException e) {
@@ -359,7 +379,7 @@ public class Controller {
     }
     
      private void setUpForBestellingen() {
-         logger.debug("setUpForBestellingen() ") ;
+         LOGGER.debug("setUpForBestellingen() ") ;
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("bestelling_id", "klant_id", "artikel_aantal" ) );
         view2.setUpTabel(pojoVelden);
@@ -367,7 +387,7 @@ public class Controller {
     }
     
      private void plaatsBestelling() {
-         logger.debug("plaatsBestelling() ") ;
+         LOGGER.debug("plaatsBestelling() ") ;
        try {
             model.zoek(nepAppArray);
             model.createBestelling();
@@ -380,35 +400,35 @@ public class Controller {
          
        }
        catch (SQLException e) {
-           logger.error("plaats bestelling ver" + e);
+           LOGGER.error("plaats bestelling ver" + e);
            System.out.println("wordt nu wel ver gegooid deze SQL exc in Bestellingscherm.plaatsbestelling");
        }
    
      }
      
      private void showBestellingen() {
-        logger.debug("showBestellingen() ") ;
+        LOGGER.debug("showBestellingen() ") ;
         try {
             model.zoek(nepAppArray);
             nepAppArray = model.getToDisplay(); 
             view2.showBestellingen((List) nepAppArray[2] );
         } catch (SQLException ex) {
-            logger.error("show bestellingen ver" + ex);
+            LOGGER.error("show bestellingen ver" + ex);
         }
      }
      
     private void verwijderSelectedBestelling() {
-         logger.debug(" verwijderSelectedBestelling() ") ;
+         LOGGER.debug(" verwijderSelectedBestelling() ") ;
         Bestelling bestelling = view2.getSelectedBestelling();
         try {
             if (bestelling != null ) model.deleteBestelling(bestelling);
         } catch (SQLException ex) {
-            logger.error("verwijder bestelling ver" + ex);
+            LOGGER.error("verwijder bestelling ver" + ex);
         }
     }
     
      private void verwijderAlleBestellingen(){
-         logger.debug(" vverwijderAlleBestellingen(") ;
+         LOGGER.debug(" vverwijderAlleBestellingen(") ;
         try{
             model.verwijderAlleBestellingen(klant);
             
@@ -423,7 +443,7 @@ public class Controller {
     }
     
     private void zoekInDezeBestelling() {
-        logger.debug(" zoekInDezeBestelling(") ;
+        LOGGER.debug(" zoekInDezeBestelling(") ;
         if (view2.getSelectedBestelling() != null ) {
             
             bestelling =  view2.getSelectedBestelling();
@@ -434,7 +454,7 @@ public class Controller {
         else view2.clearArtikelLijst();
     }
      private void setUpInhoudBestellingen() {
-         logger.debug("setUpInhoudBestellingen()") ;
+         LOGGER.debug("setUpInhoudBestellingen()") ;
         List<String> pojoVelden = new ArrayList<>();
         pojoVelden.addAll(Arrays.asList("artikelNaam", "artikelID", "artikelPrijs", "aantal_artikelen" ) );
         
@@ -442,7 +462,7 @@ public class Controller {
     }
      
     private void voegArtikelToe(){
-         logger.debug("voegArtikelToe()") ;
+         LOGGER.debug("voegArtikelToe()") ;
         ArtikelBestelling artikelBestelling = new ArtikelBestelling();
         ArtikelPOJO artikel = new ArtikelPOJO();
         artikel.setArtikelID(view2.getArtikelID());
@@ -458,7 +478,7 @@ public class Controller {
         }
     } 
     private void verwijderArtikel() {
-         logger.debug("verwijderArtikel()") ;
+         LOGGER.debug("verwijderArtikel()") ;
         if ( view2.getSelectedArtikel() != null    ) {
             ArtikelBestelling artikelBestelling = view2.getSelectedArtikel();
             model.removeFromBestelling(bestelling, artikelBestelling);
@@ -466,7 +486,7 @@ public class Controller {
     }
     
     private void openDezeCrud() {
-        logger.debug("openDezeCrud(), van tabelscherm naar crudmenu") ;   
+        LOGGER.debug("openDezeCrud(), van tabelscherm naar crudmenu") ;   
         view1.prepareMenu();
         if (view3.getSelectedItem() instanceof Klant ) {
             klant = (Klant)view3.getSelectedItem();
@@ -479,6 +499,8 @@ public class Controller {
             adressen.add(adres);
             klant = new Klant(); // om scherm te verversen
             nepAppArray[1] =  adressen;
+            LOGGER.debug("zoek per adres " + adressen);
+           System.out.println("zoek per adres " + adressen);
             zoekKlant();
             zoekAdresVanKlant();        
         }    

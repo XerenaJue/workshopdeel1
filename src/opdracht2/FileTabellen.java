@@ -162,12 +162,14 @@ public class FileTabellen {
             
             AdresDubbelHashMap alleAdressen = new AdresDubbelHashMap();
             Adres adres ;
-            for (int i = 0; i < entries ;i++) {
+            for (int i = 1; i <= entries ;i++) {
                 adres = new Adres();
                 Random rng = new Random();
                 adres.setAdresID(i);
                 adres.setStraatnaam(FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 10));
                 adres.setPostcode(FillBatchDatabase.generateString(rng , "ABCD123456789", 6));
+                adres.setHuisnummer(rng.nextInt(400));
+                adres.setWoonplaats(FillBatchDatabase.generateString(rng , "Mooie Namen StrinG", 7));
                 alleAdressen.add(adres);
             }   
             fileWriter.write(gson.toJson(alleAdressen, artikelType));
@@ -187,10 +189,10 @@ public class FileTabellen {
 		klanttabel = new JSONArray();
 		
 		JSONObject deKlant = new JSONObject();		
-		for (int i = 0 ; i < entries; i++ ) {
+		for (int i = 1 ; i <= entries; i++ ) {
                     deKlant = new JSONObject();	
                     Random rng = new Random();   
-                    deKlant.put("Klant_id", i+1);			
+                    deKlant.put("Klant_id", i);			
                     deKlant.put("Voornaam", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 10));
                     deKlant.put("Achternaam", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 7));
                     deKlant.put("Tussenvoegsel", FillBatchDatabase.generateString(rng , "MooieNamenStrinG", 2));

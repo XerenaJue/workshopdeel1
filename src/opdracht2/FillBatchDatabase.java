@@ -29,9 +29,11 @@ public class FillBatchDatabase {
     public static void fillBatchDatabase(int aantal)  {
         
         try { 
-            addSomeRandomKlanten(aantal);
+            addSomeRandomKlanten(aantal );
             addSomeRandomAdresses(aantal);
             koppelKlantenAdressen(aantal);
+            laatErWatSamenWonen((int)(aantal * 0.8));  // anders wonen ze samen met niet bestaand
+            geefWatBuitenHuisjes((int)(aantal * 0.8)); 
             addSomeBestellingen(aantal);
             addSomeArtikelen(8);
             koppelBestellingArtikel((int)(aantal * 1.4));
@@ -127,6 +129,56 @@ public class FillBatchDatabase {
             connection.commit();
             connection.setAutoCommit(true);
         }
+    }
+    
+    private static void laatErWatSamenWonen(int aantal) throws SQLException {
+        
+         String query = "INSERT INTO klant_has_adres (klant_klant_id, adres_adres_id) VALUES (?, ?)";
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(query); ){ 
+       
+            connection.setAutoCommit(false);
+                               
+            for (int i = 1; i <= aantal; i++){
+                if (i%4 == 0 ){
+                    statement.setInt(1, aantal + i/4);
+                    statement.setInt(2, i);
+                    statement.addBatch();
+                }        
+                
+            }
+            statement.executeBatch();
+           
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+        
+    }
+    
+     private static void geefWatBuitenHuisjes(int aantal) throws SQLException {
+        
+         String query = "INSERT INTO klant_has_adres (klant_klant_id, adres_adres_id) VALUES (?, ?)";
+        
+        try (Connection connection = ConnectionFactory.getMySQLConnection();
+                PreparedStatement statement = connection.prepareStatement(query); ){ 
+       
+            connection.setAutoCommit(false);
+                               
+            for (int i = 1; i <= aantal; i++){
+                if (i%8 == 0 ){
+                    statement.setInt(1, i);
+                    statement.setInt(2, i + aantal / 8);
+                    statement.addBatch();
+                }        
+                
+            }
+            statement.executeBatch();
+           
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
+        
     }
           
     public static void addSomeBestellingen(int aantal) throws SQLException{
