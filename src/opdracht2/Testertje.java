@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
 import static opdracht2.FileTabellen.createBigJsonKlantAdresTussenTabel;
-import static opdracht2.FileTabellen.createEmptyJsonKlantAdresTussenTabel;
 
 /**
  *
@@ -81,7 +80,7 @@ public class Testertje {
         duur = stop - start;
         System.out.println( "dit duurde bij Json " + duur + " ms" );
         */
-   int aantal = 1000;
+   int aantal = 10000;
   //  FileTabellen.createEmptyJsonAdresTabel("res/files/adresTabel.json");
    FileTabellen.createBigJsonAdresTabel("res/files/adresTabel.json", aantal);
       Adres adres = new Adres();

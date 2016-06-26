@@ -62,13 +62,15 @@ public class AdresDubbelHashMap {
     }
     
     public void remove(int adresID) {
-        
-        Adres adres = idAlsKey.get(adresID);
-        String postcode = adres.getPostcode();
-        postcode += adres.getHuisnummer();
-       // postcode += adres.getToevoeging();
-        postcodeAlsKey.put(postcode, null);
-        idAlsKey.put(adresID, null);
+        if (adresID > 0) {
+         System.out.println("adres" + adresID);
+         Adres adres = idAlsKey.get(adresID);
+         String postcode = adres.getPostcode();
+         postcode += adres.getHuisnummer();
+         // postcode += adres.getToevoeging();
+         postcodeAlsKey.put(postcode, null);
+         idAlsKey.put(adresID, null);
+        }
     }
     
     public void remove(String  postcodeHuisnr) {

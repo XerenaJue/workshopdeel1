@@ -142,7 +142,7 @@ public class ArtikelDAOSQL implements ArtikelDao {
         catch (SQLException ex) {
            
             ex.printStackTrace();
-            logger.error("gaat iets SQLfout in DeleteArtikel");
+            logger.error("gaat iets SQLfout in DeleteArtikel, waarsch is artikel al eens besteld");
         }
     }
 }

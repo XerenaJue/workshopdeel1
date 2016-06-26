@@ -88,8 +88,7 @@ public class Controller {
         
         @Override
         public void handle(Event event) {
-            System.out.println("events are happening");
-            
+            LOGGER.debug("handle ZoekKlant()");
             zoekKlant();
             zoekAdresVanKlant();
         }
@@ -97,7 +96,7 @@ public class Controller {
     class MaakKlant implements EventHandler {
         @Override
         public void handle(Event event) {
-            System.out.println("events are happening");
+            LOGGER.debug("handle Maakklant()");
             maakKlant();
             geefAdres();
             zoekKlant();
@@ -106,7 +105,7 @@ public class Controller {
     class UpdateKlant implements EventHandler {
         @Override
         public void handle(Event event) {
-            System.out.println("events are happening");
+            LOGGER.debug("handle update klant");
             updateKlant();
             updateAdres();// moet enkel van deze klant
             
@@ -115,9 +114,12 @@ public class Controller {
     class VerwijderKlant implements EventHandler {
         @Override
         public void handle(Event event) {
-            System.out.println("events are happening");
+            LOGGER.debug("handle verwijder klant");
+          
+            deleteAdres();
             deleteKlant();
             zoekKlant();
+            zoekAdresVanKlant(); //als laatste anders wordt wellicht bewoner extra adres getoont
         }
     }
     class Bestellingen implements EventHandler {
@@ -214,16 +216,21 @@ public class Controller {
               leesSchermKlant();
               leesAdresVanScherm();
               
-            model.zoek(nepAppArray);
-            nepAppArray = model.getToDisplay();
-            showKlant();
-            adresIndex = 0;
+            zoekMetArray();
                 
         } catch (SQLException ex) {
             LOGGER.error("zoek in controller sql", ex);
         }
         
     }
+    private void zoekMetArray() throws SQLException {
+        model.zoek(nepAppArray);
+            nepAppArray = model.getToDisplay();
+            showKlant();
+            adresIndex = 0;
+        
+    }
+    
     public void maakKlant() {
         LOGGER.debug("maakkKlant()");
         EmailValidator emailVal = EmailValidator.getInstance();
@@ -377,6 +384,13 @@ public class Controller {
 	}
 
     }
+    private void deleteAdres() {
+        
+        LOGGER.debug("deleteAdres() ") ; // schrijft klant uit van adres
+	model.deleteVanAdres(klant, adres);
+
+    }
+    
     
      private void setUpForBestellingen() {
          LOGGER.debug("setUpForBestellingen() ") ;
@@ -490,7 +504,12 @@ public class Controller {
         view1.prepareMenu();
         if (view3.getSelectedItem() instanceof Klant ) {
             klant = (Klant)view3.getSelectedItem();
-            zoekKlant();
+            nepAppArray[0] = klant;
+            try {
+                zoekMetArray();
+            } catch (SQLException ex) {
+                LOGGER.error("van tabel naar crud" + ex);
+            }
             zoekAdresVanKlant();
         }
         else if (view3.getSelectedItem() instanceof Adres ) {
@@ -501,15 +520,26 @@ public class Controller {
             nepAppArray[1] =  adressen;
             LOGGER.debug("zoek per adres " + adressen);
            System.out.println("zoek per adres " + adressen);
-            zoekKlant();
+            try {
+                zoekMetArray(); //zoekKlant();
+             } catch (SQLException ex) {
+                LOGGER.error("van tabel naar crud" + ex);
+            }
             zoekAdresVanKlant();        
         }    
         else if (view3.getSelectedItem() instanceof Bestelling ) {
             bestelling = (Bestelling)view3.getSelectedItem();
             klant = new Klant();
             klant.setKlantID(bestelling.getKlant_id());
-            zoekKlant();
-            zoekAdresVanKlant();        
+                       
+            nepAppArray[0] = klant;
+            try {
+                zoekMetArray();
+            } catch (SQLException ex) {
+                LOGGER.error("van tabel naar crud" + ex);
+            }
+            zoekAdresVanKlant();  
+          
         }    
         view1.showMenu();
         

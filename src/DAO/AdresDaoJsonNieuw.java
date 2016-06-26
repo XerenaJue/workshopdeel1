@@ -32,50 +32,45 @@ public class AdresDaoJsonNieuw implements AdresDao{
     private final String fileName = "res/files/adresTabel.json";  
     private final String fileNameTussen = "res/files/adresKlantTussenTabel.json";  
     private final static Logger LOGGER = LoggerFactory.getLogger(ArtikelDAOJson.class);
+    
+    KlantAdresDubbelHashMap klantenMetAdressen;
+    AdresDubbelHashMap alleAdressen;
+    
+    public AdresDaoJsonNieuw() {
+        leesAdresTabel();
+        leesTussenTabel();
+    }
 
     @Override
     public Adres createAdres(int klant_id, Adres adres) throws SQLException {
         
-        AdresDubbelHashMap alleAdressen;
-        try (FileReader read = new FileReader(fileName);) {
-                  
-            alleAdressen = gson.fromJson(read,adresType);
-            
-            adres = alleAdressen.add(adres);
-            try (FileWriter file = new FileWriter(fileName)) {
+        adres = alleAdressen.add(adres);
+        try (FileWriter file = new FileWriter(fileName)) {
                   
 		file.write(gson.toJson(alleAdressen, adresType));  
                 LOGGER.trace("adres toegeveogd aan alle adressen ");
-            }
-            
-            
+                             
         } catch (IOException ex) {
             LOGGER.error("create input/output " +  ex);
         }
         addAdresToTussenTabel(klant_id, adres.getAdresID());
+        leesAdresTabel();
         return adres;
         
     }
     
     private void addAdresToTussenTabel(Integer klantID, Integer adresID) {
         
-        KlantAdresDubbelHashMap klantenMetAdressen;
-        try (FileReader read = new FileReader(fileNameTussen);) {
+        klantenMetAdressen.add(klantID, adresID);
+        try (FileWriter file = new FileWriter(fileNameTussen)) {
                   
-            klantenMetAdressen = gson.fromJson(read,tussenType);
-            
-            klantenMetAdressen.add(klantID, adresID);
-            try (FileWriter file = new FileWriter(fileNameTussen)) {
-                  
-		file.write(gson.toJson(klantenMetAdressen, tussenType));  
-                LOGGER.trace("adres en klant toegeveogd aan tussenTabel ");
-            }
-            
-            
+            file.write(gson.toJson(klantenMetAdressen, tussenType));  
+            LOGGER.trace("adres en klant toegeveogd aan tussenTabel ");
+             
         } catch (IOException ex) {
             LOGGER.error("create input/output " +  ex);
         }
-        
+        leesTussenTabel();
         
         
     }
@@ -94,17 +89,10 @@ public class AdresDaoJsonNieuw implements AdresDao{
     public List<Adres> findAdres(String postcode, int huisnummer) throws SQLException {
         
         List<Adres> adressen = new ArrayList<>(); // ga er vanuit dat dit uniek is
-        Adres adres; 
-        AdresDubbelHashMap adressenBoek;
-        try (FileReader read = new FileReader(fileName);) {
-                  
-            adressenBoek = gson.fromJson(read, adresType);
-            adres = adressenBoek.get( postcode + huisnummer ); // geen toevoeging
-            adressen.add(adres);
-        } 
-        catch (IOException ex) {
-            LOGGER.error("read input/output " +  ex);
-        }
+               
+        Adres adres = alleAdressen.get( postcode + huisnummer ); // geen toevoeging
+        adressen.add(adres);
+        
         return adressen;
     }
 
@@ -113,101 +101,85 @@ public class AdresDaoJsonNieuw implements AdresDao{
         List<Adres> adressen = new ArrayList<>();
         List<Integer> adresIDs;
         
-        KlantAdresDubbelHashMap adressenKlantenBoek;
-        try (FileReader read = new FileReader(fileNameTussen);) {
-                  
-            adressenKlantenBoek = gson.fromJson(read, tussenType);
-            adresIDs = adressenKlantenBoek.getAdresIDs(klant_id); 
-            
-            try (FileReader readEnkelAdressen = new FileReader(fileName);) {
-                AdresDubbelHashMap alleAdressen = gson.fromJson(readEnkelAdressen, adresType);
-                adressen = alleAdressen.get(adresIDs);
-            } 
-        } 
-        catch (IOException ex) {
-            LOGGER.error("find adres input/output " +  ex);
-        }
+        adresIDs = klantenMetAdressen.getAdresIDs(klant_id); 
+        adressen = alleAdressen.get(adresIDs);
+              
         return adressen;
     }
 
     @Override
     public void update(Adres adres) throws SQLException {
         
-        AdresDubbelHashMap alleAdressen;
-        try (FileReader read = new FileReader(fileName);) {
-                  
-            alleAdressen = gson.fromJson(read,adresType);
-            
-            alleAdressen.update(adres);
-            try (FileWriter file = new FileWriter(fileName)) {
-                  
-		file.write(gson.toJson(alleAdressen, adresType));  
-                LOGGER.info("adres geupdate " + adres);
-            }
-                   
+        alleAdressen.update(adres);
+        try (FileWriter file = new FileWriter(fileName)) {
+                
+            file.write(gson.toJson(alleAdressen, adresType));  
+            LOGGER.info("adres geupdate " + adres);
+           
         } catch (IOException ex) {
             LOGGER.error("create input/output " +  ex);
         }
-        
-        
-        
+        leesAdresTabel();
     }
 
     @Override
     public List<Adres> findAll() throws SQLException {
-        AdresDubbelHashMap alleAdressenBoek;
-        List<Adres> adressen = new ArrayList<>();
-        try (FileReader read = new FileReader(fileName);) {
-                  
-            alleAdressenBoek = gson.fromJson(read,adresType);
-            adressen =  alleAdressenBoek.getValues();
-            
-                   
-        } catch (IOException ex) {
-            LOGGER.error("findall() " +  ex);
-        }
+        
+        List<Adres> adressen =  alleAdressen.getValues();
+               
         return adressen;
     }
 
     @Override
     public void deleteAdres(Klant klant, Adres adres) throws SQLException {
        
-          
-        AdresDubbelHashMap alleAdressen;
-        try (FileReader read = new FileReader(fileName);) {
-            removeAdresFromTussenTabel(klant.getKlantID(), adres.getAdresID());      
-            
-            alleAdressen = gson.fromJson(read,adresType);
-            alleAdressen.remove(adres.getAdresID());
-            try (FileWriter file = new FileWriter(fileName)) {
+        removeAdresFromTussenTabel(klant.getKlantID(), adres.getAdresID());      
+              
+        alleAdressen.remove(adres.getAdresID());
+        try (FileWriter file = new FileWriter(fileName)) {
                   
 		file.write(gson.toJson(alleAdressen, adresType));  
                 LOGGER.trace("adres toegeveogd aan alle adressen ");
-            }
-                
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             LOGGER.error("deleteAdres input/output " +  ex);
         }
+        leesAdresTabel();
     }
-    private void removeAdresFromTussenTabel(Integer klantID, Integer adresID) throws IOException{
+    private void removeAdresFromTussenTabel(Integer klantID, Integer adresID) {
         
-        KlantAdresDubbelHashMap klantenMetAdressen;
-        try (FileReader read = new FileReader(fileNameTussen);) {
-                  
-            klantenMetAdressen = gson.fromJson(read,tussenType);
-         
-            klantenMetAdressen.removeKlantOpAdres(klantID, adresID);
-            try (FileWriter file = new FileWriter(fileNameTussen)) {
+            
+        klantenMetAdressen.removeKlantOpAdres(klantID, adresID);
+        try (FileWriter file = new FileWriter(fileNameTussen)) {
                   
 		file.write(gson.toJson(klantenMetAdressen, tussenType));  
                 LOGGER.info("adres en klant verwijderd uit tussenTabel ");
-            }
-            
-            
         } 
+        catch (IOException ex) {
+            LOGGER.error("deleteAdres input/output " +  ex);
+        }
+        leesTussenTabel();
+    }
+    private void leesAdresTabel() {
         
+        try (FileReader read = new FileReader(fileName);) {
+                       
+            alleAdressen = gson.fromJson(read,adresType);
+        }
+        catch (IOException ex) {
+            LOGGER.error("inlezen alleAdressen " +  ex);
+        }
+    }
+    
+    private void leesTussenTabel() {
         
-        
+        try (FileReader read = new FileReader(fileNameTussen);) {
+                       
+            klantenMetAdressen = gson.fromJson(read,tussenType);
+        }
+        catch (IOException ex) {
+            LOGGER.error("inlezen alleAdressen " +  ex);
+        }
     }
     
 }

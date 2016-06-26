@@ -170,11 +170,19 @@ public class FacadeDatabaseMenu {
     
     public void updateAdres(Klant bestaande, Adres adres) throws SQLException {
         
-        adresDAO.deleteAdres(bestaande, adres);
+        adresDAO.deleteAdres(bestaande, adres);// gaat op basis van oude adres-id
         adresDAO.createAdres(bestaande.getKlantID(), adres);
 	   
    }
    
+    public void deleteVanAdres(Klant bestaande, Adres adres)  {
+        try {
+           adresDAO.deleteAdres(bestaande, adres);
+        } catch (SQLException ex) {
+            logger.error("facade delete van adres" + ex);
+        }	   
+   }
+    
    public void geefAdres(Klant klant, Adres adres) {
        
         try {
@@ -268,6 +276,10 @@ public class FacadeDatabaseMenu {
    
    public void changeConnectionPool() {
        ConnectionFactory.changeConnectionPool();
+   }
+   
+   public void closeConnectionPool() {
+       ConnectionFactory.closeConnectionPool();
    }
    
    public void changeDatabase(String naamDatabase) {

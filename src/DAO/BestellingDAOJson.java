@@ -207,19 +207,8 @@ public class BestellingDAOJson implements BestellingInterface {
     @Override
         public void deleteBestelling(ArrayList<Bestelling> bestelling) throws SQLException {
         
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-                Statement statement = connection.createStatement(); ){ 
-            connection.setAutoCommit(false);
-            for (Bestelling element: bestelling){
-                String queryBHA = "delete from bestelling_has_artikel where bestelling_bestelling_id = " + element.getBestelling_id();
-                statement.addBatch(queryBHA);
-                String queryBestelling = "delete from bestelling where bestelling_id = " + element.getBestelling_id();
-                statement.addBatch(queryBestelling);
-            }
-            statement.executeBatch();
-            connection.commit();
-            logger.info("bestelling gedelete");            
-    }
+                   
+    
     }
     
     @Override
@@ -235,25 +224,7 @@ public class BestellingDAOJson implements BestellingInterface {
              
         List<Bestelling> bestellingen = new ArrayList<>();
         
-        String query = "select * from bestelling";
         
-        try (Connection connection = ConnectionFactory.getMySQLConnection();
-            PreparedStatement stmt = connection.prepareStatement(query);
-            ResultSet resultSet = stmt.executeQuery();  ){
-                       
-            while (resultSet.next()) {
-               Bestelling bestelling = new Bestelling();      
-               bestelling.setBestelling_id(resultSet.getInt("bestelling_id"));
-               bestelling.setKlant_id(resultSet.getInt("klant_klant_id"));  
-               bestellingen.add(bestelling);
-            }
-        }
-        catch (SQLException ex) {
-            System.out.println("gaat iets fout in readAlleBestellingen" );
-            ex.printStackTrace();
-        }
-        if (bestellingen.isEmpty() )bestellingen.add(new Bestelling());
-                    logger.info("alle bestellingen weergegeven");
         return bestellingen;
     }
 

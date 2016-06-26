@@ -97,7 +97,7 @@ public class DatasourceScherm {
         btnChangeConnectionPool.setOnMouseClicked(event -> {  facade.changeConnectionPool();        
         });
         btnJson = new MenuButton("use Json");
-        btnJson.setOnMouseClicked(event -> {  facade.changeToJson();        
+        btnJson.setOnMouseClicked(event -> { facade.closeConnectionPool();   facade.changeToJson();       
         }); 
         
         
