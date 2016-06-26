@@ -126,7 +126,7 @@ public class FileTabellen {
         Type artikelType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
         
         try (FileWriter fileWriter = new FileWriter(filename)) {
-             KlantAdresDubbelHashMap tussen = new KlantAdresDubbelHashMap();
+             KlantAdresDubbelHashMap tussen = KlantAdresDubbelHashMap.getInstance();
              fileWriter.write(gson.toJson(tussen, artikelType));
         } 
         catch (IOException ex) {
@@ -140,7 +140,7 @@ public class FileTabellen {
         Type artikelType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
         
         try (FileWriter fileWriter = new FileWriter(filename)) {
-             KlantAdresDubbelHashMap tussen = new KlantAdresDubbelHashMap();
+             KlantAdresDubbelHashMap tussen = KlantAdresDubbelHashMap.getInstance();
              for (int i = 1 ; i <= entries; i++  ) {
                  tussen.add(i, i);
                  

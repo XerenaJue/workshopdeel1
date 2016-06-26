@@ -5,15 +5,18 @@
  */
 package opdracht2;
 
+import DAO.AdresDaoImpl;
 import DAO.AdresDaoJsonNieuw;
+import DAO.KlantDAOImpl;
 import DAO.KlantDaoJson;
+import Interface.AdresDao;
+import Interface.KlantDAO;
 import POJO.Adres;
 import POJO.Klant;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Random;
-import static opdracht2.FileTabellen.createBigJsonKlantAdresTussenTabel;
 
 /**
  *
@@ -81,61 +84,76 @@ public class Testertje {
         System.out.println( "dit duurde bij Json " + duur + " ms" );
         */
    int aantal = 20;
-  //  FileTabellen.createEmptyJsonAdresTabel("res/files/adresTabel.json");
+  
    FileTabellen.createBigJsonAdresTabel("res/files/adresTabel.json", aantal);
+   FileTabellen.createBigJsonKlantTabel(aantal); 
+   FileTabellen.createBigJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json", aantal);
+   
+   ConnectionFactory.useMySQL();
+    FillBatchDatabase.clearDatabase();
+    FillBatchDatabase.fillBatchDatabase(aantal);
+   
+   
       Adres adres = new Adres();
-         AdresDaoJsonNieuw adresDao = new AdresDaoJsonNieuw();
+      adres.setAdresID(98);
+      adres.setWoonplaats("Mokum");
+      adres.setPostcode("1234AQ");
+      adres.setHuisnummer(12);
+      
+      AdresDao adresDaoJson = new AdresDaoJsonNieuw();
+      KlantDAO klantDaoJson = new KlantDaoJson();
+      KlantDAO klantDaoSQL = new KlantDAOImpl();
+      AdresDao adresDaoSQL = new AdresDaoImpl();
     
-          Klant klant = new Klant();
-          klant.setKlantID(10);
+      Klant klant = new Klant();
+      klant.setKlantID(10);
+      klant.setVoornaam("Mooiman");
+      klant.setAchternaam("Mooiman");
+      klant.setKlantID(888);
     
-          
-         
-        adres.setAdresID(98);
-          adres.setWoonplaats("Mokum");
-          adres.setPostcode("1234AQ");
-          adres.setHuisnummer(12);
-          
-         long start = new Date().getTime();  
-         System.out.println("adres: " + adresDao.findAdres("1234AQ" , 12));
-       long stop = new Date().getTime();
-       
-        
-        
-        long duur = stop - start;
-         System.out.println("dit duurde bij adres zoeken op postcode   " + duur + " ms");
-          
-         klant.setVoornaam("Mooiman");
-        klant.setAchternaam("Mooiman");
-         klant.setKlantID(888);
-         KlantDaoJson klantDao = new KlantDaoJson();
-        // klantDao.findByID(1);
-        
-      //  FileTabellen.createEmptyJsonKlantTabel();
-         FileTabellen.createBigJsonKlantTabel(aantal); 
-       //  createEmptyJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json");
-         createBigJsonKlantAdresTussenTabel("res/files/adresKlantTussenTabel.json", aantal);
-         
-         start = new Date().getTime();
-        System.out.println("klant " + klantDao.findByName("wiedann", "niemand"));
-        // System.out.println("klantje  "+  klantDao.findByID(1));
-         stop = new Date().getTime();
-          duur = stop - start;
-         System.out.println("dit duurde bij zoeken op naam  " + duur + " ms");
-       //  System.out.println("klantje  "+  klantDao.update(klant));
+      // ..................................................................
+      long start = new Date().getTime();  
+      System.out.println("adres: " + adresDaoJson.findAdres("1234AQ" , 12));
+      long stop = new Date().getTime();
+      long duur = stop - start;
+      System.out.println("dit duurde bij adres zoeken op postcode Json  " + duur + " ms");
+      //.....................................................................    
+      
+      start = new Date().getTime();
+      System.out.println("klant " + klantDaoJson.findByName("wiedann", "niemand"));
+      stop = new Date().getTime();
+      duur = stop - start;
+      System.out.println("dit duurde bij zoeken op naam json  " + duur + " ms");
+      //.........................................................................
        
        klant = new Klant();
        klant.setAchternaam("Meddina");
        adres.setAdresID(0);
-  //     klantDao.create(klant);
-//       adresDao.createAdres(klant.getKlantID(), adres);
-       System.out.println("klantje  "+  klantDao.findByID(klant.getKlantID()));
-               
+       // .............................................................
+                   
       start = new Date().getTime();
-      System.out.println("adres van klant :  " + adresDao.findAdres(klant.getKlantID()));
+      System.out.println("adres van klant :  " + adresDaoJson.findAdres(klant.getKlantID()));
       stop = new Date().getTime();
       duur = stop - start;
-      System.out.println("dit duurde bij adres zoeken op klantID  " + duur + " ms");
+      System.out.println("dit duurde bij adres zoeken op klantID json " + duur + " ms");
+      //********************************************************************
+      
+      start = new Date().getTime();
+      System.out.println("klant " + klantDaoSQL.findByName("wiedann", "niemand"));
+      stop = new Date().getTime();
+      duur = stop - start;
+      System.out.println("dit duurde bij KLant zoeken op naam SQL  " + duur + " ms");
+      //******************************************************************************
+      
+      start = new Date().getTime();
+      System.out.println("adres van klant :  " + adresDaoSQL.findAdres(klant.getKlantID()));
+      stop = new Date().getTime();
+      duur = stop - start;
+      System.out.println("dit duurde bij Adres zoeken op klantID SQL " + duur + " ms");
+      //********************************************************************
+      
+      
+      
     }
     
     

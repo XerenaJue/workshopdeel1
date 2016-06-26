@@ -5,9 +5,16 @@
  */
 package opdracht2;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,17 +22,23 @@ import java.util.List;
  */
 public class KlantAdresDubbelHashMap {
     
-    
+    private final static Logger LOGGER = LoggerFactory.getLogger(KlantAdresDubbelHashMap.class);
     private HashMap<Integer, List<Integer>> KlantAlsKey;
     private HashMap<Integer, List<Integer>> AdresIDAlsKey;
-    
+    private static KlantAdresDubbelHashMap instance = null;
    
-     public KlantAdresDubbelHashMap() {
+    private KlantAdresDubbelHashMap() {
         KlantAlsKey = new HashMap<>();
         AdresIDAlsKey =  new HashMap<>();       
         
     }
     
+    public static synchronized KlantAdresDubbelHashMap getInstance() {
+        if (instance == null) {
+           return  leesTussenTabel();
+        }
+        else return instance;
+    }
     
     public void add(Integer klantID, Integer adresID) {
         List<Integer> adressen = new ArrayList<>();
@@ -85,4 +98,25 @@ public class KlantAdresDubbelHashMap {
     public void setAdresIDAlsKey(HashMap<Integer, List<Integer>> key) {
         AdresIDAlsKey = key;
     }
+    
+    private static KlantAdresDubbelHashMap leesTussenTabel() {
+       
+            Gson gson = new Gson();
+            Type tussenType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
+            String fileNameTussen = "res/files/adresKlantTussenTabel.json"; 
+        
+            try (FileReader read = new FileReader(fileNameTussen);) {
+                       
+                instance = gson.fromJson(read,tussenType);
+                if (instance == null) {
+                    instance = new KlantAdresDubbelHashMap();
+                }
+                
+            }
+            catch (IOException ex) {
+                LOGGER.error("inlezen alleAdressen " +  ex);
+            }
+            return instance;
+        }
+    
 }

@@ -38,7 +38,8 @@ public class AdresDaoJsonNieuw implements AdresDao{
     
     public AdresDaoJsonNieuw() {
         leesAdresTabel();
-        leesTussenTabel();
+     //   leesTussenTabel();
+        klantenMetAdressen = KlantAdresDubbelHashMap.getInstance();
     }
 
     @Override

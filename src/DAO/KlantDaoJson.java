@@ -29,14 +29,15 @@ public class KlantDaoJson implements KlantDAO{
 	JSONArray klanttabel;
 	JSONParser parser;
 	String bestand = "res/files/klantTabel.json";
-        KlantAdresDubbelHashMap tussenTabel;
+        KlantAdresDubbelHashMap tussenTabel ;
         Gson gson;
         Type tussenType;
         
         public KlantDaoJson() {
             
             klanttabel = getData();
-            leesTussenTabel();
+          //  leesTussenTabel();
+          tussenTabel = KlantAdresDubbelHashMap.getInstance();
         }
         
         
