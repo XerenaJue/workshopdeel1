@@ -96,6 +96,10 @@ public class Adres {
         Adres nieuwAdres = (Adres) obj;
         return new EqualsBuilder().
             append(straatnaam, nieuwAdres.getStraatnaam()).
+            append(postcode, nieuwAdres.getPostcode() ).
+            append(huisnummer, nieuwAdres.getHuisnummer() ). 
+                append(woonplaats, nieuwAdres.getWoonplaats() ).
+                append(toevoeging, nieuwAdres.getToevoeging() ).
             isEquals();
     }
 }

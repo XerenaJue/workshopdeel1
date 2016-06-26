@@ -80,7 +80,7 @@ public class Testertje {
         duur = stop - start;
         System.out.println( "dit duurde bij Json " + duur + " ms" );
         */
-   int aantal = 10;
+   int aantal = 20;
   //  FileTabellen.createEmptyJsonAdresTabel("res/files/adresTabel.json");
    FileTabellen.createBigJsonAdresTabel("res/files/adresTabel.json", aantal);
       Adres adres = new Adres();

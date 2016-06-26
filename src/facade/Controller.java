@@ -370,15 +370,20 @@ public class Controller {
     }
     private void updateAdres() {
         LOGGER.debug("updateAdres() ") ;
+        Adres tempAdres = new Adres();
 	try {
-            adres.setStraatnaam(view1.getStraatnaam());
-            adres.setHuisnummer(view1.getHuisnummer());
-            adres.setToevoeging(view1.getToevoeging());
-            adres.setPostcode(view1.getPostcode());
-            adres.setWoonplaats(view1.getPlaatsnaam());
-            model.updateAdres(klant, adres);
-            nepAppArray = model.getToDisplay();
-
+            tempAdres.setStraatnaam(view1.getStraatnaam());
+            tempAdres.setHuisnummer(view1.getHuisnummer());
+            tempAdres.setToevoeging(view1.getToevoeging());
+            tempAdres.setPostcode(view1.getPostcode());
+            tempAdres.setWoonplaats(view1.getPlaatsnaam());
+            if (!adres.equals(tempAdres)){  // enkel updaten als iets veranderd is
+                tempAdres.setAdresID(adres.getAdresID());
+                adres = tempAdres;
+                model.updateAdres(klant, adres);
+                nepAppArray = model.getToDisplay();
+            }
+            else LOGGER.debug("adres niet aangepast");
 	} catch (SQLException e) {
             System.out.println("Nog op te lossen" + e);
 	}
