@@ -75,6 +75,7 @@ public class FacadeDatabaseMenu {
         if (findKlant(bestaandeKlant) != null) {       	
             bestaandeKlant = findKlant(bestaandeKlant);
              klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
+              
         }
         else { 
             Adres gevondenAdres = findAdres(adressenVanKlant.get(0)).get(0); 
@@ -82,9 +83,10 @@ public class FacadeDatabaseMenu {
             bestaandeKlant = klantenMetZelfdeAdres.get(0);
         }
         adressenVanKlant = findAdres(bestaandeKlant); 
+           klantenMetZelfdeAdres = findBewoners(adressenVanKlant.get(0));
         bestellingen = findBestellingen(bestaandeKlant);
         if (!bestellingen.isEmpty() )besteldeArtikelen = findArtikelen(bestellingen.get(0)); // zoekt besteldeArtikelen van eerste bestelling in lijst
-        
+        logger.debug("bewoners zelfde in facade is: " + klantenMetZelfdeAdres);
         toDisplay[0] = bestaandeKlant;
         toDisplay[1] = adressenVanKlant;
         toDisplay[2] = bestellingen;
