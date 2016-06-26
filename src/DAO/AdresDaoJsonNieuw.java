@@ -54,7 +54,7 @@ public class AdresDaoJsonNieuw implements AdresDao{
             LOGGER.error("create input/output " +  ex);
         }
         addAdresToTussenTabel(klant_id, adres.getAdresID());
-        leesAdresTabel();
+     //   leesAdresTabel();
         return adres;
         
     }
@@ -70,7 +70,7 @@ public class AdresDaoJsonNieuw implements AdresDao{
         } catch (IOException ex) {
             LOGGER.error("create input/output " +  ex);
         }
-        leesTussenTabel();
+     //   leesTussenTabel();
         
         
     }
@@ -119,7 +119,7 @@ public class AdresDaoJsonNieuw implements AdresDao{
         } catch (IOException ex) {
             LOGGER.error("create input/output " +  ex);
         }
-        leesAdresTabel();
+      //  leesAdresTabel();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class AdresDaoJsonNieuw implements AdresDao{
         catch (IOException ex) {
             LOGGER.error("deleteAdres input/output " +  ex);
         }
-        leesAdresTabel();
+     //   leesAdresTabel();
     }
     private void removeAdresFromTussenTabel(Integer klantID, Integer adresID) {
         
@@ -158,7 +158,7 @@ public class AdresDaoJsonNieuw implements AdresDao{
         catch (IOException ex) {
             LOGGER.error("deleteAdres input/output " +  ex);
         }
-        leesTussenTabel();
+      //  leesTussenTabel();
     }
     private void leesAdresTabel() {
         

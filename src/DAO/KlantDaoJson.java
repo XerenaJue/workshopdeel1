@@ -50,7 +50,7 @@ public class KlantDaoJson implements KlantDAO{
 		}
 		deKlant = new JSONObject();		
 		
-		deKlant.put("Klant_id", newID);			
+		deKlant.put("Klant_id", (long)newID);			
 		deKlant.put("Voornaam", klant.getVoornaam());
 		deKlant.put("Achternaam", klant.getAchternaam());
 		deKlant.put("Tussenvoegsel", klant.getTussenvoegsel());
@@ -65,7 +65,7 @@ public class KlantDaoJson implements KlantDAO{
 		} catch (IOException e) {
 			LOGGER.info("create klant mislukt " + e);			
 		}
-                klanttabel = getData();
+             //   klanttabel = getData();
 	}
 	
 	@Override
@@ -93,29 +93,29 @@ public class KlantDaoJson implements KlantDAO{
 	
 	@Override
 	public Klant findKlant(Klant bestaandeKlant) {
-        int klantID = bestaandeKlant.getKlantID();
-        String klantVoornaam = bestaandeKlant.getVoornaam();
-        String klantAchternaam = bestaandeKlant.getAchternaam();
-        
-        if (klantID != 0) {        	
+             int klantID = bestaandeKlant.getKlantID();
+            String klantVoornaam = bestaandeKlant.getVoornaam();
+            String klantAchternaam = bestaandeKlant.getAchternaam();
+        System.out.println("find klant " + bestaandeKlant);
+            if (klantID != 0) {        	
         	LOGGER.info("klant zoeken op id -- id was niet nul");
         	return findByID(klantID);
-        }   
+            }   
         
-        else if (klantVoornaam != null && klantVoornaam.length() >= 1 && klantAchternaam.length() >= 1) {
+            else if (klantVoornaam != null && klantVoornaam.length() >= 1 && klantAchternaam.length() >= 1) {
         	LOGGER.info("klant zoeken op voor en achternaam -- namen waren groter dan 0");
         	return findByName(klantVoornaam, klantAchternaam);
-        }
+            }
         
-        else if (klantVoornaam != null && klantVoornaam.length() >= 1) {
+            else if (klantVoornaam != null && klantVoornaam.length() >= 1) {
         	LOGGER.info("klant zoeken op voornaam -- voornaam was groter dan 0");
         	return FindByName(klantVoornaam);
-        }
+            }
         
-        else {
+            else {
         	LOGGER.info("geen bruikbaare velden gevonden om klant te zoeken probeer op andere manier");
         	return null;
-        }
+            }
 	}
 	@Override
         public List<Klant> findKlant(Adres klantAdres) {
@@ -151,12 +151,13 @@ public class KlantDaoJson implements KlantDAO{
 				LOGGER.info("klant gevonden op bassis van id");
 			}
 		}
-		klant.setKlantID(klantId);
-		klant.setVoornaam((String)deKlant.get("Voornaam"));
-		klant.setAchternaam((String)deKlant.get("Achternaam"));
-		klant.setTussenvoegsel((String)deKlant.get("Tussenvoegsel"));
-		klant.setEmail((String)deKlant.get("Email"));
-		
+                if (gevonden) {
+                    klant.setKlantID(klantId);
+                    klant.setVoornaam((String)deKlant.get("Voornaam"));
+                    klant.setAchternaam((String)deKlant.get("Achternaam"));
+                    klant.setTussenvoegsel((String)deKlant.get("Tussenvoegsel"));
+                    klant.setEmail((String)deKlant.get("Email"));
+                }
 		return klant;
 	}
 	
@@ -277,6 +278,7 @@ public class KlantDaoJson implements KlantDAO{
 		}
 		if (gevonden) {
 			klanttabel.remove(deKlant);
+                        
 			try (FileWriter file = new FileWriter(bestand)) {
 				file.write(klanttabel.toJSONString());
                                 deleteFromTussenTabel(teverwijderen);
@@ -288,18 +290,24 @@ public class KlantDaoJson implements KlantDAO{
 			LOGGER.info("Klant niet gevonden");
 			return;
 		}
-                klanttabel = getData();
+        //        klanttabel = getData();
 		
 	}
         private void deleteFromTussenTabel(Integer klantID) {
             
-            List<Integer> AdresIDs;
+            List<Integer> adresIDs = new ArrayList<>();
+            List<Integer> tempAdresIDs;
             gson = new Gson();
             tussenType = new TypeToken<KlantAdresDubbelHashMap>() {}.getType();
             String fileNameTussen = "res/files/adresKlantTussenTabel.json"; 
                     
-            AdresIDs = tussenTabel.getAdresIDs(klantID);
-            for (Integer adresje: AdresIDs) {
+            tempAdresIDs = tussenTabel.getAdresIDs(klantID);
+            if (tempAdresIDs == null) {
+                LOGGER.debug("geen adres meer te verwijderen");
+                return;
+            }
+            adresIDs.addAll(tempAdresIDs);
+            for (Integer adresje: adresIDs) {
                 tussenTabel.removeKlantOpAdres(klantID, adresje); // wellicht niet optimaal maar klant heeft max enkele adressen
             }  
             try (FileWriter file = new FileWriter(fileNameTussen)) {
@@ -311,7 +319,7 @@ public class KlantDaoJson implements KlantDAO{
             catch (IOException ex) {
                 LOGGER.error("find adres input/output " +  ex);
             }
-            leesTussenTabel();      
+        //    leesTussenTabel();      
         }
 	
 	private JSONArray getData() {
